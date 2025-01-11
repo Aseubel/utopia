@@ -83,7 +83,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.OK)
     public <T> Response<T> handleAPPException(AppException e) {
         log.error("系统异常", e);
-        return Response.APP_ECEPTION(e);
+        return Response.APP_EXCEPTION(e);
     }
 
 

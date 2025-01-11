@@ -87,7 +87,7 @@ public final class Response<T> implements Serializable {
     }
 
     /**
-     * 系统异常返回, 自定义code {@link GlobalServiceStatusCode#SYSTEM_SERVICE_ERROR}
+     * 业务异常返回, 自定义code {@link GlobalServiceStatusCode#SYSTEM_SERVICE_ERROR}
      *
      * @param code 自定义状态码 {@link GlobalServiceStatusCode}
      * @return code对应的错误信息
@@ -100,7 +100,7 @@ public final class Response<T> implements Serializable {
     }
 
     /**
-     * 系统异常返回, 自定义code {@link GlobalServiceStatusCode#SYSTEM_SERVICE_ERROR}
+     * 业务异常返回, 自定义code {@link GlobalServiceStatusCode#SYSTEM_SERVICE_ERROR}
      *
      * @param code 自定义状态码 {@link GlobalServiceStatusCode}
      * @param msg  自定义异常信息
@@ -119,7 +119,7 @@ public final class Response<T> implements Serializable {
      * @param e APPException
      * @return code对应的错误信息
      */
-    public static <T> Response<T> APP_ECEPTION(AppException e) {
+    public static <T> Response<T> APP_EXCEPTION(AppException e) {
         return Response.<T>builder()
                 .code(Integer.valueOf(e.getCode()))
                 .info(e.getInfo())
