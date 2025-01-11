@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 @Data
 public class JwtProperties {
 
-    private String secretKey;
+    private String secretKey = "aseubel-secret-key";
 
     private Long ttl = 604800017L;    // 过期时间，默认一星期
 
-    private String tokenName;
+    private String tokenName = "Authorization";
 }
