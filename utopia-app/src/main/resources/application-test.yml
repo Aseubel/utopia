@@ -6,6 +6,12 @@ server:
       min-spare: 50   # 初始化线程数,最小空闲线程数,默认是10
     accept-count: 10  # 等待队列长度
 
+# 微信小程序配置
+wechat:
+  config:
+    appid: ${UTOPIA_APPID}
+    secret: ${UTOPIA_SECRET}
+
 # 应用配置
 app:
   config:
