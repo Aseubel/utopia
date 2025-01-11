@@ -84,7 +84,14 @@
         </dependency>
 
         <!-- 工程模块；启动依赖 trigger->domain, infrastructure-->
-
+        <dependency>
+            <groupId>com.aseubel</groupId>
+            <artifactId>utopia-trigger</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.aseubel</groupId>
+            <artifactId>utopia-infrastructure</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
