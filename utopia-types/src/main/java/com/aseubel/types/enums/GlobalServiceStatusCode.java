@@ -30,6 +30,11 @@ public enum GlobalServiceStatusCode {
 
     REQUEST_NOT_VALID(1101, "请求无效"),
 
+    /* 用户模块错误：2001～3000 */
+    USER_TOKEN_EXPIRED(2001, "token失效"),
+    USER_TOKEN_ERROR(2002, "token错误"),
+    USER_NOT_LOGIN(2003, "用户未登录"),
+
     ;
 
     private Integer code;
