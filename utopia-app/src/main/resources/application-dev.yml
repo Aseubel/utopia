@@ -12,6 +12,13 @@ wechat:
     appid: ${UTOPIA_APPID}
     secret: ${UTOPIA_SECRET}
 
+# jwt配置
+jwt:
+  config:
+    secret-key: ${JWT_SECRET_KEY}
+    ttl: 2629800000    # 过期时间，一个月
+    token-name: ${JWT_TOKEN_NAME}
+
 # 应用配置
 app:
   config:
