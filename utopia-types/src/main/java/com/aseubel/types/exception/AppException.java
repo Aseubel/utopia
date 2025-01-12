@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 @Data
 public class AppException extends RuntimeException {
 
-    private static final long serialVersionUID = 5317680961212299217L;
+    private static final long serialVersionUID = 611611611611611611L;
 
     /** 异常码 */
     private String code;
@@ -33,14 +33,6 @@ public class AppException extends RuntimeException {
         this.code = code;
         this.info = message;
         super.initCause(cause);
-    }
-
-    @Override
-    public String toString() {
-        return "com.achobeta.x.api.types.exception.XApiException{" +
-                "code='" + code + '\'' +
-                ", info='" + info + '\'' +
-                '}';
     }
 
 }
