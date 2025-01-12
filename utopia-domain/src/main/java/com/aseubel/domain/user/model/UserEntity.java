@@ -38,4 +38,7 @@ public class UserEntity {
     @FieldDesc(name = "个性签名")
     private String signature;
 
+    @FieldDesc(name = "token")
+    private String token;
+
 }
