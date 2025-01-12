@@ -3,9 +3,22 @@
 <mapper namespace="com.aseubel.infrastructure.dao.UserMapper">
 
     <insert id="addUser">
-        insert into `user` (user_id, user_name, real_name, phone, gender, avatar, signature)
-        values (#{userId}, #{userName}, #{realName}, #{phone}, #{gender}, #{avatar}, #{signature})
+        insert into `user` (user_id)
+        values (#{userId})
     </insert>
+
+    <update id="updateUser">
+        update `user`
+        <set>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="realName != null">real_name = #{realName},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="avatar != null">avatar = #{avatar},</if>
+            <if test="signature != null">signature = #{signature},</if>
+        </set>
+        where user_id = #{userId} and is_delete = 0
+    </update>
 
     <select id="getUserByUserId" resultType="com.aseubel.infrastructure.dao.po.User">
         select id, user_id, user_name, real_name, phone, gender, avatar, signature, create_time, update_time
