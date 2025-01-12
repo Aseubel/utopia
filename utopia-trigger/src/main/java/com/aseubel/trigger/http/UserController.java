@@ -9,10 +9,7 @@ import com.aseubel.types.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,13 +19,14 @@ import javax.validation.Valid;
 @RestController()
 @Validated
 @CrossOrigin("${app.config.cross-origin}")
-@RequestMapping("/api/${app.config.api-version}/user/")
+@RequestMapping("/api/${app.config.api-version}/user")
 @RequiredArgsConstructor
 public class UserController implements UserInterface {
 
     private final IUserService userService;
 
     @Override
+    @PostMapping("/login")
     public Response<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO, HttpServletRequest request, HttpServletResponse response) {
         UserEntity user = userService.login(loginRequestDTO.getCode());
 
