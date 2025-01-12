@@ -35,6 +35,11 @@ public enum GlobalServiceStatusCode {
     USER_TOKEN_ERROR(2002, "token错误"),
     USER_NOT_LOGIN(2003, "用户未登录"),
 
+    /* 微信模块错误 */
+    WX_USER_CODE_INVALID(40029, "js_code无效"),
+    WX_API_CALL_FREQUENTLY(45011, "API调用太频繁，请稍候再试"),
+    WX_CODE_BLOCKED(40226, "高风险等级用户"),
+
     ;
 
     private Integer code;
