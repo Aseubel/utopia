@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * @author Aseubel
  * @description 用户数据访问层实现类
@@ -25,7 +27,9 @@ public class UserRepository implements IUserRepository {
 
     @Override
     public UserEntity queryUserInfo(String userId) {
-        return userConvertor.convert(userMapper.getUserByUserId(userId));
+        return Optional.ofNullable(userMapper.getUserByUserId(userId))
+                .map(userConvertor::convert)
+                .orElse(null);
     }
 
     @Override
