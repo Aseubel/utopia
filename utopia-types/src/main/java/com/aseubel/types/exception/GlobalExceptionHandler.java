@@ -82,7 +82,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AppException.class)
     @ResponseStatus(HttpStatus.OK)
     public <T> Response<T> handleAPPException(AppException e) {
-        log.error("系统异常", e);
+        log.error("业务服务异常, code:{}, message:{}", e.getCode(), e.getInfo());
         return Response.APP_EXCEPTION(e);
     }
 
@@ -92,7 +92,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(WxException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public <T> Response<T> handleAPPException(WxException e) {
-        log.error("微信服务异常", e);
+        log.error("微信服务异常, code:{}, message:{}", e.getCode(), e.getInfo());
         return Response.WX_EXCEPTION(e);
     }
 
