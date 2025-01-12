@@ -43,9 +43,12 @@ public class UserServiceImpl implements IUserService {
     @Override
     public UserEntity login(String code) {
         log.info("登录服务开始执行，code={}", code);
+
+        log.info("获取微信用户的openid");
         String openid = wxService.getOpenid(appid, secret, code);
 
         //当前用户为新用户,完成自动注册
+        log.info("查询用户信息, openid={}", openid);
         UserEntity user = userRepository.queryUserInfo(openid);
         if (user == null) {
             user = UserEntity.builder().openid(openid).build();
