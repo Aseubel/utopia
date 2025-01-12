@@ -1,9 +1,11 @@
 package com.aseubel.infrastructure.util;
 
+import com.aseubel.domain.user.adapter.web.JwtAdapter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -14,7 +16,7 @@ import java.util.Map;
  * Jwt工具类
  */
 @Component
-public class JwtUtil {
+public class JwtUtil implements JwtAdapter {
 
     /**
      * 生成jwt
@@ -25,7 +27,8 @@ public class JwtUtil {
      * @param claims    设置的信息
      * @return
      */
-    public static String createJWT(String secretKey, long ttlMillis, Map<String, Object> claims) {
+    @Override
+    public String createJWT(String secretKey, Long ttlMillis, Map<String, Object> claims) {
         // 指定签名的时候使用的签名算法，也就是header那部分
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 

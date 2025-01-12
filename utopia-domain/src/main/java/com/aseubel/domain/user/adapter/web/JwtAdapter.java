@@ -7,8 +7,15 @@ import java.util.Map;
  * @description JwtUtil
  * @date 2025-01-12 19:23
  */
-public interface JwtUtil {
+public interface JwtAdapter {
 
+    /**
+     * Create JWT token
+     * @param secretKey
+     * @param ttl
+     * @param claims
+     * @return
+     */
     String createJWT(String secretKey, Long ttl, Map<String, Object> claims);
 
 }
