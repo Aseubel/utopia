@@ -28,16 +28,16 @@ public class UserServiceImpl implements IUserService {
 
     private final JwtAdapter jwtAdapter;
 
-    @Value("${jwt.config.secret-key}")
+    @Value("${jwt.config.secret-key:aseubel-secret-key}")
     private String secretKey;
 
     @Value("${jwt.config.ttl}")
     private Long ttl;
 
-    @Value("${wechat.config.appid}")
+    @Value("${wechat.config.appid:aseubel-appid}")
     private String appid;
 
-    @Value("${wechat.config.secret}")
+    @Value("${wechat.config.secret:aseubel-secret}")
     private String secret;
 
     @Override
