@@ -14,7 +14,7 @@ import javax.validation.Valid;
  * @description 用户服务接口
  * @date 2025-01-11 21:03
  */
-public interface IUserService {
+public interface UserInterface {
 
     /**
      * 用户登录
