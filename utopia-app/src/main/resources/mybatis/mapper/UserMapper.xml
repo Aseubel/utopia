@@ -17,13 +17,13 @@
             <if test="avatar != null">avatar = #{avatar},</if>
             <if test="signature != null">signature = #{signature},</if>
         </set>
-        where user_id = #{userId} and is_delete = 0
+        where user_id = #{userId} and is_deleted = 0
     </update>
 
     <select id="getUserByUserId" resultType="com.aseubel.infrastructure.dao.po.User">
         select id, user_id, user_name, real_name, phone, gender, avatar, signature, create_time, update_time
         from `user`
-        where user_id = #{userId} and is_delete = 0
+        where user_id = #{userId} and is_deleted = 0
     </select>
 
 </mapper>
