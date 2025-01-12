@@ -77,7 +77,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 自定义验证异常 BindException
+     * 捕获全局业务异常 AppException
      */
     @ExceptionHandler(AppException.class)
     @ResponseStatus(HttpStatus.OK)
@@ -86,6 +86,14 @@ public class GlobalExceptionHandler {
         return Response.APP_EXCEPTION(e);
     }
 
-
+    /**
+     * 捕获全局微信服务异常 AppException
+     */
+    @ExceptionHandler(WxException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public <T> Response<T> handleAPPException(WxException e) {
+        log.error("微信服务异常", e);
+        return Response.WX_EXCEPTION(e);
+    }
 
 }

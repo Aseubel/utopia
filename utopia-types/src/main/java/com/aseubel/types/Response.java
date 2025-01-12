@@ -2,6 +2,7 @@ package com.aseubel.types;
 
 import com.aseubel.types.enums.GlobalServiceStatusCode;
 import com.aseubel.types.exception.AppException;
+import com.aseubel.types.exception.WxException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -120,6 +121,13 @@ public final class Response<T> implements Serializable {
      * @return code对应的错误信息
      */
     public static <T> Response<T> APP_EXCEPTION(AppException e) {
+        return Response.<T>builder()
+                .code(Integer.valueOf(e.getCode()))
+                .info(e.getInfo())
+                .build();
+    }
+
+    public static <T> Response<T> WX_EXCEPTION(WxException e) {
         return Response.<T>builder()
                 .code(Integer.valueOf(e.getCode()))
                 .info(e.getInfo())
