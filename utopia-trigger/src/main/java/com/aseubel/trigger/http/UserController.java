@@ -19,7 +19,7 @@ import javax.validation.Valid;
 @RestController()
 @Validated
 @CrossOrigin("${app.config.cross-origin}")
-@RequestMapping("/api/${app.config.api-version}/user")
+@RequestMapping("/api/${app.config.api-version}/user/")
 @RequiredArgsConstructor
 public class UserController implements UserInterface {
 
