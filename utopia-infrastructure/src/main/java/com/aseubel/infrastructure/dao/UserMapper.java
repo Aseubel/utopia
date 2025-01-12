@@ -13,4 +13,9 @@ public interface UserMapper {
      */
     User getUserByUserId(String userId);
 
+    /**
+     * 添加用户
+     * @param user 用户信息
+     */
+    void addUser(User user);
 }
