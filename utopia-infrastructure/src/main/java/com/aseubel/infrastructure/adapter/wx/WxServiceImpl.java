@@ -39,7 +39,7 @@ public class WxServiceImpl implements WxService {
         JSONObject jsonObject = JSON.parseObject(result);
         String openid = jsonObject.getString("openid");
         //判断openid是否存在
-        if (!StringUtils.isEmpty(openid)) {
+        if (StringUtils.isEmpty(openid)) {
             throw new WxException(jsonObject.getString("errcode"), jsonObject.getString("errmsg"));
         }
 
