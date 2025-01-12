@@ -14,7 +14,7 @@ public class UserConvertor {
 
     public User convert(UserEntity userEntity) {
         return User.builder()
-                .userId(userEntity.getUserId())
+                .userId(userEntity.getOpenid())
                 .userName(userEntity.getUserName())
                 .phone(userEntity.getPhone())
                 .gender(userEntity.getGender())
@@ -26,7 +26,7 @@ public class UserConvertor {
 
     public UserEntity convert(User user) {
         return UserEntity.builder()
-                .userId(user.getUserId())
+                .openid(user.getUserId())
                 .userName(user.getUserName())
                 .phone(user.getPhone())
                 .gender(user.getGender())

@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class UserEntity {
 
     @FieldDesc(name = "用户id")
-    private String userId;
+    private String openid;
 
     @FieldDesc(name = "用户名")
     private String userName;
