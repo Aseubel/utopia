@@ -21,11 +21,9 @@ public interface UserInterface {
     /**
      * 用户登录
      * @param loginRequestDTO 登录请求DTO，仅包含登录凭证code
-     * @param request 请求对象
-     * @param response 响应对象
      * @return 登录响应DTO
      */
-    Response<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO, HttpServletRequest request, HttpServletResponse response);
+    Response<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO);
 
     /**
      * 查询用户信息
