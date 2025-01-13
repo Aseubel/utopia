@@ -65,4 +65,12 @@ public class UserServiceImpl implements IUserService {
         return user;
     }
 
+    @Override
+    public UserEntity queryUserInfo(String openid) {
+        log.info("查询个人信息服务开始执行，openid={}", openid);
+        UserEntity user = userRepository.queryUserInfo(openid);
+        log.info("查询个人信息服务结束执行，user={}", user);
+        return user;
+    }
+
 }
