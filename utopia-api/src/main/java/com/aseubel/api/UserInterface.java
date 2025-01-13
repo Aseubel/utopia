@@ -2,6 +2,8 @@ package com.aseubel.api;
 
 import com.aseubel.api.dto.user.LoginRequestDTO;
 import com.aseubel.api.dto.user.LoginResponseDTO;
+import com.aseubel.api.dto.user.QueryUserInfoRequestDTO;
+import com.aseubel.api.dto.user.QueryUserInfoResponseDTO;
 import com.aseubel.types.Response;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -24,5 +26,12 @@ public interface UserInterface {
      * @return 登录响应DTO
      */
     Response<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO, HttpServletRequest request, HttpServletResponse response);
+
+    /**
+     * 查询用户信息
+     * @param queryUserInfoRequestDTO 查询用户信息请求DTO，仅包含用户openid
+     * @return 查询用户信息响应DTO
+     */
+    Response<QueryUserInfoResponseDTO> queryUserInfo(@Valid @RequestBody QueryUserInfoRequestDTO queryUserInfoRequestDTO);
 
 }
