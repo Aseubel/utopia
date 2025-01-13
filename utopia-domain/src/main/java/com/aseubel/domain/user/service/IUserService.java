@@ -16,4 +16,11 @@ public interface IUserService {
      */
     UserEntity login(String code);
 
+    /**
+     * 查询用户信息
+     * @param openid 用户id
+     * @return 用户实体
+     */
+    UserEntity queryUserInfo(String openid);
+
 }
