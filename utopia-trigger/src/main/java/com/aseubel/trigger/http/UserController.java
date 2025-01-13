@@ -30,12 +30,12 @@ public class UserController implements UserInterface {
 
     @Override
     @PostMapping("/login")
-    public Response<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO, HttpServletRequest request, HttpServletResponse response) {
+    public Response<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
         UserEntity user = userService.login(loginRequestDTO.getCode());
 
         return Response.SYSTEM_SUCCESS(
                 LoginResponseDTO.builder()
-                        .userid(user.getOpenid())
+                        .userId(user.getOpenid())
                         .userName(user.getUserName())
                         .realName(user.getRealName())
                         .phone(user.getPhone())
@@ -53,7 +53,7 @@ public class UserController implements UserInterface {
 
         return Response.SYSTEM_SUCCESS(
                 QueryUserInfoResponseDTO.builder()
-                        .userid(user.getOpenid())
+                        .userId(user.getOpenid())
                         .userName(user.getUserName())
                         .realName(user.getRealName())
                         .phone(user.getPhone())

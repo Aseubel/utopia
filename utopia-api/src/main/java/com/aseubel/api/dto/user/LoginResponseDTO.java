@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class LoginResponseDTO implements Serializable {
 
     @FieldDesc(name = "用户id")
-    private String userid;
+    private String userId;
 
     @FieldDesc(name = "用户名")
     private String userName;
