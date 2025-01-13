@@ -30,6 +30,6 @@ public interface UserInterface {
      * @param queryUserInfoRequestDTO 查询用户信息请求DTO，仅包含用户openid
      * @return 查询用户信息响应DTO
      */
-    Response<QueryUserInfoResponseDTO> queryUserInfo(@Valid @RequestBody QueryUserInfoRequestDTO queryUserInfoRequestDTO);
+    Response<QueryUserInfoResponseDTO> queryUserInfo(@Valid QueryUserInfoRequestDTO queryUserInfoRequestDTO);
 
 }
