@@ -32,7 +32,13 @@ public class UserController implements UserInterface {
 
         return Response.SYSTEM_SUCCESS(
                 LoginResponseDTO.builder()
-                        .userId(user.getOpenid())
+                        .userid(user.getOpenid())
+                        .userName(user.getUserName())
+                        .realName(user.getRealName())
+                        .phone(user.getPhone())
+                        .gender(user.getGender())
+                        .avatar(user.getAvatar())
+                        .signature(user.getSignature())
                         .token(user.getToken())
                         .build());
     }
