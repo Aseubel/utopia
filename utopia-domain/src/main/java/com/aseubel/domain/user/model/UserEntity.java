@@ -1,10 +1,13 @@
 package com.aseubel.domain.user.model;
 
 import com.aseubel.types.annotation.FieldDesc;
+import com.aseubel.types.util.JwtUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Map;
 
 /**
  * @author Aseubel
@@ -38,7 +41,18 @@ public class UserEntity {
     @FieldDesc(name = "个性签名")
     private String signature;
 
-    @FieldDesc(name = "token")
-    private String token;
+    @FieldDesc(name = "refresh_token")
+    private String refreshToken;
+
+    @FieldDesc(name = "access_token")
+    private String accessToken;
+
+    /**
+     * 生成token
+     */
+    public void generateToken(String secretKey, Long refreshTokenTtl, Long accessTokenTtl, Map<String, Object> claims) {
+        this.refreshToken = JwtUtil.createJWT(secretKey, refreshTokenTtl, claims);
+        this.accessToken = JwtUtil.createJWT(secretKey, accessTokenTtl, claims);
+    }
 
 }

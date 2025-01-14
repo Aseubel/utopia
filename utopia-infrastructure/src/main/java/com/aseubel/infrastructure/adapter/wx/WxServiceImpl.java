@@ -8,7 +8,6 @@ import com.aseubel.types.util.HttpClientUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,9 +21,6 @@ import static com.aseubel.types.common.Constant.WX_LOGIN;
 @Component
 public class WxServiceImpl implements WxService {
 
-    @Resource
-    private HttpClientUtil httpClient;
-
     @Override
     public String getOpenid(String appid, String secret, String code) {
         Map<String, String> paramMap = new HashMap<>();
@@ -32,7 +28,7 @@ public class WxServiceImpl implements WxService {
         paramMap.put("secret", secret);
         paramMap.put("js_code", code);
         paramMap.put("grant_type", "authorization_code");
-        String result = httpClient.doGet(WX_LOGIN, paramMap);
+        String result = HttpClientUtil.doGet(WX_LOGIN, paramMap);
 
         //获取请求结果
         JSONObject jsonObject = JSON.parseObject(result);

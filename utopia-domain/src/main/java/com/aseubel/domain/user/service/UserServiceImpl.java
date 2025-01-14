@@ -26,13 +26,14 @@ public class UserServiceImpl implements IUserService {
 
     private final WxService wxService;
 
-    private final JwtUtil jwtUtil;
-
     @Value("${jwt.config.secret-key:aseubel-secret-key}")
     private String secretKey;
 
-    @Value("${jwt.config.ttl}")
-    private Long ttl;
+    @Value("${jwt.config.refresh_ttl}")
+    private Long refreshTtl;
+
+    @Value("${jwt.config.access_ttl}")
+    private Long accessTtl;
 
     @Value("${wechat.config.appid:aseubel-appid}")
     private String appid;
@@ -58,8 +59,7 @@ public class UserServiceImpl implements IUserService {
         //生成JWT令牌
         Map<String, Object> claims=new HashMap<>();
         claims.put("openid",user.getOpenid());
-        String jwt = jwtUtil.createJWT(secretKey, ttl, claims);
-        user.setToken(jwt);
+        user.generateToken(secretKey, refreshTtl, accessTtl, claims);
 
         log.info("登录服务结束执行，user={}", openid);
         return user;

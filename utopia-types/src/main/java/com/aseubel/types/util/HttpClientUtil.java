@@ -28,7 +28,7 @@ public class HttpClientUtil {
      * @param paramMap 请求参数
      * @return 返回响应结果
      */
-    public String doGet(String url,Map<String,String> paramMap){
+    public static String doGet(String url,Map<String,String> paramMap){
         // 创建Httpclient对象
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
