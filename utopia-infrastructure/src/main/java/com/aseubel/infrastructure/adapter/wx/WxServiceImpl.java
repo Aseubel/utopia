@@ -2,11 +2,10 @@ package com.aseubel.infrastructure.adapter.wx;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.aseubel.domain.user.adapter.web.HttpClient;
 import com.aseubel.domain.user.adapter.wx.WxService;
 import com.aseubel.types.exception.WxException;
+import com.aseubel.types.util.HttpClientUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -24,7 +23,7 @@ import static com.aseubel.types.common.Constant.WX_LOGIN;
 public class WxServiceImpl implements WxService {
 
     @Resource
-    private HttpClient httpClient;
+    private HttpClientUtil httpClient;
 
     @Override
     public String getOpenid(String appid, String secret, String code) {

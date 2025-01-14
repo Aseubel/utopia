@@ -1,6 +1,6 @@
 package com.aseubel.aop;
 
-import com.aseubel.infrastructure.util.JwtUtil;
+import com.aseubel.types.util.JwtUtil;
 import com.aseubel.properties.JwtProperties;
 import com.aseubel.types.Response;
 import com.aseubel.types.enums.GlobalServiceStatusCode;

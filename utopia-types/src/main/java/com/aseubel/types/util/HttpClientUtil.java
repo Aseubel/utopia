@@ -1,6 +1,5 @@
-package com.aseubel.infrastructure.util;
+package com.aseubel.types.util;
 
-import com.aseubel.domain.user.adapter.web.HttpClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -21,7 +20,7 @@ import java.util.Map;
  */
 @Component
 @Slf4j
-public class HttpClientUtil implements HttpClient {
+public class HttpClientUtil {
 
     /**
      * 发送GET方式请求
@@ -29,7 +28,6 @@ public class HttpClientUtil implements HttpClient {
      * @param paramMap 请求参数
      * @return 返回响应结果
      */
-    @Override
     public String doGet(String url,Map<String,String> paramMap){
         // 创建Httpclient对象
         CloseableHttpClient httpClient = HttpClients.createDefault();

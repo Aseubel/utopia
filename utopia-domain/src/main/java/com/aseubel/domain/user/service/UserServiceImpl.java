@@ -1,9 +1,9 @@
 package com.aseubel.domain.user.service;
 
 import com.aseubel.domain.user.adapter.repo.IUserRepository;
-import com.aseubel.domain.user.adapter.web.JwtAdapter;
 import com.aseubel.domain.user.adapter.wx.WxService;
 import com.aseubel.domain.user.model.UserEntity;
+import com.aseubel.types.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +26,7 @@ public class UserServiceImpl implements IUserService {
 
     private final WxService wxService;
 
-    private final JwtAdapter jwtAdapter;
+    private final JwtUtil jwtUtil;
 
     @Value("${jwt.config.secret-key:aseubel-secret-key}")
     private String secretKey;
@@ -58,7 +58,7 @@ public class UserServiceImpl implements IUserService {
         //生成JWT令牌
         Map<String, Object> claims=new HashMap<>();
         claims.put("openid",user.getOpenid());
-        String jwt = jwtAdapter.createJWT(secretKey, ttl, claims);
+        String jwt = jwtUtil.createJWT(secretKey, ttl, claims);
         user.setToken(jwt);
 
         log.info("登录服务结束执行，user={}", openid);
