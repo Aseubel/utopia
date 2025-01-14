@@ -1,5 +1,5 @@
 server:
-  port: 8091
+  port: 1112
   tomcat:
     threads:
       max: 200        # 设定处理客户请求的线程的最大数目，决定了服务器可以同时响应客户请求的数,默认200
@@ -7,15 +7,16 @@ server:
     accept-count: 10  # 等待队列长度
 
 # 微信小程序配置
-#wechat:
-#  config:
-#    appid: ${UTOPIA_APPID}
-#    secret: ${UTOPIA_SECRET}
+wechat:
+  config:
+    appid: ${UTOPIA_APPID}
+    secret: ${UTOPIA_SECRET}
 
 # jwt配置
 jwt:
   config:
-    ttl: 2629800000    # 过期时间，一个月
+    refresh_ttl: 2629800000    # refresh token 过期时间，一个月，默认一星期
+    access_ttl: 7200000        # access token 过期时间，默认两小时
 
 # 应用配置
 app:
@@ -45,9 +46,9 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       pool-name: Retail_HikariCP
-      minimum-idle: 15 #最小空闲连接数量
+      minimum-idle: 20 #最小空闲连接数量
       idle-timeout: 180000 #空闲连接存活最大时间，默认600000（10分钟）
-      maximum-pool-size: 25 #连接池最大连接数，默认是10
+      maximum-pool-size: 100 #连接池最大连接数，默认是10
       auto-commit: true  #此属性控制从池返回的连接的默认自动提交行为,默认值：true
       max-lifetime: 1800000 #此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
       connection-timeout: 30000 #数据库连接超时时间,默认30秒，即30000

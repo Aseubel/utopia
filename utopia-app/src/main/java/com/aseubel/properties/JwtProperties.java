@@ -11,7 +11,9 @@ public class JwtProperties {
 
     private String secretKey = "aseubel-secret-key";
 
-    private Long ttl = 604800017L;    // 过期时间，默认一星期
+    private Long refresh_ttl = 604800017L;    // refresh token 过期时间，默认一星期
+
+    private Long access_ttl = 7200000L;    // access token 过期时间，默认两小时
 
     private String tokenName = "Authorization";
 }
