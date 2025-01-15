@@ -4,7 +4,9 @@ import com.aseubel.domain.user.adapter.repo.IUserRepository;
 import com.aseubel.domain.user.model.UserEntity;
 import com.aseubel.infrastructure.convertor.UserConvertor;
 import com.aseubel.infrastructure.dao.UserMapper;
+import com.aseubel.infrastructure.redis.RedissonService;
 import com.aseubel.types.util.JwtUtil;
+import com.aseubel.types.util.RedisKeyBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -13,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.aseubel.types.common.Constant.USER_ID_KEY;
+import static com.aseubel.types.common.Constant.*;
 
 /**
  * @author Aseubel
@@ -29,6 +31,9 @@ public class UserRepository implements IUserRepository {
 
     @Autowired
     private UserConvertor userConvertor;
+
+    @Autowired
+    private RedissonService redissonService;
 
     @Override
     public UserEntity queryUserInfo(String userId) {
@@ -52,6 +57,13 @@ public class UserRepository implements IUserRepository {
         Map<String, Object> claims=new HashMap<>();
         claims.put(USER_ID_KEY, userId);
         return JwtUtil.createJWT(secretKey, ttl, claims);
+    }
+
+    @Override
+    public void saveUserToken(UserEntity user) {
+        String tokenKey = RedisKeyBuilder.UserTokenKey(user.getOpenid());
+        redissonService.addToMap(tokenKey, ACCESS_TOKEN, user.getAccessToken());
+        redissonService.addToMap(tokenKey, REFRESH_TOKEN, user.getRefreshToken());
     }
 
 }

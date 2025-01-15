@@ -39,4 +39,10 @@ public interface IUserRepository {
      * @return token
      */
     String generateUserToken(String userId, String secretKey, Long ttl);
+
+    /**
+     * 记录用户token
+     * @param user
+     */
+    void saveUserToken(UserEntity user);
 }
