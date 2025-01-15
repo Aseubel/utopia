@@ -77,4 +77,17 @@ public class UserServiceImpl implements IUserService {
         return user;
     }
 
+    @Override
+    public UserEntity refreshToken(UserEntity user) {
+        log.info("刷新token服务开始执行，user={}", user);
+        user.generateToken(secretKey, refreshTtl, accessTtl, new HashMap<>());
+
+        // 记录token
+        userRepository.saveUserToken(user);
+
+        log.info("刷新token服务结束执行，user={}", user);
+        return user;
+    }
+
+
 }

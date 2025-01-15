@@ -23,4 +23,11 @@ public interface IUserService {
      */
     UserEntity queryUserInfo(String openid);
 
+    /**
+     * 刷新token接口
+     * @param user 用户实体
+     * @return 用户实体
+     */
+    UserEntity refreshToken(UserEntity user);
+
 }
