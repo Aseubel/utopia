@@ -1,9 +1,6 @@
 package com.aseubel.api;
 
-import com.aseubel.api.dto.user.LoginRequestDTO;
-import com.aseubel.api.dto.user.LoginResponseDTO;
-import com.aseubel.api.dto.user.QueryUserInfoRequestDTO;
-import com.aseubel.api.dto.user.QueryUserInfoResponseDTO;
+import com.aseubel.api.dto.user.*;
 import com.aseubel.types.Response;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -31,5 +28,12 @@ public interface UserInterface {
      * @return 查询用户信息响应DTO
      */
     Response<QueryUserInfoResponseDTO> queryUserInfo(@Valid QueryUserInfoRequestDTO queryUserInfoRequestDTO);
+
+    /**
+     * 刷新token
+     * @param refreshTokenRequestDTO 刷新token请求DTO，包含refreshToken和userId
+     * @return 新的refresh_token和access_token
+     */
+    Response<RefreshTokenResponseDTO> refreshToken(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO);
 
 }

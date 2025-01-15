@@ -1,10 +1,7 @@
 package com.aseubel.trigger.http;
 
 import com.aseubel.api.UserInterface;
-import com.aseubel.api.dto.user.LoginRequestDTO;
-import com.aseubel.api.dto.user.LoginResponseDTO;
-import com.aseubel.api.dto.user.QueryUserInfoRequestDTO;
-import com.aseubel.api.dto.user.QueryUserInfoResponseDTO;
+import com.aseubel.api.dto.user.*;
 import com.aseubel.domain.user.model.UserEntity;
 import com.aseubel.domain.user.service.IUserService;
 import com.aseubel.types.Response;
@@ -60,4 +57,21 @@ public class UserController implements UserInterface {
                         .signature(user.getSignature())
                         .build());
     }
+
+    @Override
+    @PutMapping("/refresh")
+    public Response<RefreshTokenResponseDTO> refreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO) {
+        UserEntity user = userService.refreshToken(
+                UserEntity.builder()
+                        .openid(refreshTokenRequestDTO.getUserId())
+                        .refreshToken(refreshTokenRequestDTO.getRefreshToken())
+                        .build());
+
+        return Response.SYSTEM_SUCCESS(
+                RefreshTokenResponseDTO.builder()
+                        .accessToken(user.getAccessToken())
+                        .refreshToken(user.getRefreshToken())
+                        .build());
+    }
+
 }
