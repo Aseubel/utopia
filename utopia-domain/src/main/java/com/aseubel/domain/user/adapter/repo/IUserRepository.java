@@ -3,6 +3,8 @@ package com.aseubel.domain.user.adapter.repo;
 import com.aseubel.domain.user.model.UserEntity;
 import org.springframework.stereotype.Repository;
 
+import java.util.Map;
+
 /**
  * @author Aseubel
  * @description 用户领域仓储层接口
@@ -28,4 +30,13 @@ public interface IUserRepository {
      * @param userEntity
      */
     void addUser(UserEntity userEntity);
+
+    /**
+     * 生成用户token
+     * @param userId 用户id
+     * @param secretKey 密钥
+     * @param ttl token有效期
+     * @return token
+     */
+    String generateUserToken(String userId, String secretKey, Long ttl);
 }
