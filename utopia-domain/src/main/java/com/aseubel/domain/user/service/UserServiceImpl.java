@@ -3,7 +3,6 @@ package com.aseubel.domain.user.service;
 import com.aseubel.domain.user.adapter.repo.IUserRepository;
 import com.aseubel.domain.user.adapter.wx.WxService;
 import com.aseubel.domain.user.model.UserEntity;
-import com.aseubel.types.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,6 +61,9 @@ public class UserServiceImpl implements IUserService {
         Map<String, Object> claims=new HashMap<>();
         claims.put(USER_ID_KEY,user.getOpenid());
         user.generateToken(secretKey, refreshTtl, accessTtl, claims);
+
+        // 记录token
+        userRepository.saveUserToken(user);
 
         log.info("登录服务结束执行，user={}", openid);
         return user;
