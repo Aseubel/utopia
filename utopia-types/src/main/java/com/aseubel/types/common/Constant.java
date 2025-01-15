@@ -7,4 +7,6 @@ public class Constant {
 
     public static final String WX_LOGIN = "https://api.weixin.qq.com/sns/jscode2session";
 
+    public static final String USER_ID_KEY = "openid";
+
 }

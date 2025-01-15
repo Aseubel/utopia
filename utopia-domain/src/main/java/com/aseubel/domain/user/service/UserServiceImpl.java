@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.aseubel.types.common.Constant.USER_ID_KEY;
+
 /**
  * @author Aseubel
  * @description 用户领域服务实现类
@@ -58,7 +60,7 @@ public class UserServiceImpl implements IUserService {
 
         //生成JWT令牌
         Map<String, Object> claims=new HashMap<>();
-        claims.put("openid",user.getOpenid());
+        claims.put(USER_ID_KEY,user.getOpenid());
         user.generateToken(secretKey, refreshTtl, accessTtl, claims);
 
         log.info("登录服务结束执行，user={}", openid);
