@@ -1,6 +1,7 @@
 package com.aseubel.types;
 
 import com.aseubel.types.enums.GlobalServiceStatusCode;
+import com.aseubel.types.exception.AliException;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.exception.WxException;
 import lombok.AllArgsConstructor;
@@ -128,6 +129,13 @@ public final class Response<T> implements Serializable {
     }
 
     public static <T> Response<T> WX_EXCEPTION(WxException e) {
+        return Response.<T>builder()
+                .code(Integer.valueOf(e.getCode()))
+                .info(e.getInfo())
+                .build();
+    }
+
+    public static <T> Response<T> Ali_EXCEPTION(AliException e) {
         return Response.<T>builder()
                 .code(Integer.valueOf(e.getCode()))
                 .info(e.getInfo())

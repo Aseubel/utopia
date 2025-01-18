@@ -87,7 +87,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 捕获全局微信服务异常 AppException
+     * 捕获全局微信服务异常 WxException
      */
     @ExceptionHandler(WxException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -96,4 +96,13 @@ public class GlobalExceptionHandler {
         return Response.WX_EXCEPTION(e);
     }
 
+    /**
+     * 捕获阿里云OSS服务异常 AliException
+     */
+    @ExceptionHandler(AliException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public <T> Response<T> handleAPPException(AliException e) {
+        log.error("微信服务异常, code:{}, message:{}", e.getCode(), e.getInfo());
+        return Response.Ali_EXCEPTION(e);
+    }
 }
