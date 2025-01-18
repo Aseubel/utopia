@@ -23,6 +23,13 @@ public interface UserInterface {
     Response<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO);
 
     /**
+     * 用户登出
+     * @param logoutRequestDTO
+     * @return
+     */
+    Response logout(@Valid @RequestBody LogoutRequestDTO logoutRequestDTO);
+
+    /**
      * 刷新token
      * @param refreshTokenRequestDTO 刷新token请求DTO，包含refreshToken和userId
      * @return 新的refresh_token和access_token

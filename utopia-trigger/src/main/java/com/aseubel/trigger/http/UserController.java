@@ -42,6 +42,14 @@ public class UserController implements UserInterface {
     }
 
     @Override
+    @PostMapping("/login")
+    public Response logout(@Valid @RequestBody LogoutRequestDTO logoutRequestDTO) {
+        userService.logout(logoutRequestDTO.getUserId());
+
+        return Response.SYSTEM_SUCCESS();
+    }
+
+    @Override
     @PutMapping("/refresh")
     public Response<RefreshTokenResponseDTO> refreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO) {
         UserEntity user = userService.refreshToken(
