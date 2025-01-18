@@ -42,7 +42,7 @@ public class UserController implements UserInterface {
     }
 
     @Override
-    @PostMapping("/login")
+    @PostMapping("/logout")
     public Response logout(@Valid @RequestBody LogoutRequestDTO logoutRequestDTO) {
         userService.logout(logoutRequestDTO.getUserId());
 
@@ -83,6 +83,7 @@ public class UserController implements UserInterface {
     }
 
     @Override
+    @PutMapping("/info")
     public Response modifyUserInfo(ModifyUserInfoRequestDTO modifyUserInfoRequestDTO) {
         userService.updateUserInfo(UserEntity.builder()
                 .openid(modifyUserInfoRequestDTO.getUserId())
