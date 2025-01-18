@@ -1,0 +1,25 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+actor User as user
+participant app as app
+participant server as server
+participant 微信服务 as wechat
+database redis as redis
+database mysql as mysql
+
+user -> app : login
+app -> server : /login?code POST
+server -> wechat : 请求登录接口
+wechat --> server : openid
+server -> mysql : 查询用户信息
+mysql --> server : 用户信息
+alt 用户不存在
+    server -> mysql : 添加用户
+end
+server -> server : 生成token
+server -> redis : 记录token
+server --> app : 用户信息及token
+app --> user : 登录成功
+
+@enduml

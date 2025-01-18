@@ -1,0 +1,34 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+
+actor User as user
+participant app as app
+participant server as server
+participant 微信服务 as wechat
+database redis as redis
+database mysql as mysql
+
+user -> app : 访问登录页面
+app -> server : 发送登录请求
+server --> app : 用户信息及token
+app --> user : 登录成功
+user -> app : 操作
+app -> server : 携带access_token
+server -> redis : 验证access_token
+server -> server : redis宕机则解码校验
+    alt access_token无效
+    server --> app : http 401
+    app -> server : PUT /refresh?refresh_token
+    server -> redis : 验证refresh_token
+    server -> server : redis宕机则解码校验
+        alt refresh_token无效
+        server --> app : http 401
+        app -> server : POST /login?code 重新登陆
+        end
+        server --> app : token
+        app -> server : 重发请求，携带access_token
+    end
+server --> app : 返回数据
+app --> user : 显示数据
+@enduml
