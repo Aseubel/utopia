@@ -42,6 +42,22 @@ public class UserController implements UserInterface {
     }
 
     @Override
+    @PutMapping("/refresh")
+    public Response<RefreshTokenResponseDTO> refreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO) {
+        UserEntity user = userService.refreshToken(
+                UserEntity.builder()
+                        .openid(refreshTokenRequestDTO.getUserId())
+                        .refreshToken(refreshTokenRequestDTO.getRefreshToken())
+                        .build());
+
+        return Response.SYSTEM_SUCCESS(
+                RefreshTokenResponseDTO.builder()
+                        .accessToken(user.getAccessToken())
+                        .refreshToken(user.getRefreshToken())
+                        .build());
+    }
+
+    @Override
     @GetMapping("/info")
     public Response<QueryUserInfoResponseDTO> queryUserInfo(@Valid QueryUserInfoRequestDTO queryUserInfoRequestDTO) {
         UserEntity user = userService.queryUserInfo(queryUserInfoRequestDTO.getUserId());
@@ -58,20 +74,5 @@ public class UserController implements UserInterface {
                         .build());
     }
 
-    @Override
-    @PutMapping("/refresh")
-    public Response<RefreshTokenResponseDTO> refreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO) {
-        UserEntity user = userService.refreshToken(
-                UserEntity.builder()
-                        .openid(refreshTokenRequestDTO.getUserId())
-                        .refreshToken(refreshTokenRequestDTO.getRefreshToken())
-                        .build());
-
-        return Response.SYSTEM_SUCCESS(
-                RefreshTokenResponseDTO.builder()
-                        .accessToken(user.getAccessToken())
-                        .refreshToken(user.getRefreshToken())
-                        .build());
-    }
 
 }

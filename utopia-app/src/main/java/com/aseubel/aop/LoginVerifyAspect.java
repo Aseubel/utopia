@@ -106,6 +106,7 @@ public class LoginVerifyAspect {
                 userId, jwtProperties.getSecretKey(), jwtProperties.getAccess_ttl());
         // 更新redis中token
         redisService.addToMap(RedisKeyBuilder.UserTokenKey(userId), ACCESS_TOKEN, newToken);
+        // 设置token到响应头
         Optional.ofNullable(response)
                 .ifPresent(r -> r.setHeader(jwtProperties.getTokenName(), newToken));
         log.info("用户进行登录校验通过，id:{}，token:{}", userId, newToken);
