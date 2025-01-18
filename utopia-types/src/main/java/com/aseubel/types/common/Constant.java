@@ -13,4 +13,10 @@ public class Constant {
 
     public static final String REFRESH_TOKEN = "refresh_token";
 
+    public static final String endpoint = "oss-cn-guangzhou-internal.aliyuncs.com";
+
+    public static final String bucketName = "yangaseubel";  // 填写Bucket名称，例如examplebucket。
+
+    public static final String region = "cn-guangzhou"; // 填写Bucket所在地域。以华东1（杭州）为例，Region填写为cn-hangzhou。
+
 }

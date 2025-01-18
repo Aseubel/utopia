@@ -7,6 +7,7 @@ import com.aliyun.oss.common.auth.EnvironmentVariableCredentialsProvider;
 import com.aliyun.oss.common.comm.SignVersion;
 import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.PutObjectResult;
+import com.aseubel.types.common.Constant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static com.aseubel.types.common.Constant.*;
+
 /**
  * @author aseubel
  * @description 阿里云OSS工具类
@@ -26,12 +29,6 @@ import java.io.InputStream;
 @Slf4j
 @Component
 public class AliOSSUtil {
-
-    String endpoint = "oss-cn-guangzhou-internal.aliyuncs.com";
-    // 填写Bucket名称，例如examplebucket。
-    String bucketName = "yangaseubel";
-    // 填写Bucket所在地域。以华东1（杭州）为例，Region填写为cn-hangzhou。
-    String region = "cn-guangzhou";
 
     /**
      * 文件上传
