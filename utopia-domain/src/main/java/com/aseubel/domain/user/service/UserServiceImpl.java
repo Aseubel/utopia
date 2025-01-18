@@ -70,6 +70,13 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public void logout(String openid) {
+        log.info("登出服务开始执行，openid={}", openid);
+        userRepository.cleanUserToken(openid);
+        log.info("登出服务结束执行，openid={}", openid);
+    }
+
+    @Override
     public UserEntity queryUserInfo(String openid) {
         log.info("查询个人信息服务开始执行，openid={}", openid);
         UserEntity user = userRepository.queryUserInfo(openid);

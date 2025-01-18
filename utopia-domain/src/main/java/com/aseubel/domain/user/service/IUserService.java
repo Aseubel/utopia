@@ -17,6 +17,12 @@ public interface IUserService {
     UserEntity login(String code);
 
     /**
+     * 用户登出
+     * @param openid 用户id
+     */
+    void logout(String openid);
+
+    /**
      * 查询用户信息
      * @param openid 用户id
      * @return 用户实体
