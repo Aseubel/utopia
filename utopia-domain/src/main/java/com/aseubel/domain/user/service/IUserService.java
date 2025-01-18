@@ -30,4 +30,10 @@ public interface IUserService {
      */
     UserEntity refreshToken(UserEntity user);
 
+    /**
+     * 修改用户个人信息
+     * @param user
+     */
+    void updateUserInfo(UserEntity user);
+
 }

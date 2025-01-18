@@ -89,5 +89,12 @@ public class UserServiceImpl implements IUserService {
         return user;
     }
 
+    @Override
+    public void updateUserInfo(UserEntity user) {
+        log.info("更新个人信息服务开始执行，user={}", user);
+        userRepository.saveUserInfo(user);
+        log.info("更新个人信息服务结束执行，user={}", user);
+    }
+
 
 }
