@@ -33,7 +33,4 @@ public class QueryUserInfoResponseDTO implements Serializable {
     @FieldDesc(name = "个性签名")
     private String signature;
 
-    @FieldDesc(name = "token")
-    private String token;
-
 }
