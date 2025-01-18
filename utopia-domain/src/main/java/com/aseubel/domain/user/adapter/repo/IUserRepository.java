@@ -42,7 +42,13 @@ public interface IUserRepository {
 
     /**
      * 记录用户token
-     * @param user
+     * @param user 用户信息
      */
     void saveUserToken(UserEntity user);
+
+    /**
+     * 清除用户token
+     * @param openid 用户id
+     */
+    void cleanUserToken(String openid);
 }

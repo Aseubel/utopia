@@ -66,4 +66,9 @@ public class UserRepository implements IUserRepository {
         redissonService.addToMap(tokenKey, REFRESH_TOKEN, user.getRefreshToken());
     }
 
+    @Override
+    public void cleanUserToken(String openid) {
+        redissonService.remove(RedisKeyBuilder.UserTokenKey(openid));
+    }
+
 }
