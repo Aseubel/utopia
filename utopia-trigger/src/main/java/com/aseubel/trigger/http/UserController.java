@@ -74,5 +74,20 @@ public class UserController implements UserInterface {
                         .build());
     }
 
+    @Override
+    public Response modifyUserInfo(ModifyUserInfoRequestDTO modifyUserInfoRequestDTO) {
+        userService.updateUserInfo(UserEntity.builder()
+                .openid(modifyUserInfoRequestDTO.getUserId())
+                .userName(modifyUserInfoRequestDTO.getUserName())
+                .realName(modifyUserInfoRequestDTO.getRealName())
+                .phone(modifyUserInfoRequestDTO.getPhone())
+                .gender(modifyUserInfoRequestDTO.getGender())
+                .avatar(modifyUserInfoRequestDTO.getAvatar())
+                .signature(modifyUserInfoRequestDTO.getSignature())
+                .build());
+
+        return Response.SYSTEM_SUCCESS();
+    }
+
 
 }

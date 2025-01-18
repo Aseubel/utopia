@@ -23,6 +23,13 @@ public interface UserInterface {
     Response<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO);
 
     /**
+     * 刷新token
+     * @param refreshTokenRequestDTO 刷新token请求DTO，包含refreshToken和userId
+     * @return 新的refresh_token和access_token
+     */
+    Response<RefreshTokenResponseDTO> refreshToken(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO);
+
+    /**
      * 查询用户信息
      * @param queryUserInfoRequestDTO 查询用户信息请求DTO，仅包含用户openid
      * @return 查询用户信息响应DTO
@@ -30,10 +37,10 @@ public interface UserInterface {
     Response<QueryUserInfoResponseDTO> queryUserInfo(@Valid QueryUserInfoRequestDTO queryUserInfoRequestDTO);
 
     /**
-     * 刷新token
-     * @param refreshTokenRequestDTO 刷新token请求DTO，包含refreshToken和userId
-     * @return 新的refresh_token和access_token
+     * 修改用户个人信息接口
+     * @param modifyUserInfoRequestDTO 修改用户个人信息请求DTO
+     * @return 修改结果
      */
-    Response<RefreshTokenResponseDTO> refreshToken(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO);
+    Response modifyUserInfo(@Valid @RequestBody ModifyUserInfoRequestDTO modifyUserInfoRequestDTO);
 
 }
