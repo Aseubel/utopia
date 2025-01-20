@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aseubel.infrastructure.dao.SFileMapper">
+
+    <insert id="addSFile">
+        insert into `sfile` (sfile_id, sfile_name, sfile_path, sfile_size, sfile_type, create_by, update_by)
+        values (#{sfileId}, #{sfileName}, #{sfilePath}, #{sfileSize}, #{sfileType}, #{createBy}, #{updateBy})
+    </insert>
+
+</mapper>
