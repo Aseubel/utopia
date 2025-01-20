@@ -22,6 +22,9 @@ public class UserController implements UserInterface {
 
     private final IUserService userService;
 
+    /**
+     * 登录
+     */
     @Override
     @PostMapping("/login")
     public Response<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
@@ -41,6 +44,9 @@ public class UserController implements UserInterface {
                         .build());
     }
 
+    /**
+     * 登出
+     */
     @Override
     @PostMapping("/logout")
     public Response logout(@Valid @RequestBody LogoutRequestDTO logoutRequestDTO) {
@@ -49,6 +55,9 @@ public class UserController implements UserInterface {
         return Response.SYSTEM_SUCCESS();
     }
 
+    /**
+     * 刷新token
+     */
     @Override
     @PutMapping("/refresh")
     public Response<RefreshTokenResponseDTO> refreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO) {
@@ -65,6 +74,9 @@ public class UserController implements UserInterface {
                         .build());
     }
 
+    /**
+     * 查询用户信息
+     */
     @Override
     @GetMapping("/info")
     public Response<QueryUserInfoResponseDTO> queryUserInfo(@Valid QueryUserInfoRequestDTO queryUserInfoRequestDTO) {
@@ -82,6 +94,9 @@ public class UserController implements UserInterface {
                         .build());
     }
 
+    /**
+     * 修改用户信息
+     */
     @Override
     @PutMapping("/info")
     public Response modifyUserInfo(ModifyUserInfoRequestDTO modifyUserInfoRequestDTO) {
