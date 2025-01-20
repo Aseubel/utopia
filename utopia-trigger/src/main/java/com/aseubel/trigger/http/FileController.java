@@ -38,7 +38,7 @@ public class FileController {
      * 上传文件
      */
     @PostMapping("/upload")
-    public Response<UploadFileResponseDTO> upload(@Valid @RequestBody UploadFileRequestDTO uploadFileRequestDTO) {
+    public Response<UploadFileResponseDTO> upload(@Valid @ModelAttribute UploadFileRequestDTO uploadFileRequestDTO) {
         try {
             MultipartFile file = uploadFileRequestDTO.getFile();
 
@@ -51,7 +51,7 @@ public class FileController {
         } catch (NullPointerException e) {
             throw new AppException("文件名不能为空");
         } catch (ClientException e) {
-            log.error("{}, code:{}, message:{}",OSS_UPLOAD_ERROR.getMessage(), e.getErrCode(), e.getErrMsg());
+            log.error("{}, code:{}, message:{}",OSS_UPLOAD_ERROR.getMessage(), e.getErrCode(), e.getErrMsg(), e);
             throw new AppException(OSS_UPLOAD_ERROR, e);
         } catch (Exception e) {
             throw new AppException(OSS_UPLOAD_ERROR, e);
