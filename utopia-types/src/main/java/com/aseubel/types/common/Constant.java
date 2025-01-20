@@ -2,6 +2,7 @@ package com.aseubel.types.common;
 
 public class Constant {
 
+    public static final String APP = "utopia";
     // 过期时间，单位毫秒
     public static final Long EXPIRE_TIME = 30 * 24 * 3600 * 1000L; // 一个月
 
@@ -13,10 +14,12 @@ public class Constant {
 
     public static final String REFRESH_TOKEN = "refresh_token";
 
-    public static final String endpoint = "oss-cn-guangzhou-internal.aliyuncs.com";
+    public static final String ENDPOINT = "oss-cn-guangzhou-internal.aliyuncs.com";
 
-    public static final String bucketName = "yangaseubel";  // 填写Bucket名称，例如examplebucket。
+    public static final String BUCKET_NAME = "yangaseubel";  // 填写Bucket名称，例如examplebucket。
 
-    public static final String region = "cn-guangzhou"; // 填写Bucket所在地域。以华东1（杭州）为例，Region填写为cn-hangzhou。
+    public static final String REGION = "cn-guangzhou"; // 填写Bucket所在地域。以华东1（杭州）为例，Region填写为cn-hangzhou。
+
+    public static final long FILE_PART_SIZE = 1 * 1024 * 1024L;   // 1 MB
 
 }
