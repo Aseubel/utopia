@@ -31,4 +31,9 @@ public class SFileRepository implements IFileRepository {
         sFileMapper.addSFile(sFileConvertor.convert(file));
     }
 
+    @Override
+    public void deleteRepeatedSFile() {
+        sFileMapper.deleteRepeatedSFile();
+    }
+
 }

@@ -12,4 +12,8 @@ public interface SFileMapper {
      */
     void addSFile(SFile file);
 
+    /**
+     * 删除重复文件
+     */
+    void deleteRepeatedSFile();
 }

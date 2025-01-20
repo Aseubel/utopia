@@ -16,4 +16,8 @@ public interface IFileRepository {
      */
     void saveSFile(SFileEntity file);
 
+    /**
+     * 删除重复的分享文件
+     */
+    void deleteRepeatedSFile();
 }

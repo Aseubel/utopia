@@ -7,4 +7,20 @@
         values (#{sfileId}, #{sfileName}, #{sfilePath}, #{sfileSize}, #{sfileType}, #{createBy}, #{updateBy})
     </insert>
 
+    <delete id="deleteRepeatedSFile">
+        DELETE FROM sfile
+        WHERE id NOT IN (
+            SELECT id
+            FROM (
+                     SELECT id
+                     FROM sfile
+                     WHERE (sfile_path, create_time) IN (
+                         SELECT sfile_path, MAX(create_time)
+                         FROM sfile
+                         GROUP BY sfile_path
+                     )
+                 ) AS temp
+        )
+    </delete>
+
 </mapper>
