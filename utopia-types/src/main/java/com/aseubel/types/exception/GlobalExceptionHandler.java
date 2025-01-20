@@ -1,5 +1,6 @@
 package com.aseubel.types.exception;
 
+import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.types.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -90,7 +91,7 @@ public class GlobalExceptionHandler {
      * 捕获全局微信服务异常 WxException
      */
     @ExceptionHandler(WxException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public <T> Response<T> handleAPPException(WxException e) {
         log.error("微信服务异常, code:{}, message:{}", e.getCode(), e.getInfo());
         return Response.WX_EXCEPTION(e);
@@ -99,10 +100,10 @@ public class GlobalExceptionHandler {
     /**
      * 捕获阿里云OSS服务异常 AliException
      */
-    @ExceptionHandler(AliException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public <T> Response<T> handleAPPException(AliException e) {
-        log.error("微信服务异常, code:{}, message:{}", e.getCode(), e.getInfo());
+    @ExceptionHandler(ClientException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public <T> Response<T> handleAPPException(ClientException e) {
+        log.error("阿里云OSS服务异常, code:{}, message:{}", e.getErrCode(), e.getErrMsg());
         return Response.Ali_EXCEPTION(e);
     }
 }

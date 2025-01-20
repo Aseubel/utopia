@@ -1,5 +1,6 @@
 package com.aseubel.types;
 
+import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.types.enums.GlobalServiceStatusCode;
 import com.aseubel.types.exception.AliException;
 import com.aseubel.types.exception.AppException;
@@ -135,10 +136,10 @@ public final class Response<T> implements Serializable {
                 .build();
     }
 
-    public static <T> Response<T> Ali_EXCEPTION(AliException e) {
+    public static <T> Response<T> Ali_EXCEPTION(ClientException e) {
         return Response.<T>builder()
-                .code(Integer.valueOf(e.getCode()))
-                .info(e.getInfo())
+                .code(Integer.valueOf(e.getErrCode()))
+                .info(e.getErrMsg())
                 .build();
     }
 
