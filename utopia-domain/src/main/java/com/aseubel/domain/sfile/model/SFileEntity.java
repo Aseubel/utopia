@@ -1,10 +1,12 @@
 package com.aseubel.domain.sfile.model;
 
 import com.aseubel.types.annotation.FieldDesc;
+import com.aseubel.types.exception.AppException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
@@ -53,29 +55,26 @@ public class SFileEntity {
      */
     public String getObjectName() {
         if (sfileType == null || sfileName == null) {
-            throw new IllegalArgumentException("文件类型或文件名不能为空");
+            throw new AppException("文件类型或文件名不能为空");
         }
         StringBuilder objectName = new StringBuilder();
         objectName.append(APP).append("/").append(sfileType).append("/").append(sfileName);
         return objectName.toString();
     }
 
-    public SFileEntity(MultipartFile file) {
-        this.sfile = file;
-        this.sfileId = UUID.randomUUID().toString();
-        this.sfileName = Optional.ofNullable(file.getOriginalFilename())
-                .map(f -> f.substring(f.lastIndexOf(".")))
-                .orElse("未命名文件"+sfileId.substring(0, 8));
-        this.sfileSize = file.getSize();
-    }
+//    public SFileEntity(MultipartFile file) {
+//        this.sfile = file;
+//        this.sfileId = UUID.randomUUID().toString();
+//        this.sfileName = Optional.ofNullable(file.getOriginalFilename()).orElse("未命名文件"+sfileId.substring(0, 8));
+//        this.sfileSize = file.getSize();
+//    }
 
-    public SFileEntity(MultipartFile file, String fileName, String userId) {
+    public SFileEntity(MultipartFile file, String fileName, String userId, String fileType) {
         this.sfile = file;
         this.uploaderId = userId;
+        this.sfileType = fileType;
         this.sfileId = UUID.randomUUID().toString();
-        this.sfileName = Optional.ofNullable(fileName)
-                .orElse(Objects.requireNonNull(file.getOriginalFilename()))
-                .substring(file.getOriginalFilename().lastIndexOf("."));
+        this.sfileName = StringUtils.isEmpty(fileName) ? file.getOriginalFilename() : fileName;
         this.sfileSize = file.getSize();
     }
 

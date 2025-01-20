@@ -43,7 +43,7 @@ public class FileController {
             MultipartFile file = uploadFileRequestDTO.getFile();
 
             String fileURL = fileService.upload(
-                    new SFileEntity(file, uploadFileRequestDTO.getFileName(), uploadFileRequestDTO.getUserId()));
+                    new SFileEntity(file, uploadFileRequestDTO.getFileName(), uploadFileRequestDTO.getUserId(), uploadFileRequestDTO.getFileType()));
 
             return Response.SYSTEM_SUCCESS(UploadFileResponseDTO.builder()
                     .fileURL(fileURL)
@@ -54,6 +54,7 @@ public class FileController {
             log.error("{}, code:{}, message:{}",OSS_UPLOAD_ERROR.getMessage(), e.getErrCode(), e.getErrMsg(), e);
             throw new AppException(OSS_UPLOAD_ERROR, e);
         } catch (Exception e) {
+            log.error("未知异常", e);
             throw new AppException(OSS_UPLOAD_ERROR, e);
         }
     }

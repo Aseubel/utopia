@@ -7,6 +7,7 @@ import com.aseubel.types.util.AliOSSUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -28,6 +29,7 @@ public class FileServiceImpl implements IFileService{
     private final IFileRepository fileRepository;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String upload(SFileEntity sFileEntity) throws ClientException {
         log.info("开始上传文件");
         MultipartFile file = sFileEntity.getSfile();

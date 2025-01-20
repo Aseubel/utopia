@@ -27,13 +27,75 @@ import static com.aseubel.types.common.Constant.*;
 @Component
 public class AliOSSUtil {
 
+    public String upload(MultipartFile file, String objectName) throws com.aliyuncs.exceptions.ClientException {
+        // 从环境变量中获取访问凭证。运行本代码示例之前，请确保已设置环境变量OSS_ACCESS_KEY_ID和OSS_ACCESS_KEY_SECRET。
+        EnvironmentVariableCredentialsProvider credentialsProvider = CredentialsProviderFactory.newEnvironmentVariableCredentialsProvider();
+
+        // 创建OSSClient实例。
+        ClientBuilderConfiguration clientBuilderConfiguration = new ClientBuilderConfiguration();
+        clientBuilderConfiguration.setSignatureVersion(SignVersion.V4);
+        OSS ossClient = OSSClientBuilder.create()
+                .endpoint(ENDPOINT)
+                .credentialsProvider(credentialsProvider)
+                .clientConfiguration(clientBuilderConfiguration)
+                .region(REGION)
+                .build();
+
+        try {
+            // 使用MultipartFile的getInputStream方法获取文件输入流
+            InputStream inputStream = file.getInputStream();
+            // 创建PutObjectRequest对象。
+            PutObjectRequest putObjectRequest = new PutObjectRequest(BUCKET_NAME, objectName, inputStream);
+            // 如果需要上传时设置存储类型和访问权限，请参考以下示例代码。
+            // ObjectMetadata metadata = new ObjectMetadata();
+            // metadata.setHeader(OSSHeaders.OSS_STORAGE_CLASS, StorageClass.Standard.toString());
+            // metadata.setObjectAcl(CannedAccessControlList.Private);
+            // putObjectRequest.setMetadata(metadata);
+
+            // 上传文件。
+            PutObjectResult result = ossClient.putObject(putObjectRequest);
+        } catch (OSSException oe) {
+            log.error("Caught an OSSException, which means your request made it to OSS, "
+                    + "but was rejected with an error response for some reason.");
+            log.error("Error Message:{}", oe.getErrorMessage());
+            log.error("Error Code:{}", oe.getErrorCode());
+            log.error("Request ID:{}", oe.getRequestId());
+            log.error("Host ID:{}", oe.getHostId());
+        } catch (ClientException ce) {
+            log.error("Caught an ClientException, which means the client encountered "
+                    + "a serious internal problem while trying to communicate with OSS, "
+                    + "such as not being able to access the network.");
+            log.error("Error Message:{}", ce.getMessage());
+        } catch (IOException e) {
+            log.error("Caught an IOException, which means an error occurred while reading the file.");
+        } finally {
+            if (ossClient != null) {
+                ossClient.shutdown();
+            }
+        }
+
+        //文件访问路径规则 https://BucketName.Endpoint/ObjectName
+        StringBuilder stringBuilder = new StringBuilder("https://");
+        stringBuilder
+                .append(BUCKET_NAME)
+                .append(".")
+                .append(ENDPOINT)
+                .append("/")
+                .append(objectName);
+
+        log.info("文件上传到:{}", stringBuilder);
+
+        // String path = stringBuilder.toString();
+        return stringBuilder.toString();
+    }
+
     /**
      * 文件上传
      * @param file      文件字节码
      * @param objectName 文件名字
      * @return 返回文件上传路径
      */
-    public String upload(MultipartFile file, String objectName) throws com.aliyuncs.exceptions.ClientException {
+    public String multiUpload(MultipartFile file, String objectName) throws com.aliyuncs.exceptions.ClientException {
         // 从环境变量中获取访问凭证。运行本代码示例之前，请确保已设置环境变量OSS_ACCESS_KEY_ID和OSS_ACCESS_KEY_SECRET。
         EnvironmentVariableCredentialsProvider credentialsProvider = CredentialsProviderFactory.newEnvironmentVariableCredentialsProvider();
 
