@@ -40,6 +40,14 @@ public enum GlobalServiceStatusCode {
     WX_API_CALL_FREQUENTLY(45011, "API调用太频繁，请稍候再试"),
     WX_CODE_BLOCKED(40226, "高风险等级用户"),
 
+    /* 阿里云OSS模块错误 */
+    OSS_CONFIG_ERROR(50000, "OSS配置错误"),
+    OSS_UPLOAD_ERROR(50001, "OSS上传失败"),
+    OSS_DOWNLOAD_ERROR(50002, "OSS下载失败"),
+    OSS_DELETE_ERROR(50003, "OSS删除失败"),
+    OSS_BUCKET_NOT_EXIST(50004, "OSS桶不存在"),
+    OSS_OBJECT_NOT_EXIST(50005, "OSS对象不存在"),
+
     ;
 
     private Integer code;
