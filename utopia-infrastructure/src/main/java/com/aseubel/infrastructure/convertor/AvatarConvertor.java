@@ -14,6 +14,7 @@ public class AvatarConvertor {
 
     public Avatar convert(AvatarEntity avatarEntity) {
         return Avatar.builder()
+                .avatarId(avatarEntity.getAvatarId())
                 .avatarUrl(avatarEntity.getAvatarUrl())
                 .userId(avatarEntity.getUserId())
                 .build();

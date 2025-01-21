@@ -22,6 +22,9 @@ public class Avatar {
     @FieldDesc(name = "id")
     private Long id;
 
+    @FieldDesc(name = "头像唯一id")
+    private String avatarId;
+
     @FieldDesc(name = "user_id")
     private String userId;
 

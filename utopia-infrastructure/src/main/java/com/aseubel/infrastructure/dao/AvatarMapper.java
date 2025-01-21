@@ -11,7 +11,7 @@ public interface AvatarMapper {
      * 添加新头像
      * @param avatar
      */
-    @Insert("insert into `avatar` (user_id,avatar_url) values(#{userId},#{avatarUrl})")
+    @Insert("insert into `avatar` (avatar_id,user_id,avatar_url) values(#{avatarId},#{userId},#{avatarUrl})")
     void addAvatar(Avatar avatar);
 
 }
