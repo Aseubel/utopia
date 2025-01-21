@@ -34,14 +34,14 @@ public interface UserInterface {
      * @param refreshTokenRequestDTO 刷新token请求DTO，包含refreshToken和userId
      * @return 新的refresh_token和access_token
      */
-    Response<RefreshTokenResponseDTO> refreshToken(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO);
+    Response<RefreshTokenResponseDTO> refreshToken(@Valid @RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO);
 
     /**
      * 查询用户信息
      * @param queryUserInfoRequestDTO 查询用户信息请求DTO，仅包含用户openid
      * @return 查询用户信息响应DTO
      */
-    Response<QueryUserInfoResponseDTO> queryUserInfo(@Valid QueryUserInfoRequestDTO queryUserInfoRequestDTO);
+    Response<QueryUserInfoResponseDTO> queryUserInfo(@Valid @RequestBody QueryUserInfoRequestDTO queryUserInfoRequestDTO);
 
     /**
      * 修改用户个人信息接口

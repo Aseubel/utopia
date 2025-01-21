@@ -60,7 +60,7 @@ public class UserController implements UserInterface {
      */
     @Override
     @PutMapping("/refresh")
-    public Response<RefreshTokenResponseDTO> refreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO) {
+    public Response<RefreshTokenResponseDTO> refreshToken(@Valid @RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO) {
         UserEntity user = userService.refreshToken(
                 UserEntity.builder()
                         .openid(refreshTokenRequestDTO.getUserId())
@@ -79,7 +79,7 @@ public class UserController implements UserInterface {
      */
     @Override
     @GetMapping("/info")
-    public Response<QueryUserInfoResponseDTO> queryUserInfo(@Valid QueryUserInfoRequestDTO queryUserInfoRequestDTO) {
+    public Response<QueryUserInfoResponseDTO> queryUserInfo(@Valid @RequestBody QueryUserInfoRequestDTO queryUserInfoRequestDTO) {
         UserEntity user = userService.queryUserInfo(queryUserInfoRequestDTO.getUserId());
 
         return Response.SYSTEM_SUCCESS(
@@ -99,7 +99,7 @@ public class UserController implements UserInterface {
      */
     @Override
     @PutMapping("/info")
-    public Response modifyUserInfo(ModifyUserInfoRequestDTO modifyUserInfoRequestDTO) {
+    public Response modifyUserInfo(@Valid @RequestBody ModifyUserInfoRequestDTO modifyUserInfoRequestDTO) {
         userService.updateUserInfo(UserEntity.builder()
                 .openid(modifyUserInfoRequestDTO.getUserId())
                 .userName(modifyUserInfoRequestDTO.getUserName())

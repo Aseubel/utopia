@@ -3,6 +3,7 @@ package com.aseubel.api.dto.user;
 import com.aseubel.types.annotation.FieldDesc;
 import lombok.*;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -17,9 +18,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class RefreshTokenRequestDTO implements Serializable {
 
+    @NotNull(message = "refreshToken cannot be null")
     @FieldDesc(name = "refreshToken")
     private String refreshToken;
 
+    @NotNull(message = "userId cannot be null")
     @FieldDesc(name = "userId")
     private String userId;
 
