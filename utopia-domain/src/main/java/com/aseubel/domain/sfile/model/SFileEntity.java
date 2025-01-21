@@ -72,7 +72,7 @@ public class SFileEntity {
         this.uploaderId = userId;
         this.sfileType = fileType;
         this.sfileId = UUID.randomUUID().toString();
-        this.sfileName = StringUtils.isEmpty(fileName) ? file.getOriginalFilename() : fileName;
+        this.sfileName = StringUtils.isEmpty(fileName) ? file.getOriginalFilename() : (fileName+file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")));
         this.sfileSize = file.getSize();
     }
 
