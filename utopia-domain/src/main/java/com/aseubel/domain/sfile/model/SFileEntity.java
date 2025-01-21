@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 import static com.aseubel.types.common.Constant.APP;
@@ -39,7 +37,7 @@ public class SFileEntity {
     private String sfileName;
 
     @FieldDesc(name = "文件路径")
-    private String sfilePath;
+    private String sfileUrl;
 
     @FieldDesc(name = "文件大小")
     private Long sfileSize;
@@ -75,6 +73,14 @@ public class SFileEntity {
         this.sfileType = fileType;
         this.sfileId = UUID.randomUUID().toString();
         this.sfileName = StringUtils.isEmpty(fileName) ? file.getOriginalFilename() : fileName;
+        this.sfileSize = file.getSize();
+    }
+
+    public SFileEntity(MultipartFile file, String userId, String fileType) {
+        this.sfile = file;
+        this.uploaderId = userId;
+        this.sfileType = fileType;
+        this.sfileId = UUID.randomUUID().toString();
         this.sfileSize = file.getSize();
     }
 

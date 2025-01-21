@@ -27,7 +27,7 @@ public class SFile {
     private String sfileName;
 
     @FieldDesc(name = "文件路径")
-    private String sfilePath;
+    private String sfileUrl;
 
     @FieldDesc(name = "文件大小")
     private Long sfileSize;

@@ -1,7 +1,11 @@
 package com.aseubel.api;
 
+import com.aseubel.api.dto.file.UploadAvatarRequestDTO;
+import com.aseubel.api.dto.file.UploadAvatarResponseDTO;
+import com.aseubel.api.dto.file.UploadFileRequestDTO;
 import com.aseubel.api.dto.user.*;
 import com.aseubel.types.Response;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,5 +53,12 @@ public interface UserInterface {
      * @return 修改结果
      */
     Response modifyUserInfo(@Valid @RequestBody ModifyUserInfoRequestDTO modifyUserInfoRequestDTO);
+
+    /**
+     * 上传头像接口
+     * @param uploadAvatarRequestDTO 用户id和头像文件
+     * @return 返回用户头像url，头像id，用户id
+     */
+    Response<UploadAvatarResponseDTO> uploadAvatar(@Valid @ModelAttribute UploadAvatarRequestDTO uploadAvatarRequestDTO);
 
 }

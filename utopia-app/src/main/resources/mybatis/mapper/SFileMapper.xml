@@ -3,21 +3,21 @@
 <mapper namespace="com.aseubel.infrastructure.dao.SFileMapper">
 
     <insert id="addSFile">
-        insert into `sfile` (sfile_id, sfile_name, sfile_path, sfile_size, sfile_type, create_by, update_by)
+        insert into `sfile` (sfile_id, sfile_name, sfile_url, sfile_size, sfile_type, create_by, update_by)
         values (#{sfileId}, #{sfileName}, #{sfilePath}, #{sfileSize}, #{sfileType}, #{createBy}, #{updateBy})
     </insert>
 
     <delete id="deleteRepeatedSFile">
-        DELETE FROM sfile
+        DELETE FROM `sfile`
         WHERE id NOT IN (
             SELECT id
             FROM (
                      SELECT id
                      FROM sfile
-                     WHERE (sfile_path, create_time) IN (
-                         SELECT sfile_path, MAX(create_time)
+                     WHERE (sfile_url, create_time) IN (
+                         SELECT sfile_url, MAX(create_time)
                          FROM sfile
-                         GROUP BY sfile_path
+                         GROUP BY sfile_url
                      )
                  ) AS temp
         )

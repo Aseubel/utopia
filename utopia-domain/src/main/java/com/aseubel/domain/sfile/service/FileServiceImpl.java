@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.util.Objects;
 
 /**
  * @author Aseubel
@@ -35,11 +34,17 @@ public class FileServiceImpl implements IFileService{
         MultipartFile file = sFileEntity.getSfile();
         // 获取文件名不包含扩展名
         String ossUrl = aliOSSUtil.upload(file, sFileEntity.getObjectName());
-        sFileEntity.setSfilePath(ossUrl);
+        sFileEntity.setSfileUrl(ossUrl);
 
         fileRepository.saveSFile(sFileEntity);
         log.info("文件上传并保存成功");
         return ossUrl;
+    }
+
+    @Override
+    public String uploadImage(MultipartFile file) {
+        log.info("开始上传图片");
+
     }
 
 }
