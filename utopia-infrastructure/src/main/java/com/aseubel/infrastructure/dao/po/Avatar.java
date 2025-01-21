@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Aseubel
  * @description 头像持久化对象
@@ -27,6 +29,6 @@ public class Avatar {
     private String avatarUrl;
 
     @FieldDesc(name = "create_time")
-    private Long createTime;
+    private LocalDateTime createTime;
     
 }
