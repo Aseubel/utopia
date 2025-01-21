@@ -44,7 +44,10 @@ public class AvatarEntity {
             throw new AppException("头像的用户id不能为空");
         }
         StringBuilder objectName = new StringBuilder();
-        objectName.append(APP).append("/").append(AVATAR).append("/").append(avatarId);
+        objectName.append(APP).append("/")
+                .append(AVATAR).append("/")
+                .append(avatarId)
+                .append(avatar.getOriginalFilename().substring(avatar.getOriginalFilename().lastIndexOf(".")));
         return objectName.toString();
     }
 

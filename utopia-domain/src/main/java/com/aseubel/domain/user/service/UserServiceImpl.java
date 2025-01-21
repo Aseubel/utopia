@@ -124,7 +124,7 @@ public class UserServiceImpl implements IUserService {
 
         avatarRepository.saveAvatar(avatar);
         log.info("头像上传并保存成功, ossUrl={}", avatar.getAvatarUrl());
-        return "";
+        return ossUrl;
     }
 
 
