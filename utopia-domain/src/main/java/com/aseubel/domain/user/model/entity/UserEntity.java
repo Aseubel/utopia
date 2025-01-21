@@ -1,4 +1,4 @@
-package com.aseubel.domain.user.model;
+package com.aseubel.domain.user.model.entity;
 
 import com.aseubel.types.annotation.FieldDesc;
 import com.aseubel.types.util.JwtUtil;

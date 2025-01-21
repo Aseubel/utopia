@@ -1,6 +1,7 @@
 package com.aseubel.domain.user.service;
 
-import com.aseubel.domain.user.model.UserEntity;
+import com.aseubel.domain.user.model.entity.UserEntity;
+import com.aseubel.domain.user.model.entity.AvatarEntity;
 
 /**
  * @author Aseubel
@@ -41,5 +42,12 @@ public interface IUserService {
      * @param user
      */
     void updateUserInfo(UserEntity user);
+
+    /**
+     * 上传头像
+     * @param avatar
+     * @return
+     */
+    String uploadAvatar(AvatarEntity avatar);
 
 }

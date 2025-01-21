@@ -3,9 +3,8 @@ package com.aseubel.trigger.http;
 import com.aseubel.api.UserInterface;
 import com.aseubel.api.dto.file.UploadAvatarRequestDTO;
 import com.aseubel.api.dto.file.UploadAvatarResponseDTO;
-import com.aseubel.api.dto.file.UploadFileRequestDTO;
 import com.aseubel.api.dto.user.*;
-import com.aseubel.domain.user.model.UserEntity;
+import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.domain.user.service.IUserService;
 import com.aseubel.types.Response;
 import lombok.RequiredArgsConstructor;
@@ -118,6 +117,7 @@ public class UserController implements UserInterface {
 
     @PostMapping("/avatar")
     public Response<UploadAvatarResponseDTO> uploadAvatar(@Valid @ModelAttribute UploadAvatarRequestDTO uploadAvatarRequestDTO) {
+
         return null;
     }
 

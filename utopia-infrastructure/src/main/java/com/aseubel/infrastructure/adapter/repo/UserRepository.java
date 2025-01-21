@@ -1,7 +1,7 @@
 package com.aseubel.infrastructure.adapter.repo;
 
 import com.aseubel.domain.user.adapter.repo.IUserRepository;
-import com.aseubel.domain.user.model.UserEntity;
+import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.infrastructure.convertor.UserConvertor;
 import com.aseubel.infrastructure.dao.UserMapper;
 import com.aseubel.infrastructure.redis.RedissonService;

@@ -1,9 +1,6 @@
 package com.aseubel.domain.user.adapter.repo;
 
-import com.aseubel.domain.user.model.UserEntity;
-import org.springframework.stereotype.Repository;
-
-import java.util.Map;
+import com.aseubel.domain.user.model.entity.UserEntity;
 
 /**
  * @author Aseubel

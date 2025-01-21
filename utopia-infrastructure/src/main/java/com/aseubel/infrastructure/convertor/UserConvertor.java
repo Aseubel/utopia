@@ -1,6 +1,6 @@
 package com.aseubel.infrastructure.convertor;
 
-import com.aseubel.domain.user.model.UserEntity;
+import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.infrastructure.dao.po.User;
 import org.springframework.stereotype.Component;
 
