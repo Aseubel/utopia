@@ -1,18 +1,25 @@
 package com.aseubel.trigger.http;
 
+import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.api.UserInterface;
 import com.aseubel.api.dto.file.UploadAvatarRequestDTO;
 import com.aseubel.api.dto.file.UploadAvatarResponseDTO;
+import com.aseubel.api.dto.file.UploadFileResponseDTO;
 import com.aseubel.api.dto.user.*;
+import com.aseubel.domain.user.model.entity.AvatarEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.domain.user.service.IUserService;
 import com.aseubel.types.Response;
+import com.aseubel.types.exception.AppException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+
+import static com.aseubel.types.enums.GlobalServiceStatusCode.OSS_UPLOAD_ERROR;
 
 @Slf4j
 @RestController()
@@ -115,10 +122,28 @@ public class UserController implements UserInterface {
         return Response.SYSTEM_SUCCESS();
     }
 
+    /**
+     * 上传头像
+     */
     @PostMapping("/avatar")
     public Response<UploadAvatarResponseDTO> uploadAvatar(@Valid @ModelAttribute UploadAvatarRequestDTO uploadAvatarRequestDTO) {
+        try {
+            MultipartFile avatar = uploadAvatarRequestDTO.getAvatar();
 
-        return null;
+            String avatarUrl = userService.uploadAvatar(
+                    AvatarEntity.builder()
+                    .avatar(avatar)
+                    .userId(uploadAvatarRequestDTO.getUserId())
+                    .build());
+
+            return Response.SYSTEM_SUCCESS(UploadAvatarResponseDTO.builder().avatarUrl(avatarUrl).build());
+        } catch (ClientException e) {
+            log.error("上传头像时oss服务异常，{}, code:{}, message:{}",OSS_UPLOAD_ERROR.getMessage(), e.getErrCode(), e.getErrMsg(), e);
+            throw new AppException(OSS_UPLOAD_ERROR, e);
+        } catch (Exception e) {
+            log.error("上传头像时出现未知异常", e);
+            throw new AppException(OSS_UPLOAD_ERROR, e);
+        }
     }
 
 }
