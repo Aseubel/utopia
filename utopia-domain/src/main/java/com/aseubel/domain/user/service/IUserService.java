@@ -1,5 +1,6 @@
 package com.aseubel.domain.user.service;
 
+import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.domain.user.model.entity.AvatarEntity;
 
@@ -48,6 +49,6 @@ public interface IUserService {
      * @param avatar
      * @return
      */
-    String uploadAvatar(AvatarEntity avatar);
+    String uploadAvatar(AvatarEntity avatar) throws ClientException;
 
 }

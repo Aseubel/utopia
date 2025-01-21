@@ -1,13 +1,18 @@
 package com.aseubel.domain.user.service;
 
+import com.aliyuncs.exceptions.ClientException;
+import com.aseubel.domain.user.adapter.repo.IAvatarRepository;
 import com.aseubel.domain.user.adapter.repo.IUserRepository;
 import com.aseubel.domain.user.adapter.wx.WxService;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.domain.user.model.entity.AvatarEntity;
+import com.aseubel.types.util.AliOSSUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +29,11 @@ import static com.aseubel.types.common.Constant.USER_ID_KEY;
 @RequiredArgsConstructor
 public class UserServiceImpl implements IUserService {
 
+    private final AliOSSUtil aliOSSUtil;
+
     private final IUserRepository userRepository;
+
+    private final IAvatarRepository avatarRepository;
 
     private final WxService wxService;
 
@@ -105,7 +114,16 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public String uploadAvatar(AvatarEntity avatar) {
+    public String uploadAvatar(AvatarEntity avatar) throws ClientException {
+        log.info("开始上传头像, userId={}", avatar.getUserId());
+        avatar.generateAvatarId();
+        MultipartFile file = avatar.getAvatar();
+        // 获取文件名不包含扩展名
+        String ossUrl = aliOSSUtil.upload(file, avatar.getObjectName());
+        avatar.setAvatarUrl(ossUrl);
+
+        avatarRepository.saveAvatar(avatar);
+        log.info("头像上传并保存成功, ossUrl={}", avatar.getAvatarUrl());
         return "";
     }
 
