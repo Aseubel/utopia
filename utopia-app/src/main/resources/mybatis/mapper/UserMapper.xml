@@ -10,11 +10,11 @@
     <update id="updateUser">
         update `user`
         <set>
-            <if test="userName != null">user_name = #{userName},</if>
+            <if test="userName != null and userName != ''">user_name = #{userName},</if>
             <if test="realName != null">real_name = #{realName},</if>
-            <if test="phone != null">phone = #{phone},</if>
+            <if test="phone != null and phone != ''">phone = #{phone},</if>
             <if test="gender != null">gender = #{gender},</if>
-            <if test="avatar != null">avatar = #{avatar},</if>
+            <if test="avatar != null and avatar != ''">avatar = #{avatar},</if>
             <if test="signature != null">signature = #{signature},</if>
         </set>
         where user_id = #{userId} and is_deleted = 0
