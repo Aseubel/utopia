@@ -1,9 +1,9 @@
 package com.aseubel.trigger.http;
 
-import com.aliyun.credentials.Client;
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.api.dto.file.UploadFileRequestDTO;
 import com.aseubel.api.dto.file.UploadFileResponseDTO;
+import com.aseubel.api.dto.file.UploadImageResponseDTO;
 import com.aseubel.domain.sfile.model.SFileEntity;
 import com.aseubel.domain.sfile.service.IFileService;
 import com.aseubel.types.Response;
@@ -27,7 +27,7 @@ import static com.aseubel.types.enums.GlobalServiceStatusCode.OSS_UPLOAD_ERROR;
 @CrossOrigin("${app.config.cross-origin}")
 @RequestMapping("/api/v1/file/") //${app.config.api-version}
 @RequiredArgsConstructor
-public class FileController {
+public class SFileController {
 
     private final IFileService fileService;
 

@@ -6,6 +6,7 @@ import com.aseubel.domain.sfile.model.SFileEntity;
 import com.aseubel.types.util.AliOSSUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,8 +23,7 @@ import javax.annotation.Resource;
 @RequiredArgsConstructor
 public class FileServiceImpl implements IFileService{
 
-    @Resource
-    private AliOSSUtil aliOSSUtil;
+    private final AliOSSUtil aliOSSUtil;
 
     private final IFileRepository fileRepository;
 
@@ -39,12 +39,6 @@ public class FileServiceImpl implements IFileService{
         fileRepository.saveSFile(sFileEntity);
         log.info("文件上传并保存成功");
         return ossUrl;
-    }
-
-    @Override
-    public String uploadImage(MultipartFile file) {
-        log.info("开始上传图片");
-
     }
 
 }

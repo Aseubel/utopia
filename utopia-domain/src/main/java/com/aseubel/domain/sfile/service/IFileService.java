@@ -2,6 +2,7 @@ package com.aseubel.domain.sfile.service;
 
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.sfile.model.SFileEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Aseubel
