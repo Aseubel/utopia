@@ -4,13 +4,19 @@ import com.aseubel.domain.user.adapter.repo.IUserRepository;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.infrastructure.convertor.UserConvertor;
 import com.aseubel.infrastructure.dao.UserMapper;
+import com.aseubel.infrastructure.redis.IRedisService;
 import com.aseubel.infrastructure.redis.RedissonService;
+import com.aseubel.types.Response;
+import com.aseubel.types.enums.GlobalServiceStatusCode;
+import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.JwtUtil;
 import com.aseubel.types.util.RedisKeyBuilder;
+import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -26,14 +32,14 @@ import static com.aseubel.types.common.Constant.*;
 @Slf4j
 public class UserRepository implements IUserRepository {
 
-    @Autowired
+    @Resource
     private UserMapper userMapper;
 
-    @Autowired
+    @Resource
     private UserConvertor userConvertor;
 
-    @Autowired
-    private RedissonService redissonService;
+    @Resource
+    private IRedisService redisService;
 
     @Override
     public UserEntity queryUserInfo(String userId) {
@@ -62,13 +68,47 @@ public class UserRepository implements IUserRepository {
     @Override
     public void saveUserToken(UserEntity user) {
         String tokenKey = RedisKeyBuilder.UserTokenKey(user.getOpenid());
-        redissonService.addToMap(tokenKey, ACCESS_TOKEN, user.getAccessToken());
-        redissonService.addToMap(tokenKey, REFRESH_TOKEN, user.getRefreshToken());
+        redisService.addToMap(tokenKey, ACCESS_TOKEN, user.getAccessToken());
+        redisService.addToMap(tokenKey, REFRESH_TOKEN, user.getRefreshToken());
     }
 
     @Override
     public void cleanUserToken(String openid) {
-        redissonService.remove(RedisKeyBuilder.UserTokenKey(openid));
+        redisService.remove(RedisKeyBuilder.UserTokenKey(openid));
+    }
+
+    @Override
+    public boolean checkRefreshToken(UserEntity user, String secretKey) {
+        String refreshToken = user.getRefreshToken();
+        String userId = user.getOpenid();
+        String token = null;
+        try {
+            // 校验redis中是否有token，没有就是过期
+            log.info("redis校验fresh_token，id:{}，refreshToken:{}", userId, refreshToken);
+            token = redisService.getFromMap(
+                    RedisKeyBuilder.UserTokenKey(userId), REFRESH_TOKEN);
+            // token为空过期，不等于refreshToken，校验失败
+            if (refreshToken == null || !refreshToken.equals(token)) {
+                return false;
+            }
+        } catch (Exception e) {
+            log.error("redis校验fresh_token失败！id:{}，token:{}", userId, token);
+            // redis宕机，解码校验令牌
+            try {
+                Claims claims = JwtUtil.parseJWT(secretKey, token);
+                // 校验用户id
+                if (!claims.get(USER_ID_KEY).equals(userId)) {
+                    throw new AppException("用户id与token不匹配！");
+                }
+                log.info("用户进行jwt校验通过，id:{}，token:{}", userId, token);
+                return true;
+            } catch (Exception ex) {
+                // 不通过
+                log.error("用户进行jwt校验失败！id:{}，token:{}", userId, token);;
+                return false;
+            }
+        }
+        return true;
     }
 
 }

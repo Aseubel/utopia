@@ -69,27 +69,27 @@ public class LoginVerifyAspect {
 
         try {
             // 校验redis中是否有token，没有就是过期
-            log.info("redis校验token，id:{}，token:{}", userId, token);
-            String access_token = redisService.getFromMap(
+            log.info("redis校验accessToken，id:{}，token:{}", userId, token);
+            String accessToken = redisService.getFromMap(
                     RedisKeyBuilder.UserTokenKey(userId), ACCESS_TOKEN);
             // token为空过期
-            if (access_token == null) {
+            if (accessToken == null) {
                 Optional.ofNullable(response).ifPresent(r -> r.setStatus(401));
                 return Response.CUSTOMIZE_ERROR(GlobalServiceStatusCode.USER_TOKEN_EXPIRED);
             }
             // 校验token是否正确
-            if (!access_token.equals(token)) {
+            if (!accessToken.equals(token)) {
                 Optional.ofNullable(response).ifPresent(r -> r.setStatus(401));
                 return Response.CUSTOMIZE_ERROR(GlobalServiceStatusCode.USER_TOKEN_ERROR);
             }
         } catch (Exception e) {
-            log.error("redis校验token失败！id:{}，token:{}", userId, token);
+            log.error("redis校验accessToken失败！id:{}，token:{}", userId, token);
             // redis宕机，解码校验令牌
             try {
                 Claims claims = JwtUtil.parseJWT(jwtProperties.getSecretKey(), token);
                 // 校验用户id
                 if (!claims.get(USER_ID_KEY).equals(userId)) {
-                    throw new AppException("用户id与token不匹配！");
+                    throw new AppException("用户id与accessToken不匹配！");
                 }
                 log.info("用户进行jwt校验通过，id:{}，token:{}", userId, token);
                 return point.proceed();

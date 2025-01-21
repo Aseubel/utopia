@@ -6,6 +6,7 @@ import com.aseubel.domain.user.adapter.repo.IUserRepository;
 import com.aseubel.domain.user.adapter.wx.WxService;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.domain.user.model.entity.AvatarEntity;
+import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.AliOSSUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -97,6 +98,10 @@ public class UserServiceImpl implements IUserService {
     @Override
     public UserEntity refreshToken(UserEntity user) {
         log.info("刷新token服务开始执行，user={}", user);
+        if (!userRepository.checkRefreshToken(user, secretKey)) {
+            log.error("refreshToken无效！, user={}", user);
+            throw new AppException("refreshToken无效！");
+        }
         user.generateToken(secretKey, refreshTtl, accessTtl, new HashMap<>());
 
         // 记录token

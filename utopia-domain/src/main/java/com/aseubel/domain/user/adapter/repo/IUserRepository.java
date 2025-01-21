@@ -48,4 +48,11 @@ public interface IUserRepository {
      * @param openid 用户id
      */
     void cleanUserToken(String openid);
+
+    /**
+     * 检查refresh_token是否有效
+     * @param user 用户信息
+     * @return true-有效，false-无效
+     */
+    boolean checkRefreshToken(UserEntity user, String secretKey);
 }
