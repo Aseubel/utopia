@@ -25,4 +25,13 @@
         where discuss_post_id = #{postId} and is_deleted = 0
     </select>
 
+    <select id="listDiscussPost" resultType="com.aseubel.infrastructure.dao.po.DiscussPost">
+        select id, discuss_post_id, user_id, title, content, like_count, forward_count, type, status, create_time, update_time
+        from `discuss_post`
+        where id > (select id from `discuss_post` where discuss_post_id = #{postId} and is_deleted = 0)
+            and is_deleted = 0
+        order by id DESC
+        limit #{limit}
+    </select>
+
 </mapper>
