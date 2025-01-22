@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aseubel.infrastructure.dao.DiscussPostMapper">
+
+    <insert id="addDiscussPost">
+        insert into `discuss_post` (discuss_post_id, user_id, title, content, like_count, forward_count, type, status)
+        values (#{discussPostId}, #{userId}, #{title}, #{content}, #{likeCount}, #{forwardCount}, #{type}, #{status})
+    </insert>
+
+    <update id="deleteDiscussPostByPostId">
+        update `discuss_post`
+        set is_deleted = 1
+        where discuss_post_id = #{postId} and is_deleted = 0
+    </update>
+
+    <update id="updateDiscussPost">
+        update `discuss_post`
+        set user_id = #{userId}, title = #{title}, content = #{content}, like_count = #{likeCount}, forward_count = #{forwardCount}, type = #{type}, status = #{status}
+        where discuss_post_id = #{discussPostId} and is_deleted = 0
+    </update>
+
+    <select id="getDiscussPostByPostId" resultType="com.aseubel.infrastructure.dao.po.DiscussPost">
+        select id, discuss_post_id, user_id, title, content, like_count, forward_count, type, status, create_time, update_time
+        from `discuss_post`
+        where discuss_post_id = #{postId} and is_deleted = 0
+    </select>
+
+</mapper>
