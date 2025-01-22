@@ -6,12 +6,9 @@ import com.aseubel.domain.sfile.model.SFileEntity;
 import com.aseubel.types.util.AliOSSUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
 
 /**
  * @author Aseubel
@@ -33,7 +30,7 @@ public class FileServiceImpl implements IFileService{
         log.info("开始上传文件");
         MultipartFile file = sFileEntity.getSfile();
         // 获取文件名不包含扩展名
-        String ossUrl = aliOSSUtil.upload(file, sFileEntity.getObjectName());
+        String ossUrl = aliOSSUtil.upload(file, sFileEntity.generateObjectName());
         sFileEntity.setSfileUrl(ossUrl);
 
         fileRepository.saveSFile(sFileEntity);

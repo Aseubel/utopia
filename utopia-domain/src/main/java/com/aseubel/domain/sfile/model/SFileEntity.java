@@ -51,7 +51,7 @@ public class SFileEntity {
     /**
      * 获取在OSS中的文件名称（在类型文件夹下）
      */
-    public String getObjectName() {
+    public String generateObjectName() {
         if (sfileType == null || sfileName == null) {
             throw new AppException("文件类型或文件名不能为空");
         }
