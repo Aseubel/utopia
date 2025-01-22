@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -47,10 +48,10 @@ public class DiscussPostEntity {
     private Integer status;
 
     @FieldDesc(name = "创建时间")
-    private String createTime;
+    private LocalDateTime createTime;
 
     @FieldDesc(name = "更新时间")
-    private String updateTime;
+    private LocalDateTime updateTime;
 
     @FieldDesc(name = "图片list")
     private List<String> images;
