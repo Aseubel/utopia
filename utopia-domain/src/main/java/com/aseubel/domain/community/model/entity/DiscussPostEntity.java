@@ -55,4 +55,7 @@ public class DiscussPostEntity {
     @FieldDesc(name = "图片list")
     private List<String> images;
 
+    @FieldDesc(name = "评论list")
+    private List<CommentEntity> comments;
+
 }
