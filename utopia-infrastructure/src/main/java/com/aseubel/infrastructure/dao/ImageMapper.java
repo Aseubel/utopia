@@ -1,0 +1,22 @@
+package com.aseubel.infrastructure.dao;
+
+import com.aseubel.infrastructure.dao.po.Image;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+
+/**
+ * @author Aseubel
+ * @description 图片统一dao接口
+ * @date 2025-01-21 20:35
+ */
+@Mapper
+public interface ImageMapper {
+
+    /**
+     * 添加图片
+     * @param image
+     */
+    @Insert("insert into `image`(user_id, image_id, image_url) values (#{userId}, #{imageId}, #{imageUrl})")
+    void addImage(Image image);
+
+}
