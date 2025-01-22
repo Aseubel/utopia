@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Aseubel
  * @description 社区帖子持久化对象
@@ -48,9 +50,9 @@ public class DiscussPost {
     private Integer status;
 
     @FieldDesc(name = "创建时间")
-    private String createTime;
+    private LocalDateTime createTime;
 
     @FieldDesc(name = "更新时间")
-    private String updateTime;
+    private LocalDateTime updateTime;
 
 }
