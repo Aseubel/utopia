@@ -30,7 +30,7 @@ public class CommunityController implements CommunityInterface {
      */
     @Override
     @GetMapping("/post")
-    public Response<List<QueryIndexDiscussPostResponseDTO>> queryIndexDiscussPost(@Valid @RequestBody QueryIndexDiscussPostRequestDTO requestDTO) {
+    public Response<List<QueryIndexDiscussPostResponseDTO>> queryIndexDiscussPost(@Valid QueryIndexDiscussPostRequestDTO requestDTO) {
         List<DiscussPostEntity> discussPosts = communityService.listDiscussPost(requestDTO.getPostId(), requestDTO.getLimit());
         List<QueryIndexDiscussPostResponseDTO> responseDTOs = new ArrayList<>();
         for (DiscussPostEntity discussPost : discussPosts) {

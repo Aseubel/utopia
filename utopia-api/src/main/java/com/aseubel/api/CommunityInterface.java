@@ -3,7 +3,6 @@ package com.aseubel.api;
 import com.aseubel.api.dto.community.QueryIndexDiscussPostRequestDTO;
 import com.aseubel.api.dto.community.QueryIndexDiscussPostResponseDTO;
 import com.aseubel.types.Response;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -15,6 +14,6 @@ import java.util.List;
  */
 public interface CommunityInterface {
 
-    Response<List<QueryIndexDiscussPostResponseDTO>> queryIndexDiscussPost(@Valid @RequestBody QueryIndexDiscussPostRequestDTO requestDTO);
+    Response<List<QueryIndexDiscussPostResponseDTO>> queryIndexDiscussPost(@Valid QueryIndexDiscussPostRequestDTO requestDTO);
 
 }
