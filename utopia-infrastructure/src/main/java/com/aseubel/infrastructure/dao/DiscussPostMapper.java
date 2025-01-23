@@ -46,4 +46,11 @@ public interface DiscussPostMapper {
      */
     List<DiscussPost> listDiscussPost(String postId, Integer limit);
 
+    /**
+     * 获取所有帖子信息，分页查询
+     * @param limit 每页显示的数量
+     * @return
+     */
+    List<DiscussPost> listDiscussPostAhead(Integer limit);
+
 }
