@@ -24,4 +24,8 @@ public class Constant {
 
     public static final long FILE_PART_SIZE = 1 * 1024 * 1024L;   // 1 MB
 
+    public static final Integer PER_PAGE_DISCUSS_POST_SIZE = 20;
+
+    public static final Integer PER_PAGE_COMMENT_SIZE = 50;
+
 }
