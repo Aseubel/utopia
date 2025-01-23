@@ -55,7 +55,4 @@ public class QueryIndexDiscussPostResponseDTO implements Serializable {
     @FieldDesc(name = "图片list")
     private List<String> images;
 
-    @FieldDesc(name = "评论list，类型为List<CommentEntity>")
-    private Object comments;
-
 }

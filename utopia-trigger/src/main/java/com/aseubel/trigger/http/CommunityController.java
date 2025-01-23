@@ -9,11 +9,9 @@ import com.aseubel.types.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,9 +25,12 @@ public class CommunityController implements CommunityInterface {
 
     private final ICommunityService communityService;
 
+    /**
+     * 查询首页帖子列表
+     */
     @Override
     @GetMapping("/post")
-    public Response<List<QueryIndexDiscussPostResponseDTO>> queryIndexDiscussPost(QueryIndexDiscussPostRequestDTO requestDTO) {
+    public Response<List<QueryIndexDiscussPostResponseDTO>> queryIndexDiscussPost(@Valid @RequestBody QueryIndexDiscussPostRequestDTO requestDTO) {
         List<DiscussPostEntity> discussPosts = communityService.listDiscussPost(requestDTO.getPostId(), requestDTO.getLimit());
         List<QueryIndexDiscussPostResponseDTO> responseDTOs = new ArrayList<>();
         for (DiscussPostEntity discussPost : discussPosts) {
@@ -46,7 +47,6 @@ public class CommunityController implements CommunityInterface {
                    .createTime(discussPost.getCreateTime())
                    .updateTime(discussPost.getUpdateTime())
                    .images(discussPost.getImages())
-                   .comments(discussPost.getComments())
                    .build());
         }
         return Response.SYSTEM_SUCCESS(responseDTOs);

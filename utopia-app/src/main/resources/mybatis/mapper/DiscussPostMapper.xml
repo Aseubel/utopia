@@ -15,18 +15,18 @@
 
     <update id="updateDiscussPost">
         update `discuss_post`
-        set user_id = #{userId}, title = #{title}, content = #{content}, like_count = #{likeCount}, forward_count = #{forwardCount}, type = #{type}, status = #{status}
+        set user_id = #{userId}, title = #{title}, content = #{content}, like_count = #{likeCount}, forward_count = #{forwardCount}, comment_count=#{comment_count}, type = #{type}, status = #{status}
         where discuss_post_id = #{discussPostId} and is_deleted = 0
     </update>
 
     <select id="getDiscussPostByPostId" resultType="com.aseubel.infrastructure.dao.po.DiscussPost">
-        select id, discuss_post_id, user_id, title, content, like_count, forward_count, type, status, create_time, update_time
+        select id, discuss_post_id, user_id, title, content, like_count, forward_count, comment_count, type, status, create_time, update_time
         from `discuss_post`
         where discuss_post_id = #{postId} and is_deleted = 0
     </select>
 
     <select id="listDiscussPost" resultType="com.aseubel.infrastructure.dao.po.DiscussPost">
-        select id, discuss_post_id, user_id, title, content, like_count, forward_count, type, status, create_time, update_time
+        select id, discuss_post_id, user_id, title, content, like_count, forward_count, comment_count, type, status, create_time, update_time
         from `discuss_post`
         where id > (select id from `discuss_post` where discuss_post_id = #{postId} and is_deleted = 0)
             and is_deleted = 0
