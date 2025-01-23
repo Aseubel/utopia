@@ -2,7 +2,6 @@ package com.aseubel.infrastructure.adapter.wx;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.aseubel.domain.user.adapter.wx.WxService;
 import com.aseubel.types.exception.WxException;
 import com.aseubel.types.util.HttpClientUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +18,7 @@ import static com.aseubel.types.common.Constant.WX_LOGIN;
  * @date 2025-01-12 19:10
  */
 @Component
-public class WxServiceImpl implements WxService {
+public class WxService implements com.aseubel.domain.user.adapter.wx.WxService {
 
     @Override
     public String getOpenid(String appid, String secret, String code) {

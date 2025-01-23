@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 /**
  * @author Aseubel
- * @description 阿里云服务相关异常
+ * @description 阿里云服务相关异常，好像没什么用...
  * @date 2025-01-18 12:06
  */
 @EqualsAndHashCode(callSuper = true)

@@ -2,13 +2,11 @@ package com.aseubel.types;
 
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.types.enums.GlobalServiceStatusCode;
-import com.aseubel.types.exception.AliException;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.exception.WxException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.slf4j.MDC;
 
 import java.io.Serializable;
 import java.util.Optional;
