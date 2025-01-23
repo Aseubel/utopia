@@ -1,11 +1,11 @@
 # 基础镜像
-FROM openjdk:17
+FROM openjdk:8
 
 # 作者
 MAINTAINER Aseubel
 
 # 配置
-ENV PARAMS=""
+# ENV PARAMS=""
 
 # 时区
 ENV TZ=PRC
