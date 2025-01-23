@@ -3,6 +3,8 @@ package com.aseubel.infrastructure.dao;
 import com.aseubel.infrastructure.dao.po.SFile;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface SFileMapper {
 
@@ -16,4 +18,37 @@ public interface SFileMapper {
      * 删除重复文件
      */
     void deleteRepeatedSFile();
+
+    /**
+     * 分页查询文件
+     * @param fileId
+     * @param limit
+     * @return
+     */
+    List<SFile> listSFile(String fileId, Integer limit);
+
+    /**
+     * 分页查询文件
+     * @param limit
+     * @return
+     */
+    List<SFile> listSFileAhead(Integer limit);
+
+    /**
+     * 根据文件类型查询文件
+     * @param fileId
+     * @param typeId
+     * @param limit
+     * @return
+     */
+    List<SFile> listSFileByTypeId(String fileId, Long typeId, Integer limit);
+
+    /**
+     * 根据文件类型查询文件
+     * @param typeId
+     * @param limit
+     * @return
+     */
+    List<SFile> listSFileByTypeIdAhead(Long typeId, Integer limit);
+
 }

@@ -23,4 +23,38 @@
         )
     </delete>
 
+    <select id="listSFile" resultType="com.aseubel.infrastructure.dao.po.SFile">
+        select id, sfile_id, sfile_name, sfile_url, sfile_size, download_count, sfile_type, create_by, update_by, create_time, update_time
+        from sfile
+        where id > (select id from `sfile` where sfile_id = #{fileId} and is_deleted = 0)
+          and is_deleted = 0
+        order by id DESC
+        limit #{limit}
+    </select>
+
+    <select id="listSFileAhead" resultType="com.aseubel.infrastructure.dao.po.SFile">
+        select id, sfile_id, sfile_name, sfile_url, sfile_size, download_count, sfile_type, create_by, update_by, create_time, update_time
+        from sfile
+        where is_deleted = 0
+        order by id DESC
+        limit #{limit}
+    </select>
+
+    <select id="listSFileByTypeId" resultType="com.aseubel.infrastructure.dao.po.SFile">
+        select id, sfile_id, sfile_name, sfile_url, sfile_size, download_count, sfile_type, create_by, update_by, create_time, update_time
+        from sfile
+        where id > (select id from `sfile` where sfile_id = #{fileId} and is_deleted = 0)
+          and sfile_type=#{typeId} and is_deleted = 0
+        order by id DESC
+        limit #{limit}
+    </select>
+
+    <select id="listSFileByTypeIdAhead" resultType="com.aseubel.infrastructure.dao.po.SFile">
+        select id, sfile_id, sfile_name, sfile_url, sfile_size, download_count, sfile_type, create_by, update_by, create_time, update_time
+        from sfile
+        where sfile_type=#{typeId} and is_deleted = 0
+        order by id DESC
+        limit #{limit}
+    </select>
+
 </mapper>
