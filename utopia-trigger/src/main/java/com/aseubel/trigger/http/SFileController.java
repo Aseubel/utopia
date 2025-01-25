@@ -80,6 +80,9 @@ public class SFileController implements SFileInterface {
         }
     }
 
+    /**
+     * 查询文件列表
+     */
     @Override
     @GetMapping("/list")
     public Response<List<QuerySFileResponseDTO>> querySFiles(@Valid QuerySFileRequestDTO querySFileRequestDTO) {

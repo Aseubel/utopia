@@ -11,8 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
-import static com.aseubel.types.common.Constant.APP;
-import static com.aseubel.types.common.Constant.AVATAR;
+import static com.aseubel.types.common.Constant.*;
 
 /**
  * @author Aseubel
@@ -52,7 +51,7 @@ public class CommunityImage {
         }
         StringBuilder objectName = new StringBuilder();
         objectName.append(APP).append("/")
-                .append(AVATAR).append("/")
+                .append(DISCUSS_POST_IMAGE).append("/")
                 .append(imageId)
                 .append(image.getOriginalFilename().substring(image.getOriginalFilename().lastIndexOf(".")));
         return objectName.toString();

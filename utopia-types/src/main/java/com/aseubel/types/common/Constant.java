@@ -5,6 +5,12 @@ public class Constant {
     public static final String APP = "utopia";
 
     public static final String AVATAR = "avatar";
+
+    public static final String TRADE_POST_IMAGE = "trade_post_image";
+
+    public static final String DISCUSS_POST_IMAGE = "discuss_post_image";
+
+    public static final String COMMENT_IMAGE = "comment_image";
     // 过期时间，单位毫秒
     public static final Long EXPIRE_TIME = 30 * 24 * 3600 * 1000L; // 一个月
 
