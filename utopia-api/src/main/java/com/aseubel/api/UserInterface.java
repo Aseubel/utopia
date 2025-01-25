@@ -1,15 +1,12 @@
 package com.aseubel.api;
 
-import com.aseubel.api.dto.file.UploadAvatarRequestDTO;
-import com.aseubel.api.dto.file.UploadAvatarResponseDTO;
-import com.aseubel.api.dto.file.UploadFileRequestDTO;
+import com.aseubel.api.dto.user.UploadAvatarRequestDTO;
+import com.aseubel.api.dto.user.UploadAvatarResponseDTO;
 import com.aseubel.api.dto.user.*;
 import com.aseubel.types.Response;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 /**

@@ -2,9 +2,8 @@ package com.aseubel.trigger.http;
 
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.api.UserInterface;
-import com.aseubel.api.dto.file.UploadAvatarRequestDTO;
-import com.aseubel.api.dto.file.UploadAvatarResponseDTO;
-import com.aseubel.api.dto.file.UploadFileResponseDTO;
+import com.aseubel.api.dto.user.UploadAvatarRequestDTO;
+import com.aseubel.api.dto.user.UploadAvatarResponseDTO;
 import com.aseubel.api.dto.user.*;
 import com.aseubel.domain.user.model.entity.AvatarEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
