@@ -3,10 +3,13 @@ package com.aseubel.api;
 import com.aseubel.api.dto.file.QuerySFileRequestDTO;
 import com.aseubel.api.dto.file.QuerySFileResponseDTO;
 import com.aseubel.api.dto.file.UploadFileRequestDTO;
+import com.aseubel.api.dto.file.UploadFileResponseDTO;
 import com.aseubel.types.Response;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author Aseubel
@@ -20,7 +23,7 @@ public interface SFileInterface {
      * @param uploadFileRequestDTO
      * @return
      */
-    Response<String> upload(@Valid @RequestBody UploadFileRequestDTO uploadFileRequestDTO);
+    Response<UploadFileResponseDTO> upload(@Valid @ModelAttribute UploadFileRequestDTO uploadFileRequestDTO);
 
     /**
      * 删除文件
@@ -34,6 +37,6 @@ public interface SFileInterface {
      * @param querySFileRequestDTO
      * @return
      */
-    Response<QuerySFileResponseDTO> querySFiles(@Valid QuerySFileRequestDTO querySFileRequestDTO);
+    Response<List<QuerySFileResponseDTO>> querySFiles(@Valid QuerySFileRequestDTO querySFileRequestDTO);
 
 }

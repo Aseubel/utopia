@@ -22,7 +22,7 @@ public class QuerySFileResponseDTO {
     private String fileName;
 
     @FieldDesc(name = "文件大小")
-    private String fileSize;
+    private Long fileSize;
 
     @FieldDesc(name = "文件url")
     private String fileUrl;

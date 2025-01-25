@@ -1,9 +1,8 @@
 package com.aseubel.trigger.http;
 
 import com.aliyuncs.exceptions.ClientException;
-import com.aseubel.api.dto.file.UploadFileRequestDTO;
-import com.aseubel.api.dto.file.UploadFileResponseDTO;
-import com.aseubel.api.dto.file.UploadImageResponseDTO;
+import com.aseubel.api.SFileInterface;
+import com.aseubel.api.dto.file.*;
 import com.aseubel.domain.sfile.model.SFileEntity;
 import com.aseubel.domain.sfile.service.IFileService;
 import com.aseubel.types.Response;
@@ -18,6 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static com.aseubel.types.enums.GlobalServiceStatusCode.OSS_DELETE_ERROR;
 import static com.aseubel.types.enums.GlobalServiceStatusCode.OSS_UPLOAD_ERROR;
 
@@ -27,7 +29,7 @@ import static com.aseubel.types.enums.GlobalServiceStatusCode.OSS_UPLOAD_ERROR;
 @CrossOrigin("${app.config.cross-origin}")
 @RequestMapping("/api/v1/file/") //${app.config.api-version}
 @RequiredArgsConstructor
-public class SFileController {
+public class SFileController implements SFileInterface {
 
     private final IFileService fileService;
 
@@ -73,6 +75,20 @@ public class SFileController {
         }
     }
 
+    @Override
+    public Response<List<QuerySFileResponseDTO>> querySFiles(QuerySFileRequestDTO querySFileRequestDTO) {
+        List<SFileEntity> sFileEntities = fileService.listSFile(querySFileRequestDTO.getFileId(), querySFileRequestDTO.getLimit());
+        List<QuerySFileResponseDTO> querySFileResponseDTOS = sFileEntities.stream()
+               .map(sFileEntity -> QuerySFileResponseDTO.builder()
+                       .fileId(sFileEntity.getSfileId())
+                       .fileName(sFileEntity.getSfileName())
+                       .fileSize(sFileEntity.getSfileSize())
+                       .fileType(sFileEntity.getSfileType())
+                       .fileUrl(sFileEntity.getSfileUrl())
+                       .build())
+                .collect(Collectors.toList());
+        return Response.SYSTEM_SUCCESS(querySFileResponseDTOS);
+    }
 
 
 }
