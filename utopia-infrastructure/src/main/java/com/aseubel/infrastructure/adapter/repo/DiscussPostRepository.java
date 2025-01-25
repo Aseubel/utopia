@@ -4,10 +4,12 @@ import com.aseubel.domain.community.adapter.repo.IDiscussPostRepository;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.infrastructure.convertor.DiscussPostConvertor;
 import com.aseubel.infrastructure.dao.DiscussPostMapper;
+import com.aseubel.infrastructure.dao.po.DiscussPost;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,11 +30,13 @@ public class DiscussPostRepository implements IDiscussPostRepository {
 
     @Override
     public List<DiscussPostEntity> listDiscussPost(String postId, Integer limit) {
+        List<DiscussPost> a = discussPostMapper.listDiscussPost(postId, limit);
+        List<DiscussPost> b =discussPostMapper.listDiscussPostAhead(limit);
         return Optional.ofNullable(StringUtils.isEmpty(postId)
                         ? discussPostMapper.listDiscussPostAhead(limit)
                         : discussPostMapper.listDiscussPost(postId, limit))
                 .map(p -> p.stream().map(discussPostConvertor::convert).collect(Collectors.toList()))
-                .orElse(null);
+                .orElse(Collections.emptyList());
     }
 
 }

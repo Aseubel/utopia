@@ -14,10 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.aseubel.types.common.Constant.*;
@@ -122,7 +119,7 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
                             .map(userMap::get)
                             .collect(Collectors.toList());
                 })
-                .orElse(null);
+                .orElse(Collections.emptyList());
     }
 
 
