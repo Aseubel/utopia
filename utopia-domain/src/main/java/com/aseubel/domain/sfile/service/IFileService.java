@@ -4,6 +4,8 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.sfile.model.SFileEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * @author Aseubel
  * @description 文件服务接口
@@ -17,5 +19,22 @@ public interface IFileService {
      * @return 上传成功返回文件路径，失败返回null
      */
     String upload(SFileEntity sFileEntity) throws ClientException;
+
+    /**
+     * 分页查询文件
+     * @param fileId
+     * @param limit
+     * @return
+     */
+    List<SFileEntity> listSFile(String fileId, Integer limit);
+
+    /**
+     * 根据文件类型查询文件
+     * @param fileId
+     * @param typeId
+     * @param limit
+     * @return
+     */
+    List<SFileEntity> listSFileByTypeId(String fileId, Long typeId, Integer limit);
 
 }
