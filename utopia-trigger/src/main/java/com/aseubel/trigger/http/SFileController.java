@@ -63,7 +63,7 @@ public class SFileController {
      * 删除文件
      */
     @DeleteMapping("/delete")
-    public Response<String> delete(String filePath) {
+    public Response<String> delete(@Valid String filePath) {
         try {
             String fileName = aliOSSUtil.getFileName(filePath);
             aliOSSUtil.remove(fileName);
@@ -72,5 +72,7 @@ public class SFileController {
             throw new AppException(OSS_DELETE_ERROR, e);
         }
     }
+
+
 
 }
