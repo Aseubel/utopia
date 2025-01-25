@@ -26,6 +26,12 @@ public class DiscussPostEntity {
     @FieldDesc(name = "用户id")
     private String userId;
 
+    @FieldDesc(name = "用户昵称")
+    private String userName;
+
+    @FieldDesc(name = "用户头像")
+    private String userAvatar;
+
     @FieldDesc(name = "标题")
     private String title;
 
