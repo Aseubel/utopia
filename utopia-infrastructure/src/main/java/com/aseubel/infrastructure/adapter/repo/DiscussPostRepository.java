@@ -30,8 +30,6 @@ public class DiscussPostRepository implements IDiscussPostRepository {
 
     @Override
     public List<DiscussPostEntity> listDiscussPost(String postId, Integer limit) {
-        List<DiscussPost> a = discussPostMapper.listDiscussPost(postId, limit);
-        List<DiscussPost> b =discussPostMapper.listDiscussPostAhead(limit);
         return Optional.ofNullable(StringUtils.isEmpty(postId)
                         ? discussPostMapper.listDiscussPostAhead(limit)
                         : discussPostMapper.listDiscussPost(postId, limit))
