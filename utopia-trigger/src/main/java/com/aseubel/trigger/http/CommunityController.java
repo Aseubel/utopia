@@ -37,6 +37,8 @@ public class CommunityController implements CommunityInterface {
            responseDTOs.add(QueryIndexDiscussPostResponseDTO.builder()
                    .discussPostId(discussPost.getDiscussPostId())
                    .userId(discussPost.getUserId())
+                   .userName(discussPost.getUserName())
+                   .userAvatar(discussPost.getUserAvatar())
                    .title(discussPost.getTitle())
                    .content(discussPost.getContent())
                    .likeCount(discussPost.getLikeCount())
