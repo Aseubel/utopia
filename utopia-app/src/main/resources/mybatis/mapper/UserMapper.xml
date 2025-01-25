@@ -26,4 +26,13 @@
         where user_id = #{userId} and is_deleted = 0
     </select>
 
+    <select id="listUserAvatarAndNameByUserIds" resultType="com.aseubel.infrastructure.dao.po.User">
+        select user_id, user_name, avatar
+        from `user`
+        where is_deleted = 0 and user_id in
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+
 </mapper>
