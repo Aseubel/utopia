@@ -35,7 +35,7 @@
     </select>
 
     <select id="listDiscussPostAhead" resultType="com.aseubel.infrastructure.dao.po.DiscussPost">
-        select id, discuss_post_id, user_id, title, content, like_count, forward_count, type, status, create_time, update_time
+        select id, discuss_post_id, user_id, title, content, like_count, forward_count, comment_count, type, status, create_time, update_time
         from `discuss_post`
         where is_deleted = 0
         order by id DESC
