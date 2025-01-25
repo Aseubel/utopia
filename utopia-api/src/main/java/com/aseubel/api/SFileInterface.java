@@ -30,7 +30,7 @@ public interface SFileInterface {
      * @param filePath
      * @return
      */
-    Response<String> delete(@Valid String filePath);
+    Response<String> delete(String filePath);
 
     /**
      * 获取文件列表

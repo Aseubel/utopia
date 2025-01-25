@@ -4,6 +4,7 @@ import com.aseubel.types.annotation.FieldDesc;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -18,9 +19,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class UploadFileRequestDTO implements Serializable {
 
+    @NotNull(message = "文件不能为空")
     @FieldDesc(name = "文件")
     private MultipartFile file;
 
+    @NotNull(message = "用户ID不能为空")
     @FieldDesc(name = "上传者ID")
     private String userId;
 

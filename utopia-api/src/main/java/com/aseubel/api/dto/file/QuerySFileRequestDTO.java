@@ -3,6 +3,8 @@ package com.aseubel.api.dto.file;
 import com.aseubel.types.annotation.FieldDesc;
 import lombok.*;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author Aseubel
  * @description 查询分享文件列表请求DTO
@@ -15,6 +17,7 @@ import lombok.*;
 @NoArgsConstructor
 public class QuerySFileRequestDTO {
 
+    @NotNull(message = "用户id不能为空")
     @FieldDesc(name = "用户id")
     private String userId;
 

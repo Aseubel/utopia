@@ -40,6 +40,7 @@ public class SFileController implements SFileInterface {
      * 上传文件
      */
     @PostMapping("/upload")
+    @Override
     public Response<UploadFileResponseDTO> upload(@Valid @ModelAttribute UploadFileRequestDTO uploadFileRequestDTO) {
         try {
             MultipartFile file = uploadFileRequestDTO.getFile();
@@ -65,8 +66,12 @@ public class SFileController implements SFileInterface {
      * 删除文件
      */
     @DeleteMapping("/delete")
-    public Response<String> delete(@Valid String filePath) {
+    @Override
+    public Response<String> delete(String filePath) {
         try {
+            if (filePath == null) {
+                throw new AppException("文件路径不能为空");
+            }
             String fileName = aliOSSUtil.getFileName(filePath);
             aliOSSUtil.remove(fileName);
             return Response.SYSTEM_SUCCESS(fileName);
