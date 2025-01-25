@@ -1,27 +1,27 @@
 package com.aseubel.infrastructure.adapter.repo;
 
+import com.aseubel.domain.community.adapter.repo.ICommunityUserRepository;
 import com.aseubel.domain.user.adapter.repo.IUserRepository;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.infrastructure.convertor.UserConvertor;
 import com.aseubel.infrastructure.dao.UserMapper;
 import com.aseubel.infrastructure.redis.IRedisService;
-import com.aseubel.infrastructure.redis.RedissonService;
-import com.aseubel.types.Response;
-import com.aseubel.types.enums.GlobalServiceStatusCode;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.JwtUtil;
 import com.aseubel.types.util.RedisKeyBuilder;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.aseubel.types.common.Constant.*;
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author Aseubel
@@ -30,7 +30,7 @@ import static com.aseubel.types.common.Constant.*;
  */
 @Repository
 @Slf4j
-public class UserRepository implements IUserRepository {
+public class UserRepository implements IUserRepository, ICommunityUserRepository {
 
     @Resource
     private UserMapper userMapper;
@@ -110,5 +110,20 @@ public class UserRepository implements IUserRepository {
         }
         return true;
     }
+
+    @Override
+    public List<UserEntity> queryUserAvatarAndName(List<String> userIds) {
+        return Optional.ofNullable(userMapper.listUserAvatarAndNameByUserIds(userIds))
+                .map(l -> {
+                    Map<String, UserEntity> userMap = l.stream()
+                            .map(userConvertor::convert) // 先转换为 UserEntity
+                            .collect(Collectors.toMap(UserEntity::getOpenid, user -> user));
+                    return userIds.stream()
+                            .map(userMap::get)
+                            .collect(Collectors.toList());
+                })
+                .orElse(null);
+    }
+
 
 }
