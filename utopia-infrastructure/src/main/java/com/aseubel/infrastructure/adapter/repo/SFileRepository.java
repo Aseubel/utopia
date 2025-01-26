@@ -1,18 +1,21 @@
 package com.aseubel.infrastructure.adapter.repo;
 
+import cn.hutool.core.collection.CollectionUtil;
+import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.sfile.adapter.repo.IFileRepository;
 import com.aseubel.domain.sfile.model.SFileEntity;
 import com.aseubel.infrastructure.convertor.SFileConvertor;
 import com.aseubel.infrastructure.dao.SFileDownloadRecordMapper;
 import com.aseubel.infrastructure.dao.SFileMapper;
 import com.aseubel.infrastructure.dao.UserMapper;
+import com.aseubel.infrastructure.dao.po.SFile;
+import com.aseubel.types.util.AliOSSUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +37,8 @@ public class SFileRepository implements IFileRepository {
 
     @Resource
     private SFileConvertor sFileConvertor;
+    @Autowired
+    private AliOSSUtil aliOSSUtil;
 
     @Override
     public void saveSFile(SFileEntity file) {
@@ -66,6 +71,21 @@ public class SFileRepository implements IFileRepository {
     @Override
     public void saveSFileDownloadRecord(String fileId, String userId) {
         sFileDownloadRecordMapper.saveDownloadRecord(fileId, userId);
+    }
+
+    @Override
+    public void deleteMissingSFile() throws ClientException {
+        List<SFile> fileRecords = sFileMapper.listAllSFile();
+        Set<String> ossRecordSet = new HashSet<>(aliOSSUtil.listObjects());
+        List<String> missingFileIds = new ArrayList<>();
+        for (SFile fileRecord : fileRecords) {
+            if (!ossRecordSet.contains(fileRecord.getSfileUrl())) {
+                missingFileIds.add(fileRecord.getId());
+            }
+        }
+        if (!CollectionUtil.isEmpty(missingFileIds)) {
+            sFileMapper.deleteMissingSFile(missingFileIds);
+        }
     }
 
 }

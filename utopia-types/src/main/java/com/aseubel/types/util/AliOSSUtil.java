@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.aseubel.types.common.Constant.*;
@@ -355,4 +356,45 @@ public class AliOSSUtil {
     public String getFileName(String path) {
         return path.substring(path.lastIndexOf("/") + 1);
     }
+
+    public List<String> listObjects() throws com.aliyuncs.exceptions.ClientException {
+        EnvironmentVariableCredentialsProvider credentialsProvider = CredentialsProviderFactory.newEnvironmentVariableCredentialsProvider();
+        // 创建OSSClient实例。
+        ClientBuilderConfiguration clientBuilderConfiguration = new ClientBuilderConfiguration();
+        clientBuilderConfiguration.setSignatureVersion(SignVersion.V4);
+        OSS ossClient = OSSClientBuilder.create()
+                .endpoint(ENDPOINT)
+                .credentialsProvider(credentialsProvider)
+                .clientConfiguration(clientBuilderConfiguration)
+                .region(REGION)
+                .build();
+
+        try {
+            List<String> objectNames = new ArrayList<>();
+            ossClient.listObjectsV2(BUCKET_NAME).getObjectSummaries().forEach(objectSummary -> {
+                objectNames.add(objectSummary.getKey());
+                log.info("文件名：{}，大小：{}，最后修改时间：{}", objectSummary.getKey(), objectSummary.getSize(), objectSummary.getLastModified());
+            });
+            return objectNames;
+        } catch (OSSException oe) {
+            log.error("Caught an OSSException, which means your request made it to OSS, "
+                    + "but was rejected with an error response for some reason.");
+            log.error("Error Message:{}", oe.getErrorMessage());
+            log.error("Error Code:{}", oe.getErrorCode());
+            log.error("Request ID:{}", oe.getRequestId());
+            log.error("Host ID:{}", oe.getHostId());
+            throw oe;
+        } catch (ClientException ce) {
+            log.error("Caught an ClientException, which means the client encountered "
+                    + "a serious internal problem while trying to communicate with OSS, "
+                    + "such as not being able to access the network.");
+            log.error("Error Message:{}", ce.getMessage());
+        } finally {
+            if (ossClient != null) {
+                ossClient.shutdown();
+            }
+        }
+        return Collections.emptyList();
+    }
+
 }

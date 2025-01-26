@@ -23,6 +23,14 @@
         )
     </delete>
 
+    <update id="deleteMissingSFile">
+        update sfile set is_deleted = 1
+        where id in
+        <foreach collection="fileIds" item="fileId" open="(" separator="," close=")">
+            #{fileId}
+        </foreach>
+    </update>
+
     <select id="listSFile" resultType="com.aseubel.infrastructure.dao.po.SFile">
         select id, sfile_id, sfile_name, sfile_url, sfile_size, download_count, sfile_type, create_by, update_by, create_time, update_time
         from sfile
@@ -55,6 +63,11 @@
         where sfile_type=#{typeId} and is_deleted = 0
         order by id DESC
         limit #{limit}
+    </select>
+
+    <select id="listAllSFile" resultType="com.aseubel.infrastructure.dao.po.SFile">
+        select id, sfile_id, sfile_url
+        from sfile
     </select>
 
 </mapper>

@@ -54,4 +54,14 @@ public interface SFileMapper {
      */
     List<SFile> listSFileByTypeIdAhead(Long typeId, Integer limit);
 
+    /**
+     * 获取所有共享文件
+     * @return
+     */
+    List<SFile> listAllSFile();
+
+    /**
+     * 删除oss不存在的缺失文件记录
+     */
+    void deleteMissingSFile(List<String> fileIds);
 }

@@ -1,5 +1,6 @@
 package com.aseubel.domain.sfile.adapter.repo;
 
+import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.sfile.model.SFileEntity;
 import org.springframework.stereotype.Repository;
 
@@ -47,4 +48,8 @@ public interface IFileRepository {
      */
     void saveSFileDownloadRecord(String fileId, String userId);
 
+    /**
+     * 删除缺失的分享文件
+     */
+    void deleteMissingSFile() throws ClientException;
 }
