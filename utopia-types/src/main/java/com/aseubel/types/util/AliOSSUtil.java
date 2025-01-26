@@ -6,6 +6,8 @@ import com.aliyun.oss.common.auth.CredentialsProviderFactory;
 import com.aliyun.oss.common.auth.EnvironmentVariableCredentialsProvider;
 import com.aliyun.oss.common.comm.SignVersion;
 import com.aliyun.oss.model.*;
+import com.aseubel.types.enums.GlobalServiceStatusCode;
+import com.aseubel.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.aseubel.types.common.Constant.*;
+import static com.aseubel.types.enums.GlobalServiceStatusCode.OSS_OBJECT_NOT_EXIST;
 
 /**
  * @author aseubel
@@ -61,6 +64,7 @@ public class AliOSSUtil {
             log.error("Error Code:{}", oe.getErrorCode());
             log.error("Request ID:{}", oe.getRequestId());
             log.error("Host ID:{}", oe.getHostId());
+            throw new AppException(OSS_OBJECT_NOT_EXIST);
         } catch (ClientException ce) {
             log.error("Caught an ClientException, which means the client encountered "
                     + "a serious internal problem while trying to communicate with OSS, "
