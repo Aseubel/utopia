@@ -40,4 +40,11 @@ public interface IFileRepository {
      */
     List<SFileEntity> listSFileByTypeId(String fileId, Long typeId, Integer limit);
 
+    /**
+     * 保存文件下载记录
+     * @param fileId
+     * @param userId
+     */
+    void saveSFileDownloadRecord(String fileId, String userId);
+
 }

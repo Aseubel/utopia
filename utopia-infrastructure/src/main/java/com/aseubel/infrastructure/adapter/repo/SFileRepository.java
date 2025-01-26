@@ -3,6 +3,7 @@ package com.aseubel.infrastructure.adapter.repo;
 import com.aseubel.domain.sfile.adapter.repo.IFileRepository;
 import com.aseubel.domain.sfile.model.SFileEntity;
 import com.aseubel.infrastructure.convertor.SFileConvertor;
+import com.aseubel.infrastructure.dao.SFileDownloadRecordMapper;
 import com.aseubel.infrastructure.dao.SFileMapper;
 import com.aseubel.infrastructure.dao.UserMapper;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +28,9 @@ public class SFileRepository implements IFileRepository {
 
     @Resource
     private SFileMapper sFileMapper;
+
+    @Resource
+    private SFileDownloadRecordMapper sFileDownloadRecordMapper;
 
     @Resource
     private SFileConvertor sFileConvertor;
@@ -57,6 +61,11 @@ public class SFileRepository implements IFileRepository {
                         : sFileMapper.listSFileByTypeId(fileId, typeId, limit))
                 .map(p -> p.stream().map(sFileConvertor::convert).collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public void saveSFileDownloadRecord(String fileId, String userId) {
+        sFileDownloadRecordMapper.saveDownloadRecord(fileId, userId);
     }
 
 }
