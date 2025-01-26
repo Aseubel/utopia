@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Collections;
 import java.util.List;
 
+import static com.aseubel.types.common.Constant.APP;
 import static com.aseubel.types.common.Constant.PER_PAGE_FILE_SIZE;
 
 /**
@@ -41,6 +42,13 @@ public class FileServiceImpl implements IFileService{
         fileRepository.saveSFile(sFileEntity);
         log.info("文件上传并保存成功");
         return ossUrl;
+    }
+
+    @Override
+    public byte[] download(String fileUrl) throws ClientException {
+        // 取到object name
+        log.info("开始下载文件, fileUrl: {}", fileUrl);
+        return aliOSSUtil.download(fileUrl.substring(fileUrl.indexOf(APP)));
     }
 
     @Override

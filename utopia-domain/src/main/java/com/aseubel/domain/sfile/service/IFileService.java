@@ -21,6 +21,14 @@ public interface IFileService {
     String upload(SFileEntity sFileEntity) throws ClientException;
 
     /**
+     * 下载文件服务
+     * @param fileUrl
+     * @return
+     * @throws ClientException
+     */
+    byte[] download(String fileUrl) throws ClientException;
+
+    /**
      * 分页查询文件
      * @param fileId
      * @param limit

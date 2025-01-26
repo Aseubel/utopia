@@ -26,6 +26,13 @@ public interface SFileInterface {
     Response<UploadFileResponseDTO> upload(@Valid @ModelAttribute UploadFileRequestDTO uploadFileRequestDTO);
 
     /**
+     * 下载文件
+     * @param filePath
+     * @return
+     */
+    Response<byte[]> download(String filePath);
+
+    /**
      * 删除文件
      * @param filePath
      * @return

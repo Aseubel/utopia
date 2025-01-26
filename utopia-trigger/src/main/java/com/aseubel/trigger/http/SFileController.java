@@ -68,6 +68,25 @@ public class SFileController implements SFileInterface {
     }
 
     /**
+     * 下载文件
+     */
+    @Override
+    @GetMapping("/download")
+    public Response<byte[]> download(String filePath) {
+        try {
+            if (StringUtils.isEmpty(filePath)) {
+                throw new AppException(PARAM_NOT_COMPLETE.getCode(), "文件路径不能为空");
+            }
+            return Response.SYSTEM_SUCCESS(fileService.download(filePath));
+        } catch (AppException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("未知异常", e);
+            throw new AppException(OSS_DOWNLOAD_ERROR, e);
+        }
+    }
+
+    /**
      * 删除文件
      */
     @DeleteMapping("/delete")
