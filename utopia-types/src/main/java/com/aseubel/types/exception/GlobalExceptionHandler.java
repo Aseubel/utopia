@@ -1,5 +1,6 @@
 package com.aseubel.types.exception;
 
+import com.aliyun.oss.OSSException;
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.types.Response;
 import lombok.RequiredArgsConstructor;
@@ -98,12 +99,22 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 捕获阿里云OSS服务异常 AliException
+     * 捕获阿里云OSS客户端异常 ClientException
      */
     @ExceptionHandler(ClientException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public <T> Response<T> handleAPPException(ClientException e) {
-        log.error("阿里云OSS服务异常, code:{}, message:{}", e.getErrCode(), e.getErrMsg());
+        log.error("阿里云OSS客户端异常, code:{}, message:{}", e.getErrCode(), e.getErrMsg());
         return Response.Ali_EXCEPTION(e);
+    }
+
+    /**
+     * 捕获阿里云OSS服务异常 OSSException
+     */
+    @ExceptionHandler(OSSException.class)
+    @ResponseStatus(HttpStatus.BAD_GATEWAY)
+    public <T> Response<T> handleOSSException(OSSException oe) {
+        log.error("阿里云OSS服务异常, code:{}, message:{}", oe.getErrorCode(), oe.getErrorMessage());
+        return Response.Ali_EXCEPTION(oe);
     }
 }

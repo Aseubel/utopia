@@ -64,7 +64,7 @@ public class AliOSSUtil {
             log.error("Error Code:{}", oe.getErrorCode());
             log.error("Request ID:{}", oe.getRequestId());
             log.error("Host ID:{}", oe.getHostId());
-            throw new AppException(OSS_OBJECT_NOT_EXIST);
+            throw oe;
         } catch (ClientException ce) {
             log.error("Caught an ClientException, which means the client encountered "
                     + "a serious internal problem while trying to communicate with OSS, "
@@ -296,6 +296,7 @@ public class AliOSSUtil {
             log.error("Error Code:{}", oe.getErrorCode());
             log.error("Request ID:{}", oe.getRequestId());
             log.error("Host ID:{}", oe.getHostId());
+            throw oe;
         } catch (ClientException ce) {
             log.error("Caught an ClientException, which means the client encountered "
                     + "a serious internal problem while trying to communicate with OSS, "
@@ -338,6 +339,7 @@ public class AliOSSUtil {
             log.error("Error Code:{}", oe.getErrorCode());
             log.error("Request ID:{}", oe.getRequestId());
             log.error("Host ID:{}", oe.getHostId());
+            throw oe;
         } catch (ClientException ce) {
             log.error("Caught an ClientException, which means the client encountered "
                     + "a serious internal problem while trying to communicate with OSS, "
