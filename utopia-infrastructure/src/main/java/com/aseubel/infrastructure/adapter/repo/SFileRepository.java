@@ -78,6 +78,7 @@ public class SFileRepository implements IFileRepository {
         List<SFile> fileRecords = sFileMapper.listAllSFile();
         Set<String> ossRecordSet = new HashSet<>(aliOSSUtil.listObjects());
         List<String> missingFileIds = new ArrayList<>();
+        // 找出数据库中存在但oss没有对应对象的记录
         for (SFile fileRecord : fileRecords) {
             if (!ossRecordSet.contains(fileRecord.getSfileUrl())) {
                 missingFileIds.add(fileRecord.getId());

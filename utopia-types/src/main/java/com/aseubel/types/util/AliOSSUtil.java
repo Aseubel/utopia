@@ -373,7 +373,7 @@ public class AliOSSUtil {
             List<String> objectNames = new ArrayList<>();
             ossClient.listObjectsV2(BUCKET_NAME).getObjectSummaries().forEach(objectSummary -> {
                 objectNames.add(objectSummary.getKey());
-                log.info("文件名：{}，大小：{}，最后修改时间：{}", objectSummary.getKey(), objectSummary.getSize(), objectSummary.getLastModified());
+//                log.info("文件名：{}，大小：{}，最后修改时间：{}", objectSummary.getKey(), objectSummary.getSize(), objectSummary.getLastModified());
             });
             return objectNames;
         } catch (OSSException oe) {
