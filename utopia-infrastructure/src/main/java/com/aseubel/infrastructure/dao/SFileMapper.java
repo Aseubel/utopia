@@ -25,14 +25,14 @@ public interface SFileMapper {
      * @param limit
      * @return
      */
-    List<SFile> listSFile(String fileId, Integer limit);
+    List<SFile> listSFile(String fileId, Integer limit, String sortField);
 
     /**
      * 分页查询文件
      * @param limit
      * @return
      */
-    List<SFile> listSFileAhead(Integer limit);
+    List<SFile> listSFileAhead(Integer limit, String sortField);
 
     /**
      * 根据文件类型查询文件

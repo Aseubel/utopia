@@ -86,7 +86,7 @@ public class SFileController implements SFileInterface {
     @Override
     @GetMapping("/list")
     public Response<List<QuerySFileResponseDTO>> querySFiles(@Valid QuerySFileRequestDTO querySFileRequestDTO) {
-        List<SFileEntity> sFileEntities = fileService.listSFile(querySFileRequestDTO.getFileId(), querySFileRequestDTO.getLimit());
+        List<SFileEntity> sFileEntities = fileService.listSFile(querySFileRequestDTO.getFileId(), querySFileRequestDTO.getLimit(), querySFileRequestDTO.getSortType());
         List<QuerySFileResponseDTO> querySFileResponseDTOS = sFileEntities.stream()
                .map(sFileEntity -> QuerySFileResponseDTO.builder()
                        .fileId(sFileEntity.getSfileId())

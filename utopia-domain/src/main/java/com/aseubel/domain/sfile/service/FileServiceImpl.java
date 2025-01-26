@@ -42,9 +42,21 @@ public class FileServiceImpl implements IFileService{
     }
 
     @Override
-    public List<SFileEntity> listSFile(String fileId, Integer limit) {
+    public List<SFileEntity> listSFile(String fileId, Integer limit, Integer sortType) {
         log.info("开始获取文件列表服务");
-        return fileRepository.listSFile(fileId, limit);
+        String sortField = "id DESC";
+        switch (sortType) {
+            case 1:
+                sortField = "download_count DESC";
+                break;
+            case 2:
+                sortField = "download_count ASC";
+                break;
+            default:
+                sortField = "id DESC";
+                break;
+        }
+        return fileRepository.listSFile(fileId, limit, sortField);
     }
 
     @Override

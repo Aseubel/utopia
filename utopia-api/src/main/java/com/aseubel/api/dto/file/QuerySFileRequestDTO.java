@@ -27,4 +27,7 @@ public class QuerySFileRequestDTO {
     @FieldDesc(name = "页大小")
     private Integer limit;
 
+    @FieldDesc(name = "排序方式,0:默认排序,1:下载数倒序,2:下载数正序")
+    private Integer sortType;
+
 }

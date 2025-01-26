@@ -24,9 +24,10 @@ public interface IFileService {
      * 分页查询文件
      * @param fileId
      * @param limit
+     * @param sortType
      * @return
      */
-    List<SFileEntity> listSFile(String fileId, Integer limit);
+    List<SFileEntity> listSFile(String fileId, Integer limit, Integer sortType);
 
     /**
      * 根据文件类型查询文件
