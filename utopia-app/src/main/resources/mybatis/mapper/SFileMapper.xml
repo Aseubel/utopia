@@ -4,7 +4,7 @@
 
     <insert id="addSFile">
         insert into `sfile` (sfile_id, sfile_name, sfile_url, sfile_size, sfile_type, create_by, update_by)
-        values (#{sfileId}, #{sfileName}, #{sfilePath}, #{sfileSize}, #{sfileType}, #{createBy}, #{updateBy})
+        values (#{sfileId}, #{sfileName}, #{sfileUrl}, #{sfileSize}, #{sfileType}, #{createBy}, #{updateBy})
     </insert>
 
     <delete id="deleteRepeatedSFile">

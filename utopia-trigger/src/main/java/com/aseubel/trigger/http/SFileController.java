@@ -10,6 +10,7 @@ import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.AliOSSUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -43,6 +44,10 @@ public class SFileController implements SFileInterface {
     @Override
     public Response<UploadFileResponseDTO> upload(@Valid @ModelAttribute UploadFileRequestDTO uploadFileRequestDTO) {
         try {
+            if (StringUtils.isEmpty(uploadFileRequestDTO.getFile().getOriginalFilename()) || StringUtils.isEmpty(uploadFileRequestDTO.getUserId())) {
+                throw new AppException(PARAM_NOT_COMPLETE);
+            }
+
             MultipartFile file = uploadFileRequestDTO.getFile();
 
             String fileURL = fileService.upload(
@@ -51,8 +56,8 @@ public class SFileController implements SFileInterface {
             return Response.SYSTEM_SUCCESS(UploadFileResponseDTO.builder()
                     .fileURL(fileURL)
                     .build());
-        } catch (NullPointerException e) {
-            throw new AppException("文件名不能为空");
+        } catch (AppException e) {
+            throw e;
         } catch (ClientException e) {
             log.error("{}, code:{}, message:{}",OSS_UPLOAD_ERROR.getMessage(), e.getErrCode(), e.getErrMsg(), e);
             throw new AppException(OSS_UPLOAD_ERROR, e);
@@ -97,6 +102,8 @@ public class SFileController implements SFileInterface {
                        .fileSize(sFileEntity.getSfileSize())
                        .fileType(sFileEntity.getSfileType())
                        .fileUrl(sFileEntity.getSfileUrl())
+                       .downloadCount(sFileEntity.getDownloadCount())
+                       .createTime(sFileEntity.getCreateTime())
                        .build())
                 .collect(Collectors.toList());
         return Response.SYSTEM_SUCCESS(querySFileResponseDTOS);

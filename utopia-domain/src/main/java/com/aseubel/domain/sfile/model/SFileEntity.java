@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static com.aseubel.types.common.Constant.APP;
@@ -47,6 +48,9 @@ public class SFileEntity {
 
     @FieldDesc(name = "下载次数")
     private Integer downloadCount;
+
+    @FieldDesc(name = "创建时间")
+    private LocalDateTime createTime;
 
     /**
      * 获取在OSS中的文件名称（在类型文件夹下）

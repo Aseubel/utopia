@@ -34,6 +34,7 @@ public class SFileConvertor {
                 .sfileSize(sfile.getSfileSize())
                 .sfileType(sfile.getSfileType())
                 .downloadCount(sfile.getDownloadCount())
+                .createTime(sfile.getCreateTime())
                 .build();
     }
 

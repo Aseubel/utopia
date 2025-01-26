@@ -3,6 +3,8 @@ package com.aseubel.api.dto.file;
 import com.aseubel.types.annotation.FieldDesc;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Aseubel
  * @description 查询分享文件列表响应DTO
@@ -28,10 +30,10 @@ public class QuerySFileResponseDTO {
     private String fileUrl;
 
     @FieldDesc(name = "创建时间")
-    private String createTime;
+    private LocalDateTime createTime;
 
     @FieldDesc(name = "下载数量")
-    private String downloadCount;
+    private Integer downloadCount;
 
     @FieldDesc(name = "文件所属分类")
     private String fileType;
