@@ -12,6 +12,8 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Optional;
 
+import static com.aseubel.types.enums.GlobalServiceStatusCode.OSS_DOWNLOAD_ERROR;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -144,7 +146,7 @@ public final class Response<T> implements Serializable {
 
     public static <T> Response<T> Ali_EXCEPTION(OSSException oe) {
         return Response.<T>builder()
-                .code(Integer.valueOf(oe.getErrorCode()))
+                .code(OSS_DOWNLOAD_ERROR.getCode())
                 .info(oe.getErrorMessage())
                 .build();
     }

@@ -1,5 +1,6 @@
 package com.aseubel.trigger.http;
 
+import com.aliyun.oss.OSSException;
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.api.SFileInterface;
 import com.aseubel.api.dto.file.*;
@@ -83,6 +84,8 @@ public class SFileController implements SFileInterface {
             return Response.SYSTEM_SUCCESS(fileService.download(filePath));
         } catch (AppException e) {
             throw e;
+        } catch (OSSException oe) {
+            throw oe;
         } catch (Exception e) {
             log.error("未知异常", e);
             throw new AppException(OSS_DOWNLOAD_ERROR, e);
