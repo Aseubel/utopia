@@ -34,4 +34,8 @@ public class Constant {
 
     public static final Integer PER_PAGE_COMMENT_SIZE = 50;
 
+    public static final Integer PER_PAGE_TRADE_POST_SIZE = 20;
+
+    public static final Integer PER_PAGE_FILE_SIZE = 20;
+
 }

@@ -10,6 +10,7 @@ import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.AliOSSUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +21,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.aseubel.types.enums.GlobalServiceStatusCode.OSS_DELETE_ERROR;
-import static com.aseubel.types.enums.GlobalServiceStatusCode.OSS_UPLOAD_ERROR;
+import static com.aseubel.types.enums.GlobalServiceStatusCode.*;
 
 @Slf4j
 @RestController()
@@ -86,6 +86,9 @@ public class SFileController implements SFileInterface {
     @Override
     @GetMapping("/list")
     public Response<List<QuerySFileResponseDTO>> querySFiles(@Valid QuerySFileRequestDTO querySFileRequestDTO) {
+        if (StringUtils.isEmpty(querySFileRequestDTO.getUserId())) {
+            throw new AppException(PARAM_NOT_COMPLETE);
+        }
         List<SFileEntity> sFileEntities = fileService.listSFile(querySFileRequestDTO.getFileId(), querySFileRequestDTO.getLimit(), querySFileRequestDTO.getSortType());
         List<QuerySFileResponseDTO> querySFileResponseDTOS = sFileEntities.stream()
                .map(sFileEntity -> QuerySFileResponseDTO.builder()

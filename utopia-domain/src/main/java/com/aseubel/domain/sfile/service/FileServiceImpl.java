@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Collections;
 import java.util.List;
 
+import static com.aseubel.types.common.Constant.PER_PAGE_FILE_SIZE;
+
 /**
  * @author Aseubel
  * @description 文件上传服务实现类
@@ -44,17 +46,20 @@ public class FileServiceImpl implements IFileService{
     @Override
     public List<SFileEntity> listSFile(String fileId, Integer limit, Integer sortType) {
         log.info("开始获取文件列表服务");
+        limit = limit == null ? PER_PAGE_FILE_SIZE : limit;
         String sortField = "id DESC";
-        switch (sortType) {
-            case 1:
-                sortField = "download_count DESC";
-                break;
-            case 2:
-                sortField = "download_count ASC";
-                break;
-            default:
-                sortField = "id DESC";
-                break;
+        if (sortType != null) {
+            switch (sortType) {
+                case 1:
+                    sortField = "download_count DESC";
+                    break;
+                case 2:
+                    sortField = "download_count ASC";
+                    break;
+                default:
+                    sortField = "id DESC";
+                    break;
+            }
         }
         return fileRepository.listSFile(fileId, limit, sortField);
     }

@@ -28,7 +28,7 @@
         from sfile
         where id > (select id from `sfile` where sfile_id = #{fileId} and is_deleted = 0)
           and is_deleted = 0
-        order by id DESC
+        order by #{sortField}
         limit #{limit}
     </select>
 
@@ -45,7 +45,7 @@
         from sfile
         where id > (select id from `sfile` where sfile_id = #{fileId} and is_deleted = 0)
           and sfile_type=#{typeId} and is_deleted = 0
-        order by #{sortField}
+        order by id DESC
         limit #{limit}
     </select>
 

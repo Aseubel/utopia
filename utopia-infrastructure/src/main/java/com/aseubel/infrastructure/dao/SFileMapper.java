@@ -2,6 +2,7 @@ package com.aseubel.infrastructure.dao;
 
 import com.aseubel.infrastructure.dao.po.SFile;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -23,16 +24,18 @@ public interface SFileMapper {
      * 分页查询文件
      * @param fileId
      * @param limit
+     * @param sortField
      * @return
      */
-    List<SFile> listSFile(String fileId, Integer limit, String sortField);
+    List<SFile> listSFile(@Param("fileId") String fileId, @Param("limit") Integer limit, @Param("sortField") String sortField);
 
     /**
      * 分页查询文件
      * @param limit
+     * @param sortField
      * @return
      */
-    List<SFile> listSFileAhead(Integer limit, String sortField);
+    List<SFile> listSFileAhead(@Param("limit") Integer limit, @Param("sortField") String sortField);
 
     /**
      * 根据文件类型查询文件
