@@ -61,4 +61,10 @@ public interface DiscussPostMapper {
      */
     void relateDiscussPostImage(String postId, List<CommunityImage> images);
 
+    /**
+     * 获取帖子第一张图片的url
+     * @param postId
+     * @return
+     */
+    String getPostFirstImage(String postId);
 }

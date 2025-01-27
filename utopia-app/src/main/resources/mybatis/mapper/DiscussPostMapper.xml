@@ -50,4 +50,11 @@
         limit #{limit}
     </select>
 
+    <select id="getPostFirstImage" resultType="java.lang.String">
+        select image_id
+        from `post_image`
+        where post_id = #{postId} and is_deleted = 0
+        limit 1
+    </select>
+
 </mapper>
