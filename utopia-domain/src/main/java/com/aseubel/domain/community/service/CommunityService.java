@@ -61,6 +61,12 @@ public class CommunityService implements ICommunityService{
                 discussPostEntities.get(i).setUserAvatar(users.get(i).getAvatar());
             }
         }
+        // 获取帖子的第一张图片
+        if (!CollectionUtil.isEmpty(discussPostEntities)) {
+            discussPostEntities.forEach(d ->
+                d.setImage(discussPostRepository.getPostFirstImage(d.getDiscussPostId()))
+            );
+        }
         log.info("获取帖子列表服务结束执行");
         return discussPostEntities;
     }

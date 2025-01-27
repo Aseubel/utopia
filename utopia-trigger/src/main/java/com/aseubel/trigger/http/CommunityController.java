@@ -55,7 +55,7 @@ public class CommunityController implements CommunityInterface {
                    .status(discussPost.getStatus())
                    .createTime(discussPost.getCreateTime())
                    .updateTime(discussPost.getUpdateTime())
-                   .images(discussPost.getImages())
+                   .image(discussPost.getImages().get(0))
                    .build());
         }
         return Response.SYSTEM_SUCCESS(responseDTOs);
