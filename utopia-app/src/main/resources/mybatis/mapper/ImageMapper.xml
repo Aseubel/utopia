@@ -11,4 +11,10 @@
         </foreach>
     </select>
 
+    <select id="getImageUrl" resultType="java.lang.String">
+        select image_url
+        from `image`
+        where image_id = #{imageId} and is_deleted = 0
+    </select>
+
 </mapper>

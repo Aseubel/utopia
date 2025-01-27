@@ -29,4 +29,10 @@ public interface ImageMapper {
      */
     List<Image> listImageByImageIds(List<String> imageIds);
 
+    /**
+     * 根据图片id查询图片url
+     * @param imageId
+     * @return
+     */
+    String getImageUrl(String imageId);
 }
