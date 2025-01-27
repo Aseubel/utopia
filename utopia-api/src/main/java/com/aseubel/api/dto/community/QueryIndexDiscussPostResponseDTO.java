@@ -58,7 +58,7 @@ public class QueryIndexDiscussPostResponseDTO implements Serializable {
     @FieldDesc(name = "更新时间")
     private LocalDateTime updateTime;
 
-    @FieldDesc(name = "图片list")
-    private List<String> images;
+    @FieldDesc(name = "图片url，因为展示在首页，所以只展示第一张图片")
+    private String image;
 
 }
