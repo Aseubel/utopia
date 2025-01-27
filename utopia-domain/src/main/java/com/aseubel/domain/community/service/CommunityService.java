@@ -68,7 +68,7 @@ public class CommunityService implements ICommunityService{
     @Override
     public CommunityImage uploadPostImage(CommunityImage postImage) throws ClientException {
         log.info("上传帖子图片服务开始执行");
-        if (!ObjectUtils.isEmpty(communityUserRepository.queryUserStatus(postImage.getUserId()))) {
+        if (ObjectUtils.isEmpty(communityUserRepository.queryUserStatus(postImage.getUserId()))) {
             throw new AppException("用户状态异常，请联系管理员");
         }
         // 上传图片到OSS
@@ -85,7 +85,7 @@ public class CommunityService implements ICommunityService{
     @Transactional(rollbackFor = Exception.class)
     public void publishDiscussPost(DiscussPostEntity discussPostEntity) {
         log.info("发布帖子服务开始执行");
-        if (!ObjectUtils.isEmpty(communityUserRepository.queryUserStatus(discussPostEntity.getUserId()))) {
+        if (ObjectUtils.isEmpty(communityUserRepository.queryUserStatus(discussPostEntity.getUserId()))) {
             throw new AppException("用户状态异常，请联系管理员");
         }
 
