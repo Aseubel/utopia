@@ -4,6 +4,7 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.types.enums.GlobalServiceStatusCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.http.HttpStatus;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -18,6 +19,7 @@ public class AppException extends RuntimeException {
     private String info;
 
     public AppException(String info) {
+        this.code = String.valueOf(HttpStatus.BAD_REQUEST.value());
         this.info = info;
     }
 
