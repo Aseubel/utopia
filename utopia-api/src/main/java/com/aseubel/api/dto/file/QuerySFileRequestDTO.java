@@ -4,6 +4,7 @@ import com.aseubel.types.annotation.FieldDesc;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @author Aseubel
@@ -15,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuerySFileRequestDTO {
+public class QuerySFileRequestDTO implements Serializable {
 
     @NotNull(message = "用户id不能为空")
     @FieldDesc(name = "用户id")

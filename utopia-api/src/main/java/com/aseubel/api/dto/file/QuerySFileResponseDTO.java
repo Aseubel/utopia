@@ -3,6 +3,7 @@ package com.aseubel.api.dto.file;
 import com.aseubel.types.annotation.FieldDesc;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuerySFileResponseDTO {
+public class QuerySFileResponseDTO implements Serializable {
 
     @FieldDesc(name = "文件id")
     private String fileId;
