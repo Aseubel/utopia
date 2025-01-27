@@ -1,11 +1,9 @@
 package com.aseubel.api;
 
-import com.aseubel.api.dto.community.QueryIndexDiscussPostRequestDTO;
-import com.aseubel.api.dto.community.QueryIndexDiscussPostResponseDTO;
-import com.aseubel.api.dto.community.UploadDiscussPostImageRequest;
-import com.aseubel.api.dto.community.UploadDiscussPostImageResponse;
+import com.aseubel.api.dto.community.*;
 import com.aseubel.types.Response;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -30,5 +28,12 @@ public interface CommunityInterface {
      * @return
      */
     Response<UploadDiscussPostImageResponse> uploadDiscussPostImage(@ModelAttribute UploadDiscussPostImageRequest uploadDiscussPostImageRequest);
+
+    /**
+     * 发布帖子
+     * @param publishDiscussPostRequest
+     * @return
+     */
+    Response publishDiscussPost(@Valid @RequestBody PublishDiscussPostRequest publishDiscussPostRequest);
 
 }

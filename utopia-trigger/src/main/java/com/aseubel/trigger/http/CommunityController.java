@@ -2,10 +2,7 @@ package com.aseubel.trigger.http;
 
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.api.CommunityInterface;
-import com.aseubel.api.dto.community.QueryIndexDiscussPostRequestDTO;
-import com.aseubel.api.dto.community.QueryIndexDiscussPostResponseDTO;
-import com.aseubel.api.dto.community.UploadDiscussPostImageRequest;
-import com.aseubel.api.dto.community.UploadDiscussPostImageResponse;
+import com.aseubel.api.dto.community.*;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.community.service.ICommunityService;
@@ -92,6 +89,23 @@ public class CommunityController implements CommunityInterface {
            log.error("上传帖子图片时出现未知异常", e);
            throw new AppException(OSS_UPLOAD_ERROR, e);
        }
+    }
+
+    /**
+     * 发布帖子
+     */
+    @Override
+    @PostMapping("/post")
+    public Response publishDiscussPost(@Valid @RequestBody PublishDiscussPostRequest publishDiscussPostRequest) {
+        DiscussPostEntity discussPostEntity = DiscussPostEntity.builder()
+               .userId(publishDiscussPostRequest.getUserId())
+               .title(publishDiscussPostRequest.getTitle())
+               .content(publishDiscussPostRequest.getContent())
+               .tags(publishDiscussPostRequest.getTags())
+               .images(publishDiscussPostRequest.getImages())
+               .build();
+        communityService.publishDiscussPost(discussPostEntity);
+        return Response.SYSTEM_SUCCESS();
     }
 
     private boolean imageOrUserIdIsBlank(UploadDiscussPostImageRequest requestDTO) {
