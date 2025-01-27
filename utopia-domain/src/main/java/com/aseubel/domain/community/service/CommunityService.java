@@ -67,7 +67,7 @@ public class CommunityService implements ICommunityService{
 
     @Override
     public CommunityImage uploadPostImage(CommunityImage postImage) throws ClientException {
-        log.info("上传帖子图片服务开始执行");
+        log.info("上传帖子图片服务开始执行，userId:{}", postImage.getUserId());
         if (ObjectUtils.isEmpty(communityUserRepository.queryUserStatus(postImage.getUserId()))) {
             throw new AppException("用户状态异常，请联系管理员");
         }
@@ -77,14 +77,14 @@ public class CommunityService implements ICommunityService{
         postImage.setImageUrl(imageUrl);
         // 保存图片信息到数据库
         discussPostRepository.savePostImage(postImage);
-        log.info("上传帖子图片服务结束执行");
+        log.info("上传帖子图片服务结束执行，userId:{}", postImage.getUserId());
         return postImage;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void publishDiscussPost(DiscussPostEntity discussPostEntity) {
-        log.info("发布帖子服务开始执行");
+        log.info("发布帖子服务开始执行，userId:{}", discussPostEntity.getUserId());
         if (ObjectUtils.isEmpty(communityUserRepository.queryUserStatus(discussPostEntity.getUserId()))) {
             throw new AppException("用户状态异常，请联系管理员");
         }
@@ -99,7 +99,7 @@ public class CommunityService implements ICommunityService{
             }
         }
 
-        log.info("发布帖子服务结束执行");
+        log.info("发布帖子服务结束执行，userId:{}", discussPostEntity.getUserId());
     }
 
     @Override
