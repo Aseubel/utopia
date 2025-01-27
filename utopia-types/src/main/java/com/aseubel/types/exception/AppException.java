@@ -17,8 +17,8 @@ public class AppException extends RuntimeException {
     /** 异常信息 */
     private String info;
 
-    public AppException(String code) {
-        this.code = code;
+    public AppException(String info) {
+        this.info = info;
     }
 
     public AppException(String code, Throwable cause) {

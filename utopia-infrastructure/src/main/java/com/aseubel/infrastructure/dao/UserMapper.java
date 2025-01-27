@@ -35,4 +35,10 @@ public interface UserMapper {
      */
     List<User> listUserAvatarAndNameByUserIds(List<String> userIds);
 
+    /**
+     * 根据用户id获取用户状态
+     * @param userId
+     * @return
+     */
+    User getUserStatusByUserId(String userId);
 }

@@ -8,9 +8,12 @@ import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
+import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.AliOSSUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,6 +68,9 @@ public class CommunityService implements ICommunityService{
     @Override
     public CommunityImage uploadPostImage(CommunityImage postImage) throws ClientException {
         log.info("上传帖子图片服务开始执行");
+        if (!ObjectUtils.isEmpty(communityUserRepository.queryUserStatus(postImage.getUserId()))) {
+            throw new AppException("用户状态异常，请联系管理员");
+        }
         // 上传图片到OSS
         postImage.generateImageId();
         String imageUrl = aliOSSUtil.upload(postImage.getImage(), postImage.getPostObjectName());
@@ -79,6 +85,10 @@ public class CommunityService implements ICommunityService{
     @Transactional(rollbackFor = Exception.class)
     public void publishDiscussPost(DiscussPostEntity discussPostEntity) {
         log.info("发布帖子服务开始执行");
+        if (!ObjectUtils.isEmpty(communityUserRepository.queryUserStatus(discussPostEntity.getUserId()))) {
+            throw new AppException("用户状态异常，请联系管理员");
+        }
+
         discussPostEntity.generatePostId();
         discussPostRepository.saveNewDiscussPost(discussPostEntity);
 

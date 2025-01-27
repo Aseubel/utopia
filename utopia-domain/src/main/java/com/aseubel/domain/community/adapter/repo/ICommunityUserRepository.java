@@ -18,4 +18,11 @@ public interface ICommunityUserRepository {
      */
     List<UserEntity> queryUserAvatarAndName(List<String> userIds);
 
+    /**
+     * 查询用户状态，是否封禁之类的
+     * @param userId
+     * @return
+     */
+    UserEntity queryUserStatus(String userId);
+
 }

@@ -35,4 +35,10 @@
         </foreach>
     </select>
 
+    <select id="getUserStatusByUserId" resultType="com.aseubel.infrastructure.dao.po.User">
+        select id, user_id
+        from `user`
+        where user_id = #{userId} and is_deleted = 0
+    </select>
+
 </mapper>

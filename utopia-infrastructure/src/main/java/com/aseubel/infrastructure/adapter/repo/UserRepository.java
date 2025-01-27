@@ -122,5 +122,12 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
                 .orElse(Collections.emptyList());
     }
 
+    @Override
+    public UserEntity queryUserStatus(String userId) {
+        return Optional.ofNullable(userMapper.getUserStatusByUserId(userId))
+                .map(userConvertor::convert)
+                .orElse(null);
+    }
+
 
 }
