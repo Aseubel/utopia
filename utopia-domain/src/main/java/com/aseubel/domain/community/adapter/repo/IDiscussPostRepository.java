@@ -48,4 +48,11 @@ public interface IDiscussPostRepository {
      */
     List<CommunityImage> listPostImagesByImageIds(List<String> imageIds);
 
+    /**
+     * 根据帖子id获取第一张图片
+     * @param postId
+     * @return
+     */
+    String getPostFirstImage(String postId);
+
 }

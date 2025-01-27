@@ -68,4 +68,10 @@ public class DiscussPostRepository implements IDiscussPostRepository {
                 imageMapper.listImageByImageIds(imageIds), communityImageConvertor::convert);
     }
 
+    @Override
+    public String getPostFirstImage(String postId) {
+        // 先获取第一张图片的id。再去image表中查询图片的url
+        return Optional.ofNullable(discussPostMapper.getPostFirstImage(postId)).map(imageMapper::getImageUrl).orElse(null);
+    }
+
 }
