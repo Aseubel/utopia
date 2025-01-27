@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Aseubel
@@ -64,5 +65,9 @@ public class DiscussPostEntity {
 
     @FieldDesc(name = "评论list")
     private List<CommentEntity> comments;
+
+    public void generatePostId() {
+        this.discussPostId = "dp_" + UUID.randomUUID().toString().replaceAll("-", "");
+    }
 
 }
