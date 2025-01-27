@@ -43,6 +43,9 @@ public class CommunityImage {
     @FieldDesc(name = "用户id")
     private String userId;
 
+    @FieldDesc(name = "顺序")
+    private Integer order;
+
     /**
      * 获取在OSS中的文件名称（在类型文件夹下）
      */
