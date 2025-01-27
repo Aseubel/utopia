@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 import static com.aseubel.types.common.Constant.*;
 
@@ -74,7 +75,7 @@ public class CommunityImage {
      * 生成图片id
      */
     public void generateImageId() {
-        this.imageId = LocalDateTime.now().toString().replace("-", "").replace(":", "").replace(".", "") + "_" + userId;
+        this.imageId = UUID.randomUUID().toString().replace("-", "") + "_" + userId;
     }
     
 }
