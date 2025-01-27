@@ -12,6 +12,7 @@ import com.aseubel.types.Response;
 import com.aseubel.types.exception.AppException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 
 import static com.aseubel.types.enums.GlobalServiceStatusCode.OSS_UPLOAD_ERROR;
+import static com.aseubel.types.enums.GlobalServiceStatusCode.PARAM_NOT_COMPLETE;
 
 @Slf4j
 @RestController()
@@ -127,6 +129,9 @@ public class UserController implements UserInterface {
     @PostMapping("/avatar")
     public Response<UploadAvatarResponseDTO> uploadAvatar(@Valid @ModelAttribute UploadAvatarRequestDTO uploadAvatarRequestDTO) {
         try {
+            if (StringUtils.isEmpty(uploadAvatarRequestDTO.getAvatar().getOriginalFilename()) || StringUtils.isEmpty(uploadAvatarRequestDTO.getUserId())) {
+                throw new AppException(PARAM_NOT_COMPLETE);
+            }
             MultipartFile avatar = uploadAvatarRequestDTO.getAvatar();
 
             String avatarUrl = userService.uploadAvatar(
