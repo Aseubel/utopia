@@ -3,6 +3,9 @@ package com.aseubel.infrastructure.dao;
 import com.aseubel.infrastructure.dao.po.Image;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * @author Aseubel
@@ -18,5 +21,12 @@ public interface ImageMapper {
      */
     @Insert("insert into `image`(user_id, image_id, image_url) values (#{userId}, #{imageId}, #{imageUrl})")
     void addImage(Image image);
+
+    /**
+     * 根据图片id列表查询图片列表，用于批量关联
+     * @param imageIds
+     * @return
+     */
+    List<Image> listImageByImageIds(List<String> imageIds);
 
 }
