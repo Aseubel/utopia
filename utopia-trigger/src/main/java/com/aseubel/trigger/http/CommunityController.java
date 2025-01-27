@@ -64,6 +64,9 @@ public class CommunityController implements CommunityInterface {
         return Response.SYSTEM_SUCCESS(responseDTOs);
     }
 
+    /**
+     * 上传帖子图片
+     */
     @Override
     @PostMapping("/post/image")
     public Response<UploadDiscussPostImageResponse> uploadDiscussPostImage(@ModelAttribute UploadDiscussPostImageRequest requestDTO) {
@@ -73,8 +76,8 @@ public class CommunityController implements CommunityInterface {
            }
            CommunityImage image = communityService.uploadPostImage(
                    CommunityImage.builder()
+                           .userId(requestDTO.getUserId())
                            .image(requestDTO.getPostImage())
-                           .order(requestDTO.getOrder())
                            .build());
 
            return Response.SYSTEM_SUCCESS(

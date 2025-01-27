@@ -4,6 +4,10 @@ import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.infrastructure.dao.po.Image;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 /**
  * @author Aseubel
  * @description ImageConvertor
@@ -26,6 +30,10 @@ public class CommunityImageConvertor {
                 .imageUrl(image.getImageUrl())
                 .userId(image.getUserId())
                 .build();
+    }
+
+    public <T, U> List<U> convert(List<T> items, Function<T, U> converter) {
+        return items.stream().map(converter).collect(Collectors.toList());
     }
 
 }

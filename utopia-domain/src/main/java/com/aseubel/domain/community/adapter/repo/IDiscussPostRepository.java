@@ -27,4 +27,25 @@ public interface IDiscussPostRepository {
      * @param postImage
      */
     void savePostImage(CommunityImage postImage);
+
+    /**
+     * 保存新帖子
+     * @param discussPostEntity
+     */
+    void saveNewDiscussPost(DiscussPostEntity discussPostEntity);
+
+    /**
+     * 关联帖子图片
+     * @param postId
+     * @param images
+     */
+    void relateNewPostImage(String postId, List<CommunityImage> images);
+
+    /**
+     * 根据帖子id列举帖子
+     * @param imageIds
+     * @return
+     */
+    List<CommunityImage> listPostImagesByImageIds(List<String> imageIds);
+
 }

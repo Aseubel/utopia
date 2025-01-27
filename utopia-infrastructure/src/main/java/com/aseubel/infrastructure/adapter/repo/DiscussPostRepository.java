@@ -3,10 +3,13 @@ package com.aseubel.infrastructure.adapter.repo;
 import com.aseubel.domain.community.adapter.repo.IDiscussPostRepository;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
+import com.aseubel.infrastructure.convertor.CommunityImageConvertor;
 import com.aseubel.infrastructure.convertor.DiscussPostConvertor;
 import com.aseubel.infrastructure.dao.DiscussPostMapper;
+import com.aseubel.infrastructure.dao.ImageMapper;
 import com.aseubel.infrastructure.dao.po.DiscussPost;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
@@ -29,6 +32,11 @@ public class DiscussPostRepository implements IDiscussPostRepository {
     @Resource
     private DiscussPostConvertor discussPostConvertor;
 
+    @Resource
+    private ImageMapper imageMapper;
+    @Autowired
+    private CommunityImageConvertor communityImageConvertor;
+
     @Override
     public List<DiscussPostEntity> listDiscussPost(String postId, Integer limit) {
         return Optional.ofNullable(StringUtils.isEmpty(postId)
@@ -40,7 +48,24 @@ public class DiscussPostRepository implements IDiscussPostRepository {
 
     @Override
     public void savePostImage(CommunityImage postImage) {
-        discussPostMapper.saveDiscussPostImage(postImage);
+        imageMapper.addImage(communityImageConvertor.convert(postImage));
+    }
+
+    @Override
+    public void saveNewDiscussPost(DiscussPostEntity discussPostEntity) {
+        DiscussPost discussPost = discussPostConvertor.convert(discussPostEntity);
+        discussPostMapper.addDiscussPost(discussPost);
+    }
+
+    @Override
+    public void relateNewPostImage(String postId, List<CommunityImage> images) {
+        discussPostMapper.relateDiscussPostImage(postId, images);
+    }
+
+    @Override
+    public List<CommunityImage> listPostImagesByImageIds(List<String> imageIds) {
+        return communityImageConvertor.convert(
+                imageMapper.listImageByImageIds(imageIds), communityImageConvertor::convert);
     }
 
 }
