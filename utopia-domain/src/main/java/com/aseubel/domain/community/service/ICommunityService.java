@@ -1,6 +1,7 @@
 package com.aseubel.domain.community.service;
 
 import com.aliyuncs.exceptions.ClientException;
+import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 
@@ -27,5 +28,39 @@ public interface ICommunityService {
      * @return
      */
     CommunityImage uploadPostImage(CommunityImage postImage) throws ClientException;
+
+    /**
+     * 发布帖子
+     * @param discussPostEntity
+     */
+    void publishDiscussPost(DiscussPostEntity discussPostEntity);
+
+    /**
+     * 点赞帖子
+     * @param postId
+     * @return
+     */
+    DiscussPostEntity likeDiscussPost(String postId);
+
+    /**
+     * 评论帖子
+     * @param commentEntity
+     * @return
+     */
+    DiscussPostEntity commentDiscussPost(CommentEntity commentEntity);
+
+    /**
+     * 转发帖子
+     * @param postId
+     * @return
+     */
+    DiscussPostEntity forwardDiscussPost(String postId);
+
+    /**
+     * 置顶帖子
+     * @param postId
+     * @return
+     */
+    DiscussPostEntity topDiscussPost(String postId);
 
 }

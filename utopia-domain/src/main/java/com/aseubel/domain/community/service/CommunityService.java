@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.community.adapter.repo.ICommunityUserRepository;
 import com.aseubel.domain.community.adapter.repo.IDiscussPostRepository;
+import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
@@ -11,6 +12,7 @@ import com.aseubel.types.util.AliOSSUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -71,6 +73,43 @@ public class CommunityService implements ICommunityService{
         discussPostRepository.savePostImage(postImage);
         log.info("上传帖子图片服务结束执行");
         return postImage;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void publishDiscussPost(DiscussPostEntity discussPostEntity) {
+        log.info("发布帖子服务开始执行");
+        discussPostEntity.generatePostId();
+        discussPostRepository.saveNewDiscussPost(discussPostEntity);
+
+        if (!CollectionUtil.isEmpty(discussPostEntity.getImages())) {
+            List<CommunityImage> images = discussPostRepository.listPostImagesByImageIds(discussPostEntity.getImages());
+            if (!CollectionUtil.isEmpty(images)) {
+                discussPostRepository.relateNewPostImage(discussPostEntity.getDiscussPostId(), images);
+            }
+        }
+
+        log.info("发布帖子服务结束执行");
+    }
+
+    @Override
+    public DiscussPostEntity likeDiscussPost(String postId) {
+        return null;
+    }
+
+    @Override
+    public DiscussPostEntity commentDiscussPost(CommentEntity commentEntity) {
+        return null;
+    }
+
+    @Override
+    public DiscussPostEntity forwardDiscussPost(String postId) {
+        return null;
+    }
+
+    @Override
+    public DiscussPostEntity topDiscussPost(String postId) {
+        return null;
     }
 
 }
