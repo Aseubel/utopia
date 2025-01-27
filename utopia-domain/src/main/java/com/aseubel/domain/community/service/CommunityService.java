@@ -1,10 +1,13 @@
 package com.aseubel.domain.community.service;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.community.adapter.repo.ICommunityUserRepository;
 import com.aseubel.domain.community.adapter.repo.IDiscussPostRepository;
+import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
+import com.aseubel.types.util.AliOSSUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,6 +33,8 @@ public class CommunityService implements ICommunityService{
 
     private final ICommunityUserRepository communityUserRepository;
 
+    private final AliOSSUtil aliOSSUtil;
+
     @Override
     public List<DiscussPostEntity> listDiscussPost(String postId, Integer limit) {
         log.info("获取帖子列表服务开始执行");
@@ -53,6 +58,18 @@ public class CommunityService implements ICommunityService{
         }
         log.info("获取帖子列表服务结束执行");
         return discussPostEntities;
+    }
+
+    @Override
+    public String uploadPostImage(CommunityImage postImage) throws ClientException {
+        log.info("上传帖子图片服务开始执行");
+        // 上传图片到OSS
+        String imageUrl = aliOSSUtil.upload(postImage.getImage(), postImage.getPostObjectName());
+        postImage.setImageUrl(imageUrl);
+        // 保存图片信息到数据库
+        discussPostRepository.savePostImage(postImage);
+        log.info("上传帖子图片服务结束执行");
+        return imageUrl;
     }
 
 }

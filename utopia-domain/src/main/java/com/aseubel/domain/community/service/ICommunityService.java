@@ -1,5 +1,7 @@
 package com.aseubel.domain.community.service;
 
+import com.aliyuncs.exceptions.ClientException;
+import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 
 import java.util.List;
@@ -18,5 +20,12 @@ public interface ICommunityService {
      * @return
      */
     List<DiscussPostEntity> listDiscussPost(String postId, Integer limit);
+
+    /**
+     * 上传帖子图片
+     * @param postImage
+     * @return
+     */
+    String uploadPostImage(CommunityImage postImage) throws ClientException;
 
 }
