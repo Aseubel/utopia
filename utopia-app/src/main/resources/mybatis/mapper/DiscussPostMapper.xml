@@ -8,10 +8,10 @@
     </insert>
 
     <insert id="relateDiscussPostImage">
-        insert `post_image` (post_id, image_id, `order`)
+        insert `post_image` (post_id, image_id)
         values
         <foreach collection="images" item="image" separator=",">
-            (#{postId}, #{image.imageId}, #{image.order})
+            (#{postId}, #{image.imageId})
         </foreach>
     </insert>
 
