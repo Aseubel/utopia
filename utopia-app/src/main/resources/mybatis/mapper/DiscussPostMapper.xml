@@ -3,12 +3,16 @@
 <mapper namespace="com.aseubel.infrastructure.dao.DiscussPostMapper">
 
     <insert id="addDiscussPost">
-        insert into `discuss_post` (discuss_post_id, user_id, title, content, like_count, forward_count, type, status)
-        values (#{discussPostId}, #{userId}, #{title}, #{content}, #{likeCount}, #{forwardCount}, #{type}, #{status})
+        insert into `discuss_post` (discuss_post_id, user_id, title, content)
+        values (#{discussPostId}, #{userId}, #{title}, #{content})
     </insert>
 
-    <insert id="saveDiscussPostImage">
-        insert post_image (post_id, image_id, `order`) values (#{postId}, #{imageId}, #{order})
+    <insert id="relateDiscussPostImage">
+        insert `post_image` (post_id, image_id, `order`)
+        values
+        <foreach collection="images" item="image" separator=",">
+            (#{postId}, #{image.imageId}, #{image.order})
+        </foreach>
     </insert>
 
     <update id="deleteDiscussPostByPostId">

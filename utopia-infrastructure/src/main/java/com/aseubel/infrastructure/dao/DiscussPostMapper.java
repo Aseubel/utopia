@@ -55,9 +55,10 @@ public interface DiscussPostMapper {
     List<DiscussPost> listDiscussPostAhead(Integer limit);
 
     /**
-     * 保存帖子图片
-     * @param postImage
+     * 关联帖子图片
+     * @param postId
+     * @param images
      */
-    void saveDiscussPostImage(CommunityImage postImage);
+    void relateDiscussPostImage(String postId, List<CommunityImage> images);
 
 }
