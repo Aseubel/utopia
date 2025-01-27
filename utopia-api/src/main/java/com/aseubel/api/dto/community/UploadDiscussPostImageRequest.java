@@ -24,7 +24,4 @@ public class UploadDiscussPostImageRequest implements Serializable {
     @FieldDesc(name = "图片文件")
     private MultipartFile postImage;
 
-    @FieldDesc(name = "图片顺序")
-    private Integer order;
-
 }
