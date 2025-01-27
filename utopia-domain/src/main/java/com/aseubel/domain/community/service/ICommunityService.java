@@ -26,6 +26,6 @@ public interface ICommunityService {
      * @param postImage
      * @return
      */
-    String uploadPostImage(CommunityImage postImage) throws ClientException;
+    CommunityImage uploadPostImage(CommunityImage postImage) throws ClientException;
 
 }

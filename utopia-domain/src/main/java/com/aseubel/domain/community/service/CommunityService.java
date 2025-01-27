@@ -61,15 +61,16 @@ public class CommunityService implements ICommunityService{
     }
 
     @Override
-    public String uploadPostImage(CommunityImage postImage) throws ClientException {
+    public CommunityImage uploadPostImage(CommunityImage postImage) throws ClientException {
         log.info("上传帖子图片服务开始执行");
         // 上传图片到OSS
+        postImage.generateImageId();
         String imageUrl = aliOSSUtil.upload(postImage.getImage(), postImage.getPostObjectName());
         postImage.setImageUrl(imageUrl);
         // 保存图片信息到数据库
         discussPostRepository.savePostImage(postImage);
         log.info("上传帖子图片服务结束执行");
-        return imageUrl;
+        return postImage;
     }
 
 }
