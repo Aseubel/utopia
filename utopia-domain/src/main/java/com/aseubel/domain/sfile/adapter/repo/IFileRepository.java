@@ -67,4 +67,10 @@ public interface IFileRepository {
      */
     SFileEntity getSFileByUrl(String fileUrl);
 
+    /**
+     * 增加下载次数
+     * @param fileId
+     */
+    void incrementDownloadCount(String fileId);
+
 }

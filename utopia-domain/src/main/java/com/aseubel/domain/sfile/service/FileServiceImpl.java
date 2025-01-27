@@ -3,6 +3,7 @@ package com.aseubel.domain.sfile.service;
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.sfile.adapter.repo.IFileRepository;
 import com.aseubel.domain.sfile.model.SFileEntity;
+import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.AliOSSUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import java.util.List;
 
 import static com.aseubel.types.common.Constant.APP;
 import static com.aseubel.types.common.Constant.PER_PAGE_FILE_SIZE;
+import static com.aseubel.types.enums.GlobalServiceStatusCode.OSS_OBJECT_NOT_EXIST;
 
 /**
  * @author Aseubel
@@ -45,11 +47,16 @@ public class FileServiceImpl implements IFileService{
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public byte[] download(String fileUrl) throws ClientException {
         // 取到object name
         log.info("开始下载文件, fileUrl: {}", fileUrl);
         SFileEntity sFileEntity = fileRepository.getSFileByUrl(fileUrl);
-
+        if (sFileEntity == null) {
+            log.error("文件不存在, fileUrl: {}", fileUrl);
+            throw new AppException(OSS_OBJECT_NOT_EXIST.getCode(), "文件不存在或已被删除");
+        }
+        fileRepository.incrementDownloadCount(sFileEntity.getSfileId());
         return aliOSSUtil.download(fileUrl.substring(fileUrl.indexOf(APP)));
     }
 

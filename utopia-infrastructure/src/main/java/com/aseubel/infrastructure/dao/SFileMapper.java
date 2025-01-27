@@ -78,4 +78,10 @@ public interface SFileMapper {
      * @return
      */
     SFile getSFileBySFileUrl(String fileUrl);
+
+    /**
+     * 更新文件下载次数
+     * @param fileId
+     */
+    void incrementDownloadCount(String fileId);
 }

@@ -99,5 +99,10 @@ public class SFileRepository implements IFileRepository {
         return sFileConvertor.convert(sFileMapper.getSFileBySFileUrl(fileUrl));
     }
 
+    @Override
+    public void incrementDownloadCount(String fileId) {
+        sFileMapper.incrementDownloadCount(fileId);
+    }
+
 
 }
