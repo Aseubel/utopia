@@ -52,4 +52,19 @@ public interface IFileRepository {
      * 删除缺失的分享文件
      */
     void deleteMissingSFile() throws ClientException;
+
+    /**
+     * 根据文件id查询文件
+     * @param fileId
+     * @return
+     */
+    SFileEntity getSFileById(String fileId);
+
+    /**
+     * 根据文件url查询文件
+     * @param fileUrl
+     * @return
+     */
+    SFileEntity getSFileByUrl(String fileUrl);
+
 }

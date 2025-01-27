@@ -48,6 +48,8 @@ public class FileServiceImpl implements IFileService{
     public byte[] download(String fileUrl) throws ClientException {
         // 取到object name
         log.info("开始下载文件, fileUrl: {}", fileUrl);
+        SFileEntity sFileEntity = fileRepository.getSFileByUrl(fileUrl);
+
         return aliOSSUtil.download(fileUrl.substring(fileUrl.indexOf(APP)));
     }
 

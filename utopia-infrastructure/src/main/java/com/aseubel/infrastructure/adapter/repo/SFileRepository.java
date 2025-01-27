@@ -89,4 +89,15 @@ public class SFileRepository implements IFileRepository {
         }
     }
 
+    @Override
+    public SFileEntity getSFileById(String fileId) {
+        return sFileConvertor.convert(sFileMapper.getSFileBySFileId(fileId));
+    }
+
+    @Override
+    public SFileEntity getSFileByUrl(String fileUrl) {
+        return sFileConvertor.convert(sFileMapper.getSFileBySFileUrl(fileUrl));
+    }
+
+
 }

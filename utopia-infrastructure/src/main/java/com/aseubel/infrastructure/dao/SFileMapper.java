@@ -64,4 +64,18 @@ public interface SFileMapper {
      * 删除oss不存在的缺失文件记录
      */
     void deleteMissingSFile(List<String> fileIds);
+
+    /**
+     * 根据文件id查询文件
+     * @param fileId
+     * @return
+     */
+    SFile getSFileBySFileId(String fileId);
+
+    /**
+     * 根据文件url查询文件
+     * @param fileUrl
+     * @return
+     */
+    SFile getSFileBySFileUrl(String fileUrl);
 }
