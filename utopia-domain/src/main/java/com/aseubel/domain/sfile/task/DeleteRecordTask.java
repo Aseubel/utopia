@@ -31,7 +31,7 @@ public class DeleteRecordTask {
     /**
      * 每天凌晨0点执行一次，删除oss对象不存在的sfile记录
      */
-    @Scheduled(cron = "0 * * * * ?")
+    @Scheduled(cron = "1 0 0 * * ?")
     public void deleteMissingData() throws ClientException {
         log.info("开始删除oss对象不存在的sfile数据库记录");
         fileRepository.deleteMissingSFile();
