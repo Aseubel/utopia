@@ -1,4 +1,4 @@
-package com.aseubel.domain.community.model.vo;
+package com.aseubel.domain.community.model.entity;
 
 import com.aseubel.types.annotation.FieldDesc;
 import com.aseubel.types.exception.AppException;
@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import static com.aseubel.types.common.Constant.*;
 
@@ -45,7 +46,7 @@ public class CommunityImage {
     /**
      * 获取在OSS中的文件名称（在类型文件夹下）
      */
-    public String getObjectName() {
+    public String getPostObjectName() {
         if (StringUtils.isEmpty(userId)) {
             throw new AppException("图片用户id不能为空");
         }
@@ -53,7 +54,19 @@ public class CommunityImage {
         objectName.append(APP).append("/")
                 .append(DISCUSS_POST_IMAGE).append("/")
                 .append(imageId)
-                .append(image.getOriginalFilename().substring(image.getOriginalFilename().lastIndexOf(".")));
+                .append(Objects.requireNonNull(image.getOriginalFilename()).substring(image.getOriginalFilename().lastIndexOf(".")));
+        return objectName.toString();
+    }
+
+    public String getCommentObjectName() {
+        if (StringUtils.isEmpty(userId)) {
+            throw new AppException("图片用户id不能为空");
+        }
+        StringBuilder objectName = new StringBuilder();
+        objectName.append(APP).append("/")
+                .append(COMMENT_IMAGE).append("/")
+                .append(imageId)
+                .append(Objects.requireNonNull(image.getOriginalFilename()).substring(image.getOriginalFilename().lastIndexOf(".")));
         return objectName.toString();
     }
 

@@ -1,6 +1,6 @@
 package com.aseubel.infrastructure.convertor;
 
-import com.aseubel.domain.community.model.vo.CommunityImage;
+import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.infrastructure.dao.po.Image;
 import org.springframework.stereotype.Component;
 

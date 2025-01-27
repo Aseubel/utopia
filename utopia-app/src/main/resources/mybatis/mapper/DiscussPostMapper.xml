@@ -7,6 +7,10 @@
         values (#{discussPostId}, #{userId}, #{title}, #{content}, #{likeCount}, #{forwardCount}, #{type}, #{status})
     </insert>
 
+    <insert id="saveDiscussPostImage">
+        insert post_image (post_id, image_id, `order`) values (#{postId}, #{imageId}, #{order})
+    </insert>
+
     <update id="deleteDiscussPostByPostId">
         update `discuss_post`
         set is_deleted = 1

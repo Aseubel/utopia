@@ -1,6 +1,7 @@
 package com.aseubel.infrastructure.adapter.repo;
 
 import com.aseubel.domain.community.adapter.repo.IDiscussPostRepository;
+import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.infrastructure.convertor.DiscussPostConvertor;
 import com.aseubel.infrastructure.dao.DiscussPostMapper;
@@ -35,6 +36,11 @@ public class DiscussPostRepository implements IDiscussPostRepository {
                         : discussPostMapper.listDiscussPost(postId, limit))
                 .map(p -> p.stream().map(discussPostConvertor::convert).collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public void savePostImage(CommunityImage postImage) {
+        discussPostMapper.saveDiscussPostImage(postImage);
     }
 
 }

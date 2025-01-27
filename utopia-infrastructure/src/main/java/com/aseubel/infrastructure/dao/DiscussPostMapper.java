@@ -1,5 +1,6 @@
 package com.aseubel.infrastructure.dao;
 
+import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.infrastructure.dao.po.DiscussPost;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -52,5 +53,11 @@ public interface DiscussPostMapper {
      * @return
      */
     List<DiscussPost> listDiscussPostAhead(Integer limit);
+
+    /**
+     * 保存帖子图片
+     * @param postImage
+     */
+    void saveDiscussPostImage(CommunityImage postImage);
 
 }

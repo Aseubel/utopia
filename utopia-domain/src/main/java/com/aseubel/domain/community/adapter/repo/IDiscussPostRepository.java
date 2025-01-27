@@ -1,5 +1,6 @@
 package com.aseubel.domain.community.adapter.repo;
 
+import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import org.springframework.stereotype.Repository;
 
@@ -21,4 +22,9 @@ public interface IDiscussPostRepository {
      */
     List<DiscussPostEntity> listDiscussPost(String postId, Integer limit);
 
+    /**
+     * 保存帖子图片记录
+     * @param postImage
+     */
+    void savePostImage(CommunityImage postImage);
 }
