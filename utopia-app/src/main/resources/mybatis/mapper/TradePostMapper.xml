@@ -3,8 +3,8 @@
 <mapper namespace="com.aseubel.infrastructure.dao.TradePostMapper">
 
     <insert id="addTradePost">
-        insert into `trade_post` (trade_post_id, user_id, title, content, price)
-        values (#{tradePostId}, #{userId}, #{title}, #{content}, #{price})
+        insert into `trade_post` (trade_post_id, user_id, title, content, price, type)
+        values (#{tradePostId}, #{userId}, #{title}, #{content}, #{price}, #{type})
     </insert>
 
     <update id="updateTradePost">
