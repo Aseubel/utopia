@@ -2,6 +2,7 @@ package com.aseubel.infrastructure.dao;
 
 import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.infrastructure.dao.po.DiscussPost;
+import com.aseubel.infrastructure.dao.po.Image;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -59,7 +60,7 @@ public interface DiscussPostMapper {
      * @param postId
      * @param images
      */
-    void relateDiscussPostImage(String postId, List<CommunityImage> images);
+    void relateDiscussPostImage(String postId, List<Image> images);
 
     /**
      * 获取帖子第一张图片的url

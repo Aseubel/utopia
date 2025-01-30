@@ -59,7 +59,7 @@ public class DiscussPostRepository implements IDiscussPostRepository {
 
     @Override
     public void relateNewPostImage(String postId, List<CommunityImage> images) {
-        discussPostMapper.relateDiscussPostImage(postId, images);
+        discussPostMapper.relateDiscussPostImage(postId, communityImageConvertor.convert(images, communityImageConvertor::convert));
     }
 
     @Override
