@@ -50,7 +50,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
   servlet:
     multipart:
-      max-file-size: 10MB  #上传文件单个大小限制
+      max-file-size: 15MB  #上传文件单个大小限制
       max-request-size: 60MB  #上传文件总大小限制
       enabled: true  #是否开启文件上传功能，默认false
 

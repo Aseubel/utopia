@@ -1,5 +1,6 @@
 package com.aseubel.infrastructure.adapter.repo;
 
+import com.aseubel.domain.bazaar.adapter.repo.IBazaarUserRepository;
 import com.aseubel.domain.community.adapter.repo.ICommunityUserRepository;
 import com.aseubel.domain.user.adapter.repo.IUserRepository;
 import com.aseubel.domain.user.model.entity.UserEntity;
@@ -27,7 +28,7 @@ import static java.util.stream.Collectors.toList;
  */
 @Repository
 @Slf4j
-public class UserRepository implements IUserRepository, ICommunityUserRepository {
+public class UserRepository implements IUserRepository, ICommunityUserRepository, IBazaarUserRepository {
 
     @Resource
     private UserMapper userMapper;

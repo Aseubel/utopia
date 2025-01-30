@@ -5,6 +5,7 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.types.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
@@ -20,6 +21,7 @@ import javax.validation.ConstraintViolationException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.aseubel.types.enums.GlobalServiceStatusCode.FILE_EXCEED_LIMIT;
 import static com.aseubel.types.enums.GlobalServiceStatusCode.PARAM_FAILED_VALIDATE;
 
 /**
@@ -116,5 +118,15 @@ public class GlobalExceptionHandler {
     public <T> Response<T> handleOSSException(OSSException oe) {
         log.error("阿里云OSS服务异常, code:{}, message:{}", oe.getErrorCode(), oe.getErrorMessage());
         return Response.Ali_EXCEPTION(oe);
+    }
+
+    /**
+     * 捕获阿里云OSS服务异常 OSSException
+     */
+    @ExceptionHandler(FileSizeLimitExceededException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public <T> Response<T> handleFileSizeLimitExceededException(FileSizeLimitExceededException e) {
+        log.error("文件大小超出限制, message:{}", e.getMessage());
+        return Response.CUSTOMIZE_ERROR(FILE_EXCEED_LIMIT);
     }
 }

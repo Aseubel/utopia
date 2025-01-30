@@ -29,6 +29,7 @@ public enum GlobalServiceStatusCode {
     PARAM_FAILED_VALIDATE(1005, "参数未通过验证"),
 
     REQUEST_NOT_VALID(1101, "请求无效"),
+    FILE_EXCEED_LIMIT(1102, "文件大小超出限制"),
 
     /* 用户模块错误：2001～3000 */
     USER_TOKEN_EXPIRED(2001, "token失效"),

@@ -1,4 +1,4 @@
-package com.aseubel.domain.bazaar.model.vo;
+package com.aseubel.domain.bazaar.model.entity;
 
 import com.aseubel.types.annotation.FieldDesc;
 import com.aseubel.types.exception.AppException;
@@ -10,6 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
 
 import static com.aseubel.types.common.Constant.*;
 
@@ -50,7 +52,7 @@ public class TradeImage {
         objectName.append(APP).append("/")
                 .append(TRADE_POST_IMAGE).append("/")
                 .append(imageId)
-                .append(image.getOriginalFilename().substring(image.getOriginalFilename().lastIndexOf(".")));
+                .append(Objects.requireNonNull(image.getOriginalFilename()).substring(image.getOriginalFilename().lastIndexOf(".")));
         return objectName.toString();
     }
 
@@ -58,7 +60,7 @@ public class TradeImage {
      * 生成图片id
      */
     public void generateImageId() {
-        this.imageId = LocalDateTime.now().toString().replace("-", "").replace(":", "").replace(".", "") + "_" + userId;
+        this.imageId = "img_" + UUID.randomUUID().toString().replaceAll("-", "");
     }
 
 }

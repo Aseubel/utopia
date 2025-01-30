@@ -8,14 +8,19 @@ import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.community.service.ICommunityService;
 import com.aseubel.types.Response;
 import com.aseubel.types.exception.AppException;
+import com.aseubel.types.util.CustomMultipartFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,20 +72,29 @@ public class CommunityController implements CommunityInterface {
     @Override
     @PostMapping("/post/image")
     public Response<UploadDiscussPostImageResponse> uploadDiscussPostImage(@ModelAttribute UploadDiscussPostImageRequest requestDTO) {
-       try {
-           if (imageOrUserIdIsBlank(requestDTO)) {
-               throw new AppException(PARAM_NOT_COMPLETE);
-           }
-           CommunityImage image = communityService.uploadPostImage(
+        if (imageOrUserIdIsBlank(requestDTO)) {
+            throw new AppException(PARAM_NOT_COMPLETE);
+        }
+        MultipartFile file = requestDTO.getPostImage();
+        // 使用Thumbnailator进行压缩
+        try (InputStream inputStream = file.getInputStream();
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()){
+           Thumbnails.of(inputStream)
+                   .scale(1.0) // 设置压缩比例
+                   .outputQuality(0.5) // 设置输出质量（0.0到1.0之间）
+                   .toOutputStream(outputStream);
+           // 将压缩后的图片转换为Base64字符串
+           byte[] compressedBytes = outputStream.toByteArray();
+           CommunityImage resultImage = communityService.uploadPostImage(
                    CommunityImage.builder()
                            .userId(requestDTO.getUserId())
-                           .image(requestDTO.getPostImage())
+                           .image(new CustomMultipartFile(compressedBytes, file.getOriginalFilename()))
                            .build());
 
            return Response.SYSTEM_SUCCESS(
                    UploadDiscussPostImageResponse.builder()
-                   .imageId(image.getImageId())
-                   .imageUrl(image.getImageUrl())
+                   .imageId(resultImage.getImageId())
+                   .imageUrl(resultImage.getImageUrl())
                    .build());
        } catch (ClientException e) {
            log.error("上传帖子图片时oss客户端异常，{}, code:{}, message:{}",OSS_UPLOAD_ERROR.getMessage(), e.getErrCode(), e.getErrMsg(), e);

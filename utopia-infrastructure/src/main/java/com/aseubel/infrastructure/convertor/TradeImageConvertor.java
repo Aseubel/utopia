@@ -1,8 +1,12 @@
 package com.aseubel.infrastructure.convertor;
 
-import com.aseubel.domain.bazaar.model.vo.TradeImage;
+import com.aseubel.domain.bazaar.model.entity.TradeImage;
 import com.aseubel.infrastructure.dao.po.Image;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Aseubel
@@ -26,6 +30,10 @@ public class TradeImageConvertor {
                 .imageUrl(image.getImageUrl())
                 .userId(image.getUserId())
                 .build();
+    }
+
+    public <T, U> List<U> convert(List<T> items, Function<T, U> converter) {
+        return items.stream().map(converter).collect(Collectors.toList());
     }
 
 }

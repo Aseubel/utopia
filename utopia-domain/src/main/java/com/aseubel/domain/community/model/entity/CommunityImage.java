@@ -75,7 +75,7 @@ public class CommunityImage {
      * 生成图片id
      */
     public void generateImageId() {
-        this.imageId = UUID.randomUUID().toString().replace("-", "") + "_" + userId;
+        this.imageId = "img_" + UUID.randomUUID().toString().replaceAll("-", "");
     }
     
 }
