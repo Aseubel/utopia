@@ -4,7 +4,9 @@ import com.aseubel.domain.bazaar.adapter.repo.IBazaarUserRepository;
 import com.aseubel.domain.community.adapter.repo.ICommunityUserRepository;
 import com.aseubel.domain.user.adapter.repo.IUserRepository;
 import com.aseubel.domain.user.model.entity.UserEntity;
+import com.aseubel.domain.user.model.vo.School;
 import com.aseubel.infrastructure.convertor.UserConvertor;
+import com.aseubel.infrastructure.dao.SchoolMapper;
 import com.aseubel.infrastructure.dao.UserMapper;
 import com.aseubel.infrastructure.redis.IRedisService;
 import com.aseubel.types.exception.AppException;
@@ -19,7 +21,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.aseubel.types.common.Constant.*;
-import static java.util.stream.Collectors.toList;
 
 /**
  * @author Aseubel
@@ -39,10 +40,17 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
     @Resource
     private IRedisService redisService;
 
+    @Resource
+    private SchoolMapper schoolMapper;
+
     @Override
     public UserEntity queryUserInfo(String userId) {
         return Optional.ofNullable(userMapper.getUserByUserId(userId))
-                .map(userConvertor::convert)
+                .map(user -> {
+                    UserEntity userEntity = userConvertor.convert(user);
+                    userEntity.setSchool(schoolMapper.getSchoolBySchoolCode(user.getSchoolCode()));
+                    return userEntity;
+                })
                 .orElse(null);
     }
 
@@ -110,8 +118,16 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
     }
 
     @Override
-    public List<UserEntity> queryUserAvatarAndName(List<String> userIds) {
-        return Optional.ofNullable(userMapper.listUserAvatarAndNameByUserIds(userIds))
+    public void updateSchoolStudentCount() {
+        schoolMapper.listSchoolCode().forEach(code -> {
+            Integer studentCount = userMapper.CountStudentBySchoolCode(code);
+            schoolMapper.updateSchoolStudentCount(code, studentCount);
+        });
+    }
+
+    @Override
+    public List<UserEntity> queryUserBaseInfo(List<String> userIds) {
+        return Optional.ofNullable(userMapper.listUserBaseInfoByUserIds(userIds))
                 .map(l -> {
                     Map<String, UserEntity> userMap = l.stream()
                             .map(userConvertor::convert) // 先转换为 UserEntity

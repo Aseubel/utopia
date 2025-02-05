@@ -33,7 +33,7 @@ public interface UserMapper {
      * @param userIds
      * @return
      */
-    List<User> listUserAvatarAndNameByUserIds(List<String> userIds);
+    List<User> listUserBaseInfoByUserIds(List<String> userIds);
 
     /**
      * 根据用户id获取用户状态
@@ -41,4 +41,11 @@ public interface UserMapper {
      * @return
      */
     User getUserStatusByUserId(String userId);
+
+    /**
+     * 根据学校代号获取学生数量
+     * @param schoolCode
+     * @return
+     */
+    Integer CountStudentBySchoolCode(String schoolCode);
 }

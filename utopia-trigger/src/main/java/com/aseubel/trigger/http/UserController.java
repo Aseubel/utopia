@@ -7,6 +7,7 @@ import com.aseubel.api.dto.user.UploadAvatarResponseDTO;
 import com.aseubel.api.dto.user.*;
 import com.aseubel.domain.user.model.entity.AvatarEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
+import com.aseubel.domain.user.model.vo.School;
 import com.aseubel.domain.user.service.IUserService;
 import com.aseubel.types.Response;
 import com.aseubel.types.exception.AppException;
@@ -49,6 +50,7 @@ public class UserController implements UserInterface {
                         .gender(user.getGender())
                         .avatar(user.getAvatar())
                         .signature(user.getSignature())
+                        .school(user.getSchool())
                         .refreshToken(user.getRefreshToken())
                         .accessToken(user.getAccessToken())
                         .build());
@@ -101,6 +103,7 @@ public class UserController implements UserInterface {
                         .gender(user.getGender())
                         .avatar(user.getAvatar())
                         .signature(user.getSignature())
+                        .school(user.getSchool())
                         .build());
     }
 
@@ -118,6 +121,7 @@ public class UserController implements UserInterface {
                 .gender(modifyUserInfoRequestDTO.getGender())
                 .avatar(modifyUserInfoRequestDTO.getAvatar())
                 .signature(modifyUserInfoRequestDTO.getSignature())
+                .school(School.builder().schoolCode(modifyUserInfoRequestDTO.getSchoolCode()).build())
                 .build());
 
         return Response.SYSTEM_SUCCESS();

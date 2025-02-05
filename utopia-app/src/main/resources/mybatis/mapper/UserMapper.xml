@@ -16,18 +16,19 @@
             <if test="gender != null">gender = #{gender},</if>
             <if test="avatar != null and avatar != ''">avatar = #{avatar},</if>
             <if test="signature != null">signature = #{signature},</if>
+            <if test="schoolCode != null and schoolCode != ''">school_code = #{schoolCode},</if>
         </set>
         where user_id = #{userId} and is_deleted = 0
     </update>
 
     <select id="getUserByUserId" resultType="com.aseubel.infrastructure.dao.po.User">
-        select id, user_id, user_name, real_name, phone, gender, avatar, signature, create_time, update_time
+        select id, user_id, user_name, real_name, phone, gender, avatar, signature, create_time, update_time, school_code
         from `user`
         where user_id = #{userId} and is_deleted = 0
     </select>
 
-    <select id="listUserAvatarAndNameByUserIds" resultType="com.aseubel.infrastructure.dao.po.User">
-        select user_id, user_name, avatar
+    <select id="listUserBaseInfoByUserIds" resultType="com.aseubel.infrastructure.dao.po.User">
+        select user_id, user_name, avatar, school_code
         from `user`
         where is_deleted = 0 and user_id in
         <foreach collection="userIds" item="userId" open="(" separator="," close=")">
@@ -39,6 +40,12 @@
         select id, user_id
         from `user`
         where user_id = #{userId} and is_deleted = 0
+    </select>
+
+    <select id="CountStudentBySchoolCode" resultType="java.lang.Integer">
+        select count(*)
+        from `user`
+        where school_code = #{schoolCode} and is_deleted = 0
     </select>
 
 </mapper>

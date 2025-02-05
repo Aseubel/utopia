@@ -55,4 +55,9 @@ public interface IUserRepository {
      * @return true-有效，false-无效
      */
     boolean checkRefreshToken(UserEntity user, String secretKey);
+
+    /**
+     * 更新学校学生数量
+     */
+    void updateSchoolStudentCount();
 }

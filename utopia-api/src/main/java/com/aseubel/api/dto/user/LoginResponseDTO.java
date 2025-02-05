@@ -18,6 +18,9 @@ public class LoginResponseDTO implements Serializable {
     @FieldDesc(name = "用户名")
     private String userName;
 
+    @FieldDesc(name = "学校信息")
+    private Object school;
+
     @FieldDesc(name = "真实姓名")
     private String realName;
 

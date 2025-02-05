@@ -52,7 +52,7 @@ public class BazaarService implements IBazaarService{
                         .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
         // 获取发帖人的用户名和头像，repo层已经保证了顺序
-        List<UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyList() : bazaarUserRepository.queryUserAvatarAndName(userIds);
+        List<UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyList() : bazaarUserRepository.queryUserBaseInfo(userIds);
         if (!CollectionUtil.isEmpty(tradePostEntities) && !CollectionUtil.isEmpty(users)) {
             for (int i = 0;i < tradePostEntities.size();i++) {
                 tradePostEntities.get(i).setUserName(users.get(i).getUserName());

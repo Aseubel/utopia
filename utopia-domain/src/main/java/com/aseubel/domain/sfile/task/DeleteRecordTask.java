@@ -24,8 +24,9 @@ public class DeleteRecordTask {
      */
     @Scheduled(cron = "0 0 0 * * ?")
     public void deleteOldData() {
-        log.info("开始删除重复的sfile数据库记录");
+        log.info("task: 开始删除重复的sfile数据库记录");
         fileRepository.deleteRepeatedSFile();
+        log.info("task: 删除重复的sfile数据库记录完成");
     }
 
     /**
@@ -33,8 +34,9 @@ public class DeleteRecordTask {
      */
     @Scheduled(cron = "1 0 0 * * ?")
     public void deleteMissingData() throws ClientException {
-        log.info("开始删除oss对象不存在的sfile数据库记录");
+        log.info("task: 开始删除oss对象不存在的sfile数据库记录");
         fileRepository.deleteMissingSFile();
+        log.info("task: 删除oss对象不存在的sfile数据库记录完成");
     }
 
 }

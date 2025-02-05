@@ -1,6 +1,7 @@
 package com.aseubel.infrastructure.convertor;
 
 import com.aseubel.domain.user.model.entity.UserEntity;
+import com.aseubel.domain.user.model.vo.School;
 import com.aseubel.infrastructure.dao.po.User;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,7 @@ public class UserConvertor {
                 .realName(userEntity.getRealName())
                 .avatar(userEntity.getAvatar())
                 .signature(userEntity.getSignature())
+                .schoolCode(userEntity.getSchool().getSchoolCode())
                 .build();
     }
 
@@ -33,6 +35,7 @@ public class UserConvertor {
                 .realName(user.getRealName())
                 .avatar(user.getAvatar())
                 .signature(user.getSignature())
+                .school(School.builder().schoolCode(user.getSchoolCode()).build())
                 .build();
     }
 

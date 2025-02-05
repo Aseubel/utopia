@@ -16,7 +16,7 @@ public interface IBazaarUserRepository {
      * @param userIds
      * @return
      */
-    List<UserEntity> queryUserAvatarAndName(List<String> userIds);
+    List<UserEntity> queryUserBaseInfo(List<String> userIds);
 
     /**
      * 查询用户状态，是否封禁之类的

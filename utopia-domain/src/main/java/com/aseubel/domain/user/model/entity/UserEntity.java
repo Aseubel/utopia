@@ -1,5 +1,6 @@
 package com.aseubel.domain.user.model.entity;
 
+import com.aseubel.domain.user.model.vo.School;
 import com.aseubel.types.annotation.FieldDesc;
 import com.aseubel.types.util.JwtUtil;
 import lombok.AllArgsConstructor;
@@ -28,6 +29,9 @@ public class UserEntity {
 
     @FieldDesc(name = "真实姓名")
     private String realName;
+
+    @FieldDesc(name = "学校代号")
+    private School school;
 
     @FieldDesc(name = "手机号码")
     private String phone;

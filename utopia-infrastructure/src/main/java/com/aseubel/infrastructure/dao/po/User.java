@@ -28,6 +28,9 @@ public class User {
     @FieldDesc(name = "真实姓名")
     private String realName;
 
+    @FieldDesc(name = "学校代号")
+    private String schoolCode;
+
     @FieldDesc(name = "手机号码")
     private String phone;
 
