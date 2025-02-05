@@ -81,7 +81,7 @@ public class CommunityController implements CommunityInterface {
              ByteArrayOutputStream outputStream = new ByteArrayOutputStream()){
            Thumbnails.of(inputStream)
                    .scale(1.0) // 设置压缩比例
-                   .outputQuality(0.5) // 设置输出质量（0.0到1.0之间）
+                   .outputQuality(0.15) // 设置输出质量（0.0到1.0之间）
                    .toOutputStream(outputStream);
            // 将压缩后的图片转换为Base64字符串
            byte[] compressedBytes = outputStream.toByteArray();
