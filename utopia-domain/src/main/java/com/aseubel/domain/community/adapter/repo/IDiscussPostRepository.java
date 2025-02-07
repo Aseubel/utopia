@@ -62,5 +62,19 @@ public interface IDiscussPostRepository {
      */
     String querySchoolName(String schoolCode);
 
+    /**
+     * 判断院校代号是否有效
+     * @param schoolCode 院校代号
+     * @return
+     */
     boolean isSchoolCodeValid(String schoolCode);
+
+    /**
+     * 根据用户id和帖子id分页查询用户收藏的帖子
+     * @param userId 用户id
+     * @param postId 相当于游标，上一页最后一个帖子的id
+     * @param limit 每页显示数量
+     * @return
+     */
+    List<DiscussPostEntity> queryUserFavoritePosts(String userId, String postId, Integer limit);
 }

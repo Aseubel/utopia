@@ -2,9 +2,12 @@ package com.aseubel.trigger.http;
 
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.api.UserInterface;
+import com.aseubel.api.dto.community.QueryIndexDiscussPostResponseDTO;
 import com.aseubel.api.dto.user.UploadAvatarRequestDTO;
 import com.aseubel.api.dto.user.UploadAvatarResponseDTO;
 import com.aseubel.api.dto.user.*;
+import com.aseubel.domain.community.model.entity.DiscussPostEntity;
+import com.aseubel.domain.community.service.ICommunityService;
 import com.aseubel.domain.user.model.entity.AvatarEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.domain.user.model.vo.School;
@@ -20,6 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.aseubel.types.enums.GlobalServiceStatusCode.OSS_UPLOAD_ERROR;
 import static com.aseubel.types.enums.GlobalServiceStatusCode.PARAM_NOT_COMPLETE;
 
@@ -32,6 +38,8 @@ import static com.aseubel.types.enums.GlobalServiceStatusCode.PARAM_NOT_COMPLETE
 public class UserController implements UserInterface {
 
     private final IUserService userService;
+
+    private final ICommunityService communityService;
 
     /**
      * 登录
@@ -152,6 +160,32 @@ public class UserController implements UserInterface {
             log.error("上传头像时出现未知异常", e);
             throw new AppException(OSS_UPLOAD_ERROR, e);
         }
+    }
+
+    /**
+     * 查询用户收藏的帖子
+     */
+    @Override
+    @GetMapping("/favorite/post")
+    public Response<List<QueryFavoriteDiscussPostResponseDTO>> queryFavoriteDiscussPost(@Valid @RequestBody QueryFavoriteDiscussPostRequestDTO requestDTO) {
+        List<DiscussPostEntity> discussPosts = communityService.queryUserFavoritePosts(
+                requestDTO.getUserId(), requestDTO.getPostId(), requestDTO.getLimit());
+        List<QueryFavoriteDiscussPostResponseDTO> responseDTOs = new ArrayList<>();
+        for (DiscussPostEntity discussPost : discussPosts) {
+            responseDTOs.add(QueryFavoriteDiscussPostResponseDTO.builder()
+                    .discussPostId(discussPost.getDiscussPostId())
+                    .userName(discussPost.getUserName())
+                    .userAvatar(discussPost.getUserAvatar())
+                    .title(discussPost.getTitle())
+                    .content(discussPost.getContent())
+                    .likeCount(discussPost.getLikeCount())
+                    .commentCount(discussPost.getCommentCount())
+                    .forwardCount(discussPost.getForwardCount())
+                    .createTime(discussPost.getCreateTime())
+                    .updateTime(discussPost.getUpdateTime())
+                    .build());
+        }
+        return Response.SYSTEM_SUCCESS(responseDTOs);
     }
 
 }

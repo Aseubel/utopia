@@ -41,6 +41,13 @@ public interface DiscussPostMapper {
     DiscussPost getDiscussPostByPostId(String postId);
 
     /**
+     * 根据帖子id列表获取帖子信息列表
+     * @param postIds
+     * @return
+     */
+    List<DiscussPost> listDiscussPostByPostIds(List<String> postIds);
+
+    /**
      * 获取所有帖子信息，分页查询
      * @param postId 上一页最后一条帖子的id，用于分页查询
      * @param limit 每页显示的数量

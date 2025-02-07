@@ -20,7 +20,7 @@ public interface ICommunityService {
      * @param limit 每页显示数量
      * @return
      */
-    List<DiscussPostEntity> listDiscussPost(String postId, Integer limit, String schoolCode);
+    List<DiscussPostEntity> listDiscussPost(String userId, String postId, Integer limit, String schoolCode);
 
     /**
      * 上传帖子图片
@@ -34,6 +34,15 @@ public interface ICommunityService {
      * @param discussPostEntity
      */
     void publishDiscussPost(DiscussPostEntity discussPostEntity);
+
+    /**
+     * 获取用户收藏帖子列表
+     * @param userId
+     * @param postId
+     * @param limit
+     * @return
+     */
+    List<DiscussPostEntity> queryUserFavoritePosts(String userId, String postId, Integer limit);
 
     /**
      * 点赞帖子

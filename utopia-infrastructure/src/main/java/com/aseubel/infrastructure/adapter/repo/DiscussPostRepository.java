@@ -3,18 +3,22 @@ package com.aseubel.infrastructure.adapter.repo;
 import com.aseubel.domain.community.adapter.repo.IDiscussPostRepository;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
+import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.infrastructure.convertor.CommunityImageConvertor;
 import com.aseubel.infrastructure.convertor.DiscussPostConvertor;
 import com.aseubel.infrastructure.dao.DiscussPostMapper;
+import com.aseubel.infrastructure.dao.FavoriteMapper;
 import com.aseubel.infrastructure.dao.ImageMapper;
 import com.aseubel.infrastructure.dao.SchoolMapper;
 import com.aseubel.infrastructure.dao.po.DiscussPost;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -40,6 +44,9 @@ public class DiscussPostRepository implements IDiscussPostRepository {
 
     @Resource
     private SchoolMapper schoolMapper;
+
+    @Resource
+    private FavoriteMapper favoriteMapper;
 
     @Override
     public List<DiscussPostEntity> listDiscussPost(String postId, Integer limit) {
@@ -87,4 +94,26 @@ public class DiscussPostRepository implements IDiscussPostRepository {
     public boolean isSchoolCodeValid(String schoolCode) {
         return Optional.ofNullable(schoolCode).map(schoolMapper::getSchoolBySchoolCode).isPresent();
     }
+
+    @Override
+    public List<DiscussPostEntity> queryUserFavoritePosts(String userId, String postId, Integer limit) {
+        List<String> postIds = Optional.ofNullable(StringUtils.isEmpty(postId)
+                        ? favoriteMapper.listUserFavoritePostIdAhead(userId, limit)
+                        : favoriteMapper.listUserFavoritePostId(userId, postId, limit))
+                .orElse(Collections.emptyList());
+        if (CollectionUtils.isEmpty(postIds)) {
+            return Collections.emptyList();
+        }
+        return Optional.ofNullable(discussPostMapper.listDiscussPostByPostIds(postIds))
+                .map(l -> {
+                    Map<String, DiscussPostEntity> postMap = l.stream()
+                            .map(discussPostConvertor::convert) // 先转换为 UserEntity
+                            .collect(Collectors.toMap(DiscussPostEntity::getDiscussPostId, post -> post));
+                    return postIds.stream()
+                            .map(postMap::get)
+                            .collect(Collectors.toList());
+                })
+                .orElse(Collections.emptyList());
+    }
+
 }

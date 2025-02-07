@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author Aseubel
@@ -58,4 +59,10 @@ public interface UserInterface {
      */
     Response<UploadAvatarResponseDTO> uploadAvatar(@Valid @ModelAttribute UploadAvatarRequestDTO uploadAvatarRequestDTO);
 
+    /**
+     * 查询收藏帖子列表
+     * @param queryFavoriteDiscussPostRequestDTO
+     * @return
+     */
+    Response<List<QueryFavoriteDiscussPostResponseDTO>> queryFavoriteDiscussPost(@Valid @RequestBody QueryFavoriteDiscussPostRequestDTO queryFavoriteDiscussPostRequestDTO);
 }

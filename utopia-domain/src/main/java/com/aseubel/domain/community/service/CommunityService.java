@@ -41,8 +41,9 @@ public class CommunityService implements ICommunityService{
     private final AliOSSUtil aliOSSUtil;
 
     @Override
-    public List<DiscussPostEntity> listDiscussPost(String postId, Integer limit, String schoolCode) {
+    public List<DiscussPostEntity> listDiscussPost(String userId, String postId, Integer limit, String schoolCode) {
         log.info("获取帖子列表服务开始执行");
+        checkUserIdValid(userId);
         // 限制每页显示的帖子数量
         limit = limit == null ? PER_PAGE_DISCUSS_POST_SIZE : limit;
         // 查询帖子列表
@@ -108,6 +109,32 @@ public class CommunityService implements ICommunityService{
     }
 
     @Override
+    public List<DiscussPostEntity> queryUserFavoritePosts(String userId, String postId, Integer limit) {
+        log.info("查询用户收藏帖子服务开始执行，userId:{}", userId);
+        checkUserIdValid(userId);
+        // 限制每页显示的帖子数量
+        limit = limit == null ? PER_PAGE_DISCUSS_POST_SIZE : limit;
+        // 查询帖子列表
+        List<DiscussPostEntity> discussPostEntities = discussPostRepository.queryUserFavoritePosts(userId, postId, limit);
+        // 提取帖子的用户id
+        List<String> userIds = Optional.ofNullable(discussPostEntities)
+                .map(d -> d.stream()
+                        .map(DiscussPostEntity::getUserId)
+                        .collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
+        // 获取发帖人的用户名和头像，repo层已经保证了顺序
+        List<UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyList() : communityUserRepository.queryUserBaseInfo(userIds);
+        if (!CollectionUtil.isEmpty(discussPostEntities) && !CollectionUtil.isEmpty(users)) {
+            for (int i = 0;i < discussPostEntities.size();i++) {
+                discussPostEntities.get(i).setUserName(users.get(i).getUserName());
+                discussPostEntities.get(i).setUserAvatar(users.get(i).getAvatar());
+            }
+        }
+        log.info("查询用户收藏帖子服务结束执行，userId:{}", userId);
+        return discussPostEntities;
+    }
+
+    @Override
     public DiscussPostEntity likeDiscussPost(String postId) {
         return null;
     }
@@ -135,9 +162,16 @@ public class CommunityService implements ICommunityService{
     }
 
     private void checkUserStatus(String userId) {
-        if (ObjectUtils.isEmpty(communityUserRepository.queryUserStatus(userId))) {
+        if (StringUtils.isEmpty(userId) || ObjectUtils.isEmpty(communityUserRepository.queryUserStatus(userId))) {
             log.error("用户状态异常，请联系管理员！, user={}", userId);
             throw new AppException("用户状态异常，请联系管理员！");
+        }
+    }
+
+    private void checkUserIdValid(String userId) {
+        if (StringUtils.isEmpty(userId) || ObjectUtils.isEmpty(communityUserRepository.queryUserStatus(userId))) {
+            log.error("用户id无效！, user={}", userId);
+            throw new AppException("用户id无效！");
         }
     }
 }

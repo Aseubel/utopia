@@ -35,5 +35,4 @@ public interface CommunityInterface {
      * @return
      */
     Response publishDiscussPost(@Valid @RequestBody PublishDiscussPostRequest publishDiscussPostRequest);
-
 }
