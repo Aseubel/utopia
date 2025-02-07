@@ -20,7 +20,7 @@ public interface ICommunityService {
      * @param limit 每页显示数量
      * @return
      */
-    List<DiscussPostEntity> listDiscussPost(String postId, Integer limit);
+    List<DiscussPostEntity> listDiscussPost(String postId, Integer limit, String schoolCode);
 
     /**
      * 上传帖子图片

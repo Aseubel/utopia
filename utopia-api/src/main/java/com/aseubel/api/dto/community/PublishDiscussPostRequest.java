@@ -23,6 +23,10 @@ public class PublishDiscussPostRequest implements Serializable {
     @FieldDesc(name = "用户ID")
     private String userId;
 
+    @NotNull(message = "所属院校代码不能为空")
+    @FieldDesc(name = "所属院校代码")
+    private String schoolCode;
+
     @NotNull(message = "标题不能为空")
     @FieldDesc(name = "标题")
     private String title;

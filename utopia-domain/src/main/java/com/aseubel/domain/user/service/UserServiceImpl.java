@@ -10,6 +10,7 @@ import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.AliOSSUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -114,6 +115,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void updateUserInfo(UserEntity user) {
         log.info("更新个人信息服务开始执行，user={}", user);
+        checkSchoolCodeValid(user.getSchool().getSchoolCode());
         userRepository.saveUserInfo(user);
         log.info("更新个人信息服务结束执行，user={}", user);
     }
@@ -132,5 +134,17 @@ public class UserServiceImpl implements IUserService {
         return ossUrl;
     }
 
+    private void checkSchoolCodeValid(String schoolCode) {
+        if (StringUtils.isEmpty(schoolCode) || !userRepository.isSchoolCodeValid(schoolCode)) {
+            log.error("学校代号无效！, user={}", schoolCode);
+            throw new AppException("学校代号无效！");
+        }
+    }
 
+    private void checkUserIdValid(String userId) {
+        if (StringUtils.isEmpty(userId) || !userRepository.isUserIdValid(userId)) {
+            log.error("用户id无效！, user={}", userId);
+            throw new AppException("用户id无效！");
+        }
+    }
 }

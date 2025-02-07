@@ -55,4 +55,12 @@ public interface IDiscussPostRepository {
      */
     String getPostFirstImage(String postId);
 
+    /**
+     * 根据院校代号查询院校名称
+     * @param schoolCode
+     * @return
+     */
+    String querySchoolName(String schoolCode);
+
+    boolean isSchoolCodeValid(String schoolCode);
 }

@@ -28,6 +28,9 @@ public class DiscussPost {
     @FieldDesc(name = "用户id")
     private String userId;
 
+    @FieldDesc(name = "所属院校代码")
+    private String schoolCode;
+
     @FieldDesc(name = "标题")
     private String title;
 

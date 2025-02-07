@@ -7,23 +7,26 @@ import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.community.service.ICommunityService;
 import com.aseubel.types.Response;
+import com.aseubel.types.enums.CustomServiceCode;
+import com.aseubel.types.event.CustomEvent;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.CustomMultipartFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.aseubel.types.enums.CustomServiceCode.COMMUNITY_POST_PUBLISH;
 import static com.aseubel.types.enums.GlobalServiceStatusCode.OSS_UPLOAD_ERROR;
 import static com.aseubel.types.enums.GlobalServiceStatusCode.PARAM_NOT_COMPLETE;
 
@@ -37,13 +40,16 @@ public class CommunityController implements CommunityInterface {
 
     private final ICommunityService communityService;
 
+    private final ApplicationEventPublisher eventPublisher;
+
     /**
      * 查询首页帖子列表
      */
     @Override
     @GetMapping("/post")
     public Response<List<QueryIndexDiscussPostResponseDTO>> queryIndexDiscussPost(@Valid QueryIndexDiscussPostRequestDTO requestDTO) {
-        List<DiscussPostEntity> discussPosts = communityService.listDiscussPost(requestDTO.getPostId(), requestDTO.getLimit());
+        List<DiscussPostEntity> discussPosts = communityService.listDiscussPost(
+                requestDTO.getPostId(), requestDTO.getLimit(), requestDTO.getSchoolCode());
         List<QueryIndexDiscussPostResponseDTO> responseDTOs = new ArrayList<>();
         for (DiscussPostEntity discussPost : discussPosts) {
            responseDTOs.add(QueryIndexDiscussPostResponseDTO.builder()
@@ -113,12 +119,15 @@ public class CommunityController implements CommunityInterface {
     public Response publishDiscussPost(@Valid @RequestBody PublishDiscussPostRequest publishDiscussPostRequest) {
         DiscussPostEntity discussPostEntity = DiscussPostEntity.builder()
                .userId(publishDiscussPostRequest.getUserId())
+                .schoolCode(publishDiscussPostRequest.getSchoolCode())
                .title(publishDiscussPostRequest.getTitle())
                .content(publishDiscussPostRequest.getContent())
                .tags(publishDiscussPostRequest.getTags())
                .images(publishDiscussPostRequest.getImages())
                .build();
         communityService.publishDiscussPost(discussPostEntity);
+
+        eventPublisher.publishEvent(new CustomEvent(discussPostEntity, COMMUNITY_POST_PUBLISH));
         return Response.SYSTEM_SUCCESS();
     }
 

@@ -3,8 +3,8 @@
 <mapper namespace="com.aseubel.infrastructure.dao.DiscussPostMapper">
 
     <insert id="addDiscussPost">
-        insert into `discuss_post` (discuss_post_id, user_id, title, content)
-        values (#{discussPostId}, #{userId}, #{title}, #{content})
+        insert into `discuss_post` (discuss_post_id, user_id, school_code, title, content)
+        values (#{discussPostId}, #{userId}, #{schoolCode}, #{title}, #{content})
     </insert>
 
     <insert id="relateDiscussPostImage">
@@ -34,7 +34,7 @@
     </select>
 
     <select id="listDiscussPost" resultType="com.aseubel.infrastructure.dao.po.DiscussPost">
-        select id, discuss_post_id, user_id, title, content, like_count, forward_count, comment_count, type, status, create_time, update_time
+        select id, discuss_post_id, user_id, school_code, title, content, like_count, forward_count, comment_count, type, status, create_time, update_time
         from `discuss_post`
         where update_time &lt;= (select update_time from `discuss_post` where discuss_post_id = #{postId} and is_deleted = 0)
             and is_deleted = 0 and discuss_post_id != #{postId}
@@ -43,7 +43,7 @@
     </select>
 
     <select id="listDiscussPostAhead" resultType="com.aseubel.infrastructure.dao.po.DiscussPost">
-        select id, discuss_post_id, user_id, title, content, like_count, forward_count, comment_count, type, status, create_time, update_time
+        select id, discuss_post_id, user_id, school_code, title, content, like_count, forward_count, comment_count, type, status, create_time, update_time
         from `discuss_post`
         where is_deleted = 0
         order by update_time DESC

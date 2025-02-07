@@ -7,9 +7,9 @@ import com.aseubel.infrastructure.convertor.CommunityImageConvertor;
 import com.aseubel.infrastructure.convertor.DiscussPostConvertor;
 import com.aseubel.infrastructure.dao.DiscussPostMapper;
 import com.aseubel.infrastructure.dao.ImageMapper;
+import com.aseubel.infrastructure.dao.SchoolMapper;
 import com.aseubel.infrastructure.dao.po.DiscussPost;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
@@ -34,8 +34,12 @@ public class DiscussPostRepository implements IDiscussPostRepository {
 
     @Resource
     private ImageMapper imageMapper;
-    @Autowired
+
+    @Resource
     private CommunityImageConvertor communityImageConvertor;
+
+    @Resource
+    private SchoolMapper schoolMapper;
 
     @Override
     public List<DiscussPostEntity> listDiscussPost(String postId, Integer limit) {
@@ -74,4 +78,13 @@ public class DiscussPostRepository implements IDiscussPostRepository {
         return Optional.ofNullable(discussPostMapper.getPostFirstImage(postId)).map(imageMapper::getImageUrl).orElse(null);
     }
 
+    @Override
+    public String querySchoolName(String schoolCode) {
+        return Optional.ofNullable(schoolMapper.getSchoolNameBySchoolCode(schoolCode)).orElse("");
+    }
+
+    @Override
+    public boolean isSchoolCodeValid(String schoolCode) {
+        return Optional.ofNullable(schoolCode).map(schoolMapper::getSchoolBySchoolCode).isPresent();
+    }
 }

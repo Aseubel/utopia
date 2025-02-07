@@ -60,4 +60,18 @@ public interface IUserRepository {
      * 更新学校学生数量
      */
     void updateSchoolStudentCount();
+
+    /**
+     * 检查学校代号是否有效
+     * @param schoolCode
+     * @return
+     */
+    boolean isSchoolCodeValid(String schoolCode);
+
+    /**
+     * 检查用户id是否有效
+     * @param userId
+     * @return
+     */
+    boolean isUserIdValid(String userId);
 }

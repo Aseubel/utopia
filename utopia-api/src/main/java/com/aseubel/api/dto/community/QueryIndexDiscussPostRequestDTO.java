@@ -24,6 +24,10 @@ public class QueryIndexDiscussPostRequestDTO implements Serializable {
     @NotNull(message = "用户id不能为空")
     private String userId;
 
+    @NotNull(message = "学校代号不能为空")
+    @FieldDesc(name = "所属院校代号")
+    private String schoolCode;
+
     @FieldDesc(name = "上一页查询最后一条记录的id")
     private String postId;
 

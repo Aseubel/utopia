@@ -32,6 +32,14 @@ public interface SchoolMapper {
     School getSchoolBySchoolName(String schoolName);
 
     /**
+     * 根据学校代码获取学校名称
+     * @param schoolCode
+     * @return
+     */
+    @Select("SELECT school_name FROM `school` WHERE school_code = #{schoolCode}")
+    String getSchoolNameBySchoolCode(String schoolCode);
+
+    /**
      * 获取所有学校代码
      * @return
      */

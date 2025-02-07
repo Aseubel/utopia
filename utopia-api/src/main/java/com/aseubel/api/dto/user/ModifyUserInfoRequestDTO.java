@@ -29,6 +29,10 @@ public class ModifyUserInfoRequestDTO implements Serializable {
     @FieldDesc(name = "用户名")
     private String userName;
 
+    @Pattern(regexp = "^[0-9]{5}$", message = "学校代码格式不正确")
+    @FieldDesc(name = "学校代码")
+    private String schoolCode;
+
     @FieldDesc(name = "真实姓名")
     private String realName;
 

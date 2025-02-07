@@ -146,5 +146,14 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
                 .orElse(null);
     }
 
+    @Override
+    public boolean isSchoolCodeValid(String schoolCode) {
+        return Optional.ofNullable(schoolCode).map(schoolMapper::getSchoolBySchoolCode).isPresent();
+    }
+
+    @Override
+    public boolean isUserIdValid(String userId) {
+        return Optional.ofNullable(userId).map(userMapper::getUserByUserId).isPresent();
+    }
 
 }

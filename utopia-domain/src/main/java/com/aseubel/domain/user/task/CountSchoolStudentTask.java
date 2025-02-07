@@ -19,9 +19,9 @@ public class CountSchoolStudentTask {
     private IUserRepository userRepository;
 
     /**
-     * 每一个小时统计学校学生数量
+     * 每天凌晨 4 点统计学校学生数量
      */
-    @Scheduled(cron = "0 0 * * * ?")
+    @Scheduled(cron = "0 0 4 * * ?")
     public void countSchoolStudent() {
         log.info("task: 开始统计学校学生数量！");
         userRepository.updateSchoolStudentCount();

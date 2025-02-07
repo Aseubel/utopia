@@ -13,6 +13,7 @@ import com.aseubel.types.util.AliOSSUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +41,7 @@ public class CommunityService implements ICommunityService{
     private final AliOSSUtil aliOSSUtil;
 
     @Override
-    public List<DiscussPostEntity> listDiscussPost(String postId, Integer limit) {
+    public List<DiscussPostEntity> listDiscussPost(String postId, Integer limit, String schoolCode) {
         log.info("获取帖子列表服务开始执行");
         // 限制每页显示的帖子数量
         limit = limit == null ? PER_PAGE_DISCUSS_POST_SIZE : limit;
@@ -90,9 +91,8 @@ public class CommunityService implements ICommunityService{
     @Transactional(rollbackFor = Exception.class)
     public void publishDiscussPost(DiscussPostEntity discussPostEntity) {
         log.info("发布帖子服务开始执行，userId:{}", discussPostEntity.getUserId());
-        if (ObjectUtils.isEmpty(communityUserRepository.queryUserStatus(discussPostEntity.getUserId()))) {
-            throw new AppException("用户状态异常，请联系管理员");
-        }
+        checkUserStatus(discussPostEntity.getUserId());
+        checkSchoolCodeValid(discussPostEntity.getSchoolCode());
 
         discussPostEntity.generatePostId();
         discussPostRepository.saveNewDiscussPost(discussPostEntity);
@@ -127,4 +127,17 @@ public class CommunityService implements ICommunityService{
         return null;
     }
 
+    private void checkSchoolCodeValid(String schoolCode) {
+        if (StringUtils.isEmpty(schoolCode) || !discussPostRepository.isSchoolCodeValid(schoolCode)) {
+            log.error("学校代号无效！, user={}", schoolCode);
+            throw new AppException("学校代号无效！");
+        }
+    }
+
+    private void checkUserStatus(String userId) {
+        if (ObjectUtils.isEmpty(communityUserRepository.queryUserStatus(userId))) {
+            log.error("用户状态异常，请联系管理员！, user={}", userId);
+            throw new AppException("用户状态异常，请联系管理员！");
+        }
+    }
 }
