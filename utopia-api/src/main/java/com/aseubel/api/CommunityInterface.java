@@ -35,4 +35,11 @@ public interface CommunityInterface {
      * @return
      */
     Response publishDiscussPost(@Valid @RequestBody PublishDiscussPostRequest publishDiscussPostRequest);
+
+    /**
+     * 收藏帖子
+     * @param favoriteDiscussPostRequest
+     * @return
+     */
+    Response favoriteDiscussPost(@Valid @RequestBody FavoriteDiscussPostRequest favoriteDiscussPostRequest);
 }

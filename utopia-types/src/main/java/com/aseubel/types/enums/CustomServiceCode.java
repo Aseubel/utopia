@@ -27,7 +27,7 @@ public enum CustomServiceCode {
     // 社区201-300
     COMMUNITY_POST_PUBLISH(301, "社区帖子发布"),
     COMMUNITY_POST_DELETE(302, "社区帖子删除"),
-    COMMUNITY_POST_REPLY(303, "社区帖子回复"),
+    COMMUNITY_POST_REPLY(303, "社区帖子评论"),
     COMMUNITY_POST_LIKE(304, "社区帖子点赞"),
     COMMUNITY_POST_DISLIKE(305, "社区帖子踩"),
     COMMUNITY_POST_COLLECT(306, "社区帖子收藏"),
