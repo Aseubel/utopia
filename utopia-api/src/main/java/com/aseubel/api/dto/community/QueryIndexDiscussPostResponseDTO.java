@@ -5,7 +5,6 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * @author Aseubel
@@ -51,6 +50,9 @@ public class QueryIndexDiscussPostResponseDTO implements Serializable {
 
     @FieldDesc(name = "0-普通;1-封禁")
     private Integer status;
+
+    @FieldDesc(name = "主要评论列表")
+    private Object comments;
 
     @FieldDesc(name = "创建时间")
     private LocalDateTime createTime;

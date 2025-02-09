@@ -7,7 +7,6 @@ import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.community.service.ICommunityService;
 import com.aseubel.types.Response;
-import com.aseubel.types.enums.CustomServiceCode;
 import com.aseubel.types.event.CustomEvent;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.CustomMultipartFile;
@@ -30,6 +29,9 @@ import static com.aseubel.types.enums.CustomServiceCode.COMMUNITY_POST_PUBLISH;
 import static com.aseubel.types.enums.GlobalServiceStatusCode.OSS_UPLOAD_ERROR;
 import static com.aseubel.types.enums.GlobalServiceStatusCode.PARAM_NOT_COMPLETE;
 
+/**
+ * 社区
+ */
 @Slf4j
 @RestController()
 @Validated
@@ -64,6 +66,7 @@ public class CommunityController implements CommunityInterface {
                    .forwardCount(discussPost.getForwardCount())
                    .type(discussPost.getType())
                    .status(discussPost.getStatus())
+                   .comments(discussPost.getComments())
                    .createTime(discussPost.getCreateTime())
                    .updateTime(discussPost.getUpdateTime())
                    .image(discussPost.getImage())
@@ -131,12 +134,18 @@ public class CommunityController implements CommunityInterface {
         return Response.SYSTEM_SUCCESS();
     }
 
+    /**
+     * 收藏帖子
+     */
     @Override
     @PutMapping("/post/favorite")
     public Response favoriteDiscussPost(@Valid @RequestBody FavoriteDiscussPostRequest favoriteDiscussPostRequest) {
         return null;
     }
 
+    /**
+     * 取消收藏帖子
+     */
     @Override
     @DeleteMapping("/post/favorite")
     public Response disFavoriteDiscussPost(@Valid @RequestBody DisFavoriteDiscussPostRequest disFavoriteDiscussPostRequest) {

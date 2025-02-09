@@ -29,6 +29,9 @@ import java.util.List;
 import static com.aseubel.types.enums.GlobalServiceStatusCode.OSS_UPLOAD_ERROR;
 import static com.aseubel.types.enums.GlobalServiceStatusCode.PARAM_NOT_COMPLETE;
 
+/**
+ * 用户
+ */
 @Slf4j
 @RestController()
 @Validated

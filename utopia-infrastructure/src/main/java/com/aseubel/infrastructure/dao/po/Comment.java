@@ -25,6 +25,9 @@ public class Comment {
     @FieldDesc(name = "根/最顶级评论id")
     private String rootId;
 
+    @FieldDesc(name = "父评论id")
+    private String replyTo;
+
     @FieldDesc(name = "评论id")
     private String commentId;
 
@@ -40,11 +43,11 @@ public class Comment {
     @FieldDesc(name = "点赞数")
     private Integer likeCount;
 
+    @FieldDesc(name = "踩数")
+    private Integer unlikeCount;
+    
     @FieldDesc(name = "回复数")
     private Integer replyCount;
-
-    @FieldDesc(name = "评论者")
-    private String commenter;
 
     @FieldDesc(name = "评论时间")
     private LocalDateTime commentTime;

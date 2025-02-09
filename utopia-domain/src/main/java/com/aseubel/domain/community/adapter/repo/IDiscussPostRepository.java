@@ -20,7 +20,7 @@ public interface IDiscussPostRepository {
      * @param limit 每页显示数量
      * @return
      */
-    List<DiscussPostEntity> listDiscussPost(String postId, Integer limit);
+    List<DiscussPostEntity> listDiscussPost(String postId, Integer limit, String schoolCode);
 
     /**
      * 保存帖子图片记录

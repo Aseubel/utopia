@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import static com.aseubel.types.enums.GlobalServiceStatusCode.*;
 
 /**
- * 共享文件接口
+ * 共享文件
  */
 @Slf4j
 @RestController()

@@ -34,17 +34,20 @@ public class CommentEntity {
     @FieldDesc(name = "用户id")
     private String userId;
 
+    @FieldDesc(name = "回复的用户的名称")
+    private String replyToName;
+
     @FieldDesc(name = "评论内容")
     private String content;
 
     @FieldDesc(name = "点赞数")
     private Integer likeCount;
 
+    @FieldDesc(name = "踩数")
+    private Integer unlikeCount;
+
     @FieldDesc(name = "回复数")
     private Integer replyCount;
-
-    @FieldDesc(name = "评论者")
-    private String commenter;
 
     @FieldDesc(name = "评论时间")
     private LocalDateTime commentTime;

@@ -36,8 +36,12 @@
     <select id="listDiscussPost" resultType="com.aseubel.infrastructure.dao.po.DiscussPost">
         select id, discuss_post_id, user_id, school_code, title, content, like_count, forward_count, comment_count, type, status, create_time, update_time
         from `discuss_post`
-        where update_time &lt;= (select update_time from `discuss_post` where discuss_post_id = #{postId} and is_deleted = 0)
-            and is_deleted = 0 and discuss_post_id != #{postId}
+        <where>
+            update_time &lt;= (select update_time from `discuss_post` where discuss_post_id = #{postId} and is_deleted = 0)
+            and discuss_post_id != #{postId}
+            <if test="schoolCode != null and schoolCode != ''">school_code = #{schoolCode}</if>
+            and is_deleted = 0
+        </where>
         order by update_time DESC, id DESC
         limit #{limit}
     </select>
@@ -45,7 +49,10 @@
     <select id="listDiscussPostAhead" resultType="com.aseubel.infrastructure.dao.po.DiscussPost">
         select id, discuss_post_id, user_id, school_code, title, content, like_count, forward_count, comment_count, type, status, create_time, update_time
         from `discuss_post`
-        where is_deleted = 0
+        <where>
+            <if test="schoolCode != null and schoolCode != ''">school_code = #{schoolCode}</if>
+            and is_deleted = 0
+        </where>
         order by update_time DESC
         limit #{limit}
     </select>

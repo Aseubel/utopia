@@ -49,10 +49,10 @@ public class DiscussPostRepository implements IDiscussPostRepository {
     private FavoriteMapper favoriteMapper;
 
     @Override
-    public List<DiscussPostEntity> listDiscussPost(String postId, Integer limit) {
+    public List<DiscussPostEntity> listDiscussPost(String postId, Integer limit, String schoolCode) {
         return Optional.ofNullable(StringUtils.isEmpty(postId)
-                        ? discussPostMapper.listDiscussPostAhead(limit)
-                        : discussPostMapper.listDiscussPost(postId, limit))
+                        ? discussPostMapper.listDiscussPostAhead(limit, schoolCode)
+                        : discussPostMapper.listDiscussPost(postId, limit, schoolCode))
                 .map(p -> p.stream().map(discussPostConvertor::convert).collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
     }

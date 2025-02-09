@@ -51,16 +51,18 @@ public interface DiscussPostMapper {
      * 获取所有帖子信息，分页查询
      * @param postId 上一页最后一条帖子的id，用于分页查询
      * @param limit 每页显示的数量
+     * @param schoolCode 院校代码
      * @return
      */
-    List<DiscussPost> listDiscussPost(String postId, Integer limit);
+    List<DiscussPost> listDiscussPost(String postId, Integer limit, String schoolCode);
 
     /**
      * 获取所有帖子信息，分页查询
      * @param limit 每页显示的数量
+     * @param schoolCode 院校代码
      * @return
      */
-    List<DiscussPost> listDiscussPostAhead(Integer limit);
+    List<DiscussPost> listDiscussPostAhead(Integer limit, String schoolCode);
 
     /**
      * 关联帖子图片

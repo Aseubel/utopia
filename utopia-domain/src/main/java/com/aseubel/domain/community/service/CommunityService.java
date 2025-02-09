@@ -2,6 +2,7 @@ package com.aseubel.domain.community.service;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.aliyuncs.exceptions.ClientException;
+import com.aseubel.domain.community.adapter.repo.ICommentRepository;
 import com.aseubel.domain.community.adapter.repo.ICommunityUserRepository;
 import com.aseubel.domain.community.adapter.repo.IDiscussPostRepository;
 import com.aseubel.domain.community.model.entity.CommentEntity;
@@ -38,6 +39,8 @@ public class CommunityService implements ICommunityService{
 
     private final ICommunityUserRepository communityUserRepository;
 
+    private final ICommentRepository commentRepository;
+
     private final AliOSSUtil aliOSSUtil;
 
     @Override
@@ -47,7 +50,7 @@ public class CommunityService implements ICommunityService{
         // 限制每页显示的帖子数量
         limit = limit == null ? PER_PAGE_DISCUSS_POST_SIZE : limit;
         // 查询帖子列表
-        List<DiscussPostEntity> discussPostEntities = discussPostRepository.listDiscussPost(postId, limit);
+        List<DiscussPostEntity> discussPostEntities = discussPostRepository.listDiscussPost(postId, limit, schoolCode);
         // 提取帖子的用户id
         List<String> userIds = Optional.ofNullable(discussPostEntities)
                 .map(d -> d.stream()
@@ -64,8 +67,11 @@ public class CommunityService implements ICommunityService{
         }
         // 获取帖子的第一张图片
         if (!CollectionUtil.isEmpty(discussPostEntities)) {
-            discussPostEntities.forEach(d ->
-                d.setImage(discussPostRepository.getPostFirstImage(d.getDiscussPostId()))
+            discussPostEntities.forEach(d -> {
+                d.setImage(discussPostRepository.getPostFirstImage(d.getDiscussPostId()));
+                // 加载评论
+                d.setComments(commentRepository.listPostMainComment(d.getDiscussPostId()));
+                    }
             );
         }
         log.info("获取帖子列表服务结束执行");
