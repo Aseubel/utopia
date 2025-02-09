@@ -49,11 +49,14 @@ public class DiscussPostRepository implements IDiscussPostRepository {
     private FavoriteMapper favoriteMapper;
 
     @Override
-    public List<DiscussPostEntity> listDiscussPost(String postId, Integer limit, String schoolCode) {
+    public List<DiscussPostEntity> listDiscussPost(String userId, String postId, Integer limit, String schoolCode) {
         return Optional.ofNullable(StringUtils.isEmpty(postId)
                         ? discussPostMapper.listDiscussPostAhead(limit, schoolCode)
                         : discussPostMapper.listDiscussPost(postId, limit, schoolCode))
-                .map(p -> p.stream().map(discussPostConvertor::convert).collect(Collectors.toList()))
+                .map(p -> p.stream()
+                        .map(discussPostConvertor::convert)
+                        .peek(d -> d.setIsFavorite(favoriteMapper.getFavoriteStatus(userId, d.getDiscussPostId()).orElse(false)))
+                        .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
     }
 
@@ -114,6 +117,18 @@ public class DiscussPostRepository implements IDiscussPostRepository {
                             .collect(Collectors.toList());
                 })
                 .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public void favoritePost(String userId, String postId) {
+        // 如果jdk升级到9以上可以使用Optional的ifPresentOrElse方法
+        boolean isExist = favoriteMapper.getFavoritePostIdByUserIdAndPostId(userId, postId) != null;
+        if (isExist) {
+            boolean isFavorite = favoriteMapper.getFavoriteStatus(userId, postId).orElse(false);
+            favoriteMapper.updateFavoriteStatus(userId, postId, isFavorite ? 0 : 1);
+        } else {
+            favoriteMapper.saveFavoriteRecord(userId, postId);
+        }
     }
 
 }

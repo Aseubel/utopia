@@ -23,18 +23,18 @@
 
     <update id="updateDiscussPost">
         update `discuss_post`
-        set user_id = #{userId}, title = #{title}, content = #{content}, like_count = #{likeCount}, forward_count = #{forwardCount}, comment_count=#{comment_count}, type = #{type}, status = #{status}
+        set user_id = #{userId}, title = #{title}, content = #{content}, like_count = #{likeCount}, favorite_count = #{favoriteCount}, comment_count=#{comment_count}, type = #{type}, status = #{status}
         where discuss_post_id = #{discussPostId} and is_deleted = 0
     </update>
 
     <select id="getDiscussPostByPostId" resultType="com.aseubel.infrastructure.dao.po.DiscussPost">
-        select id, discuss_post_id, user_id, title, content, like_count, forward_count, comment_count, type, status, create_time, update_time
+        select id, discuss_post_id, user_id, title, content, like_count, favorite_count, comment_count, type, status, create_time, update_time
         from `discuss_post`
         where discuss_post_id = #{postId} and is_deleted = 0
     </select>
 
     <select id="listDiscussPost" resultType="com.aseubel.infrastructure.dao.po.DiscussPost">
-        select id, discuss_post_id, user_id, school_code, title, content, like_count, forward_count, comment_count, type, status, create_time, update_time
+        select id, discuss_post_id, user_id, school_code, title, content, like_count, favorite_count, comment_count, type, status, create_time, update_time
         from `discuss_post`
         <where>
             update_time &lt;= (select update_time from `discuss_post` where discuss_post_id = #{postId} and is_deleted = 0)
@@ -47,7 +47,7 @@
     </select>
 
     <select id="listDiscussPostAhead" resultType="com.aseubel.infrastructure.dao.po.DiscussPost">
-        select id, discuss_post_id, user_id, school_code, title, content, like_count, forward_count, comment_count, type, status, create_time, update_time
+        select id, discuss_post_id, user_id, school_code, title, content, like_count, favorite_count, comment_count, type, status, create_time, update_time
         from `discuss_post`
         <where>
             <if test="schoolCode != null and schoolCode != ''">school_code = #{schoolCode}</if>
@@ -65,7 +65,7 @@
     </select>
 
     <select id="listDiscussPostByPostIds" resultType="com.aseubel.infrastructure.dao.po.DiscussPost">
-        select discuss_post_id, user_id, school_code, title, content, like_count, forward_count, comment_count, type, status, create_time, update_time
+        select discuss_post_id, user_id, school_code, title, content, like_count, favorite_count, comment_count, type, status, create_time, update_time
         from `discuss_post`
         where is_deleted = 0 and discuss_post_id in
         <foreach collection="postIds" item="postId" separator="," open="(" close=")">

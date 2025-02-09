@@ -43,8 +43,8 @@ public class DiscussPost {
     @FieldDesc(name = "评论数")
     private Integer commentCount;
 
-    @FieldDesc(name = "转发数")
-    private Integer forwardCount;
+    @FieldDesc(name = "收藏数")
+    private Integer favoriteCount;
 
     @FieldDesc(name = "0-普通;1-置顶")
     private Integer type;

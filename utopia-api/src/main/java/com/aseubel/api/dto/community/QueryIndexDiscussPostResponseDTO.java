@@ -42,8 +42,8 @@ public class QueryIndexDiscussPostResponseDTO implements Serializable {
     @FieldDesc(name = "评论数")
     private Integer commentCount;
 
-    @FieldDesc(name = "转发数")
-    private Integer forwardCount;
+    @FieldDesc(name = "收藏数")
+    private Integer favoriteCount;
 
     @FieldDesc(name = "0-普通;1-置顶")
     private Integer type;
@@ -62,5 +62,11 @@ public class QueryIndexDiscussPostResponseDTO implements Serializable {
 
     @FieldDesc(name = "图片url，因为展示在首页，所以只展示第一张图片")
     private String image;
+
+    @FieldDesc(name = "是否收藏")
+    private Boolean isFavorite;
+
+    @FieldDesc(name = "是否点赞")
+    private Boolean isLike;
 
 }

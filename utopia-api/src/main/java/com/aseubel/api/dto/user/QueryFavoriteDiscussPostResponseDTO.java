@@ -38,8 +38,8 @@ public class QueryFavoriteDiscussPostResponseDTO implements Serializable {
     @FieldDesc(name = "评论数")
     private Integer commentCount;
 
-    @FieldDesc(name = "转发数")
-    private Integer forwardCount;
+    @FieldDesc(name = "收藏数")
+    private Integer favoriteCount;
 
     @FieldDesc(name = "创建时间")
     private LocalDateTime createTime;

@@ -63,7 +63,7 @@ public class CommunityController implements CommunityInterface {
                    .content(discussPost.getContent())
                    .likeCount(discussPost.getLikeCount())
                    .commentCount(discussPost.getCommentCount())
-                   .forwardCount(discussPost.getForwardCount())
+                   .favoriteCount(discussPost.getFavoriteCount())
                    .type(discussPost.getType())
                    .status(discussPost.getStatus())
                    .comments(discussPost.getComments())

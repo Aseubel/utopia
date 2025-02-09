@@ -20,7 +20,7 @@ public interface IDiscussPostRepository {
      * @param limit 每页显示数量
      * @return
      */
-    List<DiscussPostEntity> listDiscussPost(String postId, Integer limit, String schoolCode);
+    List<DiscussPostEntity> listDiscussPost(String userId, String postId, Integer limit, String schoolCode);
 
     /**
      * 保存帖子图片记录
@@ -77,4 +77,11 @@ public interface IDiscussPostRepository {
      * @return
      */
     List<DiscussPostEntity> queryUserFavoritePosts(String userId, String postId, Integer limit);
+
+    /**
+     * 收藏帖子
+     * @param userId
+     * @param postId
+     */
+    void favoritePost(String userId, String postId);
 }

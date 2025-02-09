@@ -6,7 +6,7 @@
         select post_id
         from `favorite`
         where update_time &lt;= (select update_time from `favorite` where post_id = #{postId} and is_deleted = 0)
-          and is_deleted = 0 and post_id != #{postId}
+          and user_id = #{userId} and post_id != #{postId} and status = 1 and is_deleted = 0
         order by update_time DESC, id DESC
         limit #{limit}
     </select>
@@ -14,7 +14,7 @@
     <select id="listUserFavoritePostIdAhead" resultType="java.lang.String">
         select post_id
         from `favorite`
-        where is_deleted = 0
+        where user_id = #{userId} and status = 1 and is_deleted = 0
         order by update_time DESC
         limit #{limit}
     </select>

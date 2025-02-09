@@ -59,11 +59,12 @@ public interface ICommunityService {
     DiscussPostEntity commentDiscussPost(CommentEntity commentEntity);
 
     /**
-     * 转发帖子
-     * @param postId
+     * 收藏帖子
+     * @param userId 用户id
+     * @param postId 帖子id
      * @return
      */
-    DiscussPostEntity forwardDiscussPost(String postId);
+    DiscussPostEntity favoriteDiscussPost(String userId, String postId);
 
     /**
      * 置顶帖子

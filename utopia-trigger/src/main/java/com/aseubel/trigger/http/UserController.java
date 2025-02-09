@@ -2,7 +2,6 @@ package com.aseubel.trigger.http;
 
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.api.UserInterface;
-import com.aseubel.api.dto.community.QueryIndexDiscussPostResponseDTO;
 import com.aseubel.api.dto.user.UploadAvatarRequestDTO;
 import com.aseubel.api.dto.user.UploadAvatarResponseDTO;
 import com.aseubel.api.dto.user.*;
@@ -183,7 +182,7 @@ public class UserController implements UserInterface {
                     .content(discussPost.getContent())
                     .likeCount(discussPost.getLikeCount())
                     .commentCount(discussPost.getCommentCount())
-                    .forwardCount(discussPost.getForwardCount())
+                    .favoriteCount(discussPost.getFavoriteCount())
                     .createTime(discussPost.getCreateTime())
                     .updateTime(discussPost.getUpdateTime())
                     .build());

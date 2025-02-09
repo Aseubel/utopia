@@ -50,7 +50,7 @@ public class CommunityService implements ICommunityService{
         // 限制每页显示的帖子数量
         limit = limit == null ? PER_PAGE_DISCUSS_POST_SIZE : limit;
         // 查询帖子列表
-        List<DiscussPostEntity> discussPostEntities = discussPostRepository.listDiscussPost(postId, limit, schoolCode);
+        List<DiscussPostEntity> discussPostEntities = discussPostRepository.listDiscussPost(userId, postId, limit, schoolCode);
         // 提取帖子的用户id
         List<String> userIds = Optional.ofNullable(discussPostEntities)
                 .map(d -> d.stream()
@@ -151,8 +151,10 @@ public class CommunityService implements ICommunityService{
     }
 
     @Override
-    public DiscussPostEntity forwardDiscussPost(String postId) {
-        return null;
+    public DiscussPostEntity favoriteDiscussPost(String userId, String postId) {
+        log.info("用户收藏帖子服务开始，userId: {}, postId: {}", userId, postId);
+        discussPostRepository.favoritePost(userId, postId);
+        log.info("用户收藏帖子服务开始，userId: {}, postId: {}", userId, postId);
     }
 
     @Override
