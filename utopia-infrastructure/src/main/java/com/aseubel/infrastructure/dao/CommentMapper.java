@@ -14,10 +14,16 @@ import java.util.List;
 public interface CommentMapper {
 
     /**
-     * 添加评论
+     * 添加根评论
      * @param comment
      */
-    void addComment(Comment comment);
+    void addRootComment(Comment comment);
+
+    /**
+     * 添加子评论
+     * @param comment
+     */
+    void addChildComment(Comment comment);
 
     /**
      * 根据评论id删除评论
@@ -39,6 +45,13 @@ public interface CommentMapper {
     Comment getCommentByCommentId(String commentId);
 
     /**
+     * 根据评论id查询用户id
+     * @param commentId
+     * @return
+     */
+    String getUserIdByCommentId(String commentId);
+
+    /**
      * 根据帖子id查询评论列表
      * @param postId
      * @return
@@ -46,10 +59,31 @@ public interface CommentMapper {
     List<Comment> listCommentsByPostId(String postId);
 
     /**
+     * 根据帖子id查询 3 个评论
+     * @param postId
+     * @return
+     */
+    List<Comment> listTop3CommentsByPostId(String postId);
+
+    /**
      * 根据根/顶级评论id查询子评论列表
      * @param rootId
      * @return
      */
     List<Comment> listCommentsByRootId(String rootId);
+
+    /**
+     * 根据根/顶级评论id查询 3 个子评论
+     * @param rootId
+     * @return
+     */
+    List<Comment> listTop3CommentsByRootId(String rootId);
+
+    /**
+     * 根据评论id列表查询评论列表
+     * @param commentIds
+     * @return
+     */
+    List<Comment> listCommentByCommentIds(List<String> commentIds);
 
 }
