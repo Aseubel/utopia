@@ -131,6 +131,18 @@ public class CommunityController implements CommunityInterface {
         return Response.SYSTEM_SUCCESS();
     }
 
+    @Override
+    @PutMapping("/post/favorite")
+    public Response favoriteDiscussPost(@Valid @RequestBody FavoriteDiscussPostRequest favoriteDiscussPostRequest) {
+        return null;
+    }
+
+    @Override
+    @DeleteMapping("/post/favorite")
+    public Response disFavoriteDiscussPost(@Valid @RequestBody DisFavoriteDiscussPostRequest disFavoriteDiscussPostRequest) {
+        return null;
+    }
+
     private boolean imageOrUserIdIsBlank(UploadDiscussPostImageRequest requestDTO) {
         return StringUtils.isEmpty(requestDTO.getPostImage().getOriginalFilename()) || StringUtils.isEmpty(requestDTO.getUserId());
     }
