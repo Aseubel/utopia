@@ -151,7 +151,7 @@ public class CommunityService implements ICommunityService{
     }
 
     @Override
-    public DiscussPostEntity favoriteDiscussPost(String userId, String postId) {
+    public void favoriteDiscussPost(String userId, String postId) {
         log.info("用户收藏帖子服务开始，userId: {}, postId: {}", userId, postId);
         discussPostRepository.favoritePost(userId, postId);
         log.info("用户收藏帖子服务开始，userId: {}, postId: {}", userId, postId);

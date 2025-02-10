@@ -140,7 +140,8 @@ public class CommunityController implements CommunityInterface {
     @Override
     @PutMapping("/post/favorite")
     public Response favoriteDiscussPost(@Valid @RequestBody FavoriteDiscussPostRequest favoriteDiscussPostRequest) {
-        return null;
+        communityService.favoriteDiscussPost(favoriteDiscussPostRequest.getUserId(), favoriteDiscussPostRequest.getPostId());
+        return Response.SYSTEM_SUCCESS();
     }
 
     /**

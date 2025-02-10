@@ -64,7 +64,7 @@ public interface ICommunityService {
      * @param postId 帖子id
      * @return
      */
-    DiscussPostEntity favoriteDiscussPost(String userId, String postId);
+    void favoriteDiscussPost(String userId, String postId);
 
     /**
      * 置顶帖子
