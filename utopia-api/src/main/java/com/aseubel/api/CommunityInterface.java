@@ -43,10 +43,4 @@ public interface CommunityInterface {
      */
     Response favoriteDiscussPost(@Valid @RequestBody FavoriteDiscussPostRequest favoriteDiscussPostRequest);
 
-    /**
-     * 取消收藏帖子
-     * @param disFavoriteDiscussPostRequest
-     * @return
-     */
-    Response disFavoriteDiscussPost(@Valid @RequestBody DisFavoriteDiscussPostRequest disFavoriteDiscussPostRequest);
 }

@@ -22,7 +22,7 @@ public interface FavoriteMapper {
      * @param postId
      * @return
      */
-    @Select("SELECT id FROM `favorite` WHERE user_id = #{userId} AND post_id = #{postId} AND is_delete = 0")
+    @Select("SELECT id FROM `favorite` WHERE user_id = #{userId} AND post_id = #{postId} AND is_deleted = 0")
     Integer getFavoritePostIdByUserIdAndPostId(String userId, String postId);
 
     /**
@@ -31,7 +31,7 @@ public interface FavoriteMapper {
      * @param postId
      * @return
      */
-    @Select("SELECT status FROM `favorite` WHERE user_id = #{userId} AND post_id = #{postId} AND is_delete = 0")
+    @Select("SELECT status FROM `favorite` WHERE user_id = #{userId} AND post_id = #{postId} AND is_deleted = 0")
     Optional<Boolean> getFavoriteStatus(String userId, String postId);
 
     /**
@@ -63,7 +63,7 @@ public interface FavoriteMapper {
      * @param postId
      * @param status
      */
-    @Update("UPDATE `favorite` SET status = #{status} WHERE user_id = #{userId} AND post_id = #{postId} AND is_delete = 0")
+    @Update("UPDATE `favorite` SET status = #{status} WHERE user_id = #{userId} AND post_id = #{postId} AND is_deleted = 0")
     void updateFavoriteStatus(String userId, String postId, Integer status);
 
     /**

@@ -70,6 +70,7 @@ public class CommunityController implements CommunityInterface {
                    .createTime(discussPost.getCreateTime())
                    .updateTime(discussPost.getUpdateTime())
                    .image(discussPost.getImage())
+                   .isFavorite(discussPost.getIsFavorite())
                    .build());
         }
         return Response.SYSTEM_SUCCESS(responseDTOs);
@@ -142,15 +143,6 @@ public class CommunityController implements CommunityInterface {
     public Response favoriteDiscussPost(@Valid @RequestBody FavoriteDiscussPostRequest favoriteDiscussPostRequest) {
         communityService.favoriteDiscussPost(favoriteDiscussPostRequest.getUserId(), favoriteDiscussPostRequest.getPostId());
         return Response.SYSTEM_SUCCESS();
-    }
-
-    /**
-     * 取消收藏帖子
-     */
-    @Override
-    @DeleteMapping("/post/favorite")
-    public Response disFavoriteDiscussPost(@Valid @RequestBody DisFavoriteDiscussPostRequest disFavoriteDiscussPostRequest) {
-        return null;
     }
 
     private boolean imageOrUserIdIsBlank(UploadDiscussPostImageRequest requestDTO) {
