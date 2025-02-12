@@ -10,7 +10,7 @@ import java.time.Clock;
 
 /**
  * @author Aseubel
- * @description 自定义事件
+ * @description 自定义事件 {@link CustomServiceCode}
  * @date 2025-02-07 14:36
  */
 @Setter

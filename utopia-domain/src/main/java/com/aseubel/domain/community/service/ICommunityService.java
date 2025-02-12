@@ -47,16 +47,14 @@ public interface ICommunityService {
     /**
      * 点赞帖子
      * @param postId
-     * @return
      */
-    DiscussPostEntity likeDiscussPost(String postId);
+    void likeDiscussPost(String postId);
 
     /**
      * 评论帖子
      * @param commentEntity
-     * @return
      */
-    DiscussPostEntity commentDiscussPost(CommentEntity commentEntity);
+    void commentDiscussPost(CommentEntity commentEntity);
 
     /**
      * 收藏帖子

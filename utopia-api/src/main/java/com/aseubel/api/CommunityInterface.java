@@ -37,10 +37,16 @@ public interface CommunityInterface {
     Response publishDiscussPost(@Valid @RequestBody PublishDiscussPostRequest publishDiscussPostRequest);
 
     /**
-     * 收藏帖子
+     * 收藏帖子（收藏/取消收藏）
      * @param favoriteDiscussPostRequest
      * @return
      */
     Response favoriteDiscussPost(@Valid @RequestBody FavoriteDiscussPostRequest favoriteDiscussPostRequest);
 
+    /**
+     * 点赞帖子（点赞/取消点赞）
+     * @param likeDiscussPostRequest
+     * @return
+     */
+    Response likeDiscussPost(@Valid @RequestBody LikeDiscussPostRequest likeDiscussPostRequest);
 }

@@ -141,13 +141,13 @@ public class CommunityService implements ICommunityService{
     }
 
     @Override
-    public DiscussPostEntity likeDiscussPost(String postId) {
-        return null;
+    public void likeDiscussPost(String postId) {
+        return;
     }
 
     @Override
-    public DiscussPostEntity commentDiscussPost(CommentEntity commentEntity) {
-        return null;
+    public void commentDiscussPost(CommentEntity commentEntity) {
+        return;
     }
 
     @Override

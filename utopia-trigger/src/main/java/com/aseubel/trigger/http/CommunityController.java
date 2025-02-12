@@ -3,11 +3,13 @@ package com.aseubel.trigger.http;
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.api.CommunityInterface;
 import com.aseubel.api.dto.community.*;
+import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.community.service.ICommunityService;
 import com.aseubel.types.Response;
 import com.aseubel.types.event.CustomEvent;
+import com.aseubel.types.event.LikeEvent;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.CustomMultipartFile;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.aseubel.types.enums.CustomServiceCode.COMMUNITY_POST_LIKE;
 import static com.aseubel.types.enums.CustomServiceCode.COMMUNITY_POST_PUBLISH;
 import static com.aseubel.types.enums.GlobalServiceStatusCode.OSS_UPLOAD_ERROR;
 import static com.aseubel.types.enums.GlobalServiceStatusCode.PARAM_NOT_COMPLETE;
@@ -136,12 +139,26 @@ public class CommunityController implements CommunityInterface {
     }
 
     /**
-     * 收藏帖子
+     * 收藏帖子（收藏/取消收藏）
      */
     @Override
     @PutMapping("/post/favorite")
-    public Response favoriteDiscussPost(@Valid @RequestBody FavoriteDiscussPostRequest favoriteDiscussPostRequest) {
-        communityService.favoriteDiscussPost(favoriteDiscussPostRequest.getUserId(), favoriteDiscussPostRequest.getPostId());
+    public Response favoriteDiscussPost(@Valid @RequestBody FavoriteDiscussPostRequest requestDTO) {
+        communityService.favoriteDiscussPost(requestDTO.getUserId(), requestDTO.getPostId());
+        return Response.SYSTEM_SUCCESS();
+    }
+
+    /**
+     * 点赞帖子（点赞/取消点赞）
+     */
+    @Override
+    @PutMapping("/post/like")
+    public Response likeDiscussPost(@Valid @RequestBody LikeDiscussPostRequest requestDTO) {
+        LikeEvent likeEvent = LikeEvent.builder()
+                .userId(requestDTO.getUserId())
+                .postId(requestDTO.getPostId())
+                .build();
+        eventPublisher.publishEvent(new CustomEvent(likeEvent, COMMUNITY_POST_LIKE));
         return Response.SYSTEM_SUCCESS();
     }
 
