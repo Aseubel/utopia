@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Aseubel
  * @description 数据传输实体类
@@ -28,7 +30,13 @@ public class CommunityBO {
     @FieldDesc(name = "评论id")
     private String commentId;
 
+    @FieldDesc(name = "被操作实体id")
+    private String toId;
+
     @FieldDesc(name = "帖子实体")
     private DiscussPostEntity postEntity;
+
+    @FieldDesc(name = "事件发生时间")
+    private LocalDateTime eventTime;
 
 }

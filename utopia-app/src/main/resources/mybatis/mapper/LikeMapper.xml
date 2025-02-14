@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aseubel.infrastructure.dao.LikeMapper">
+
+    <select id="listUserLikePostId" resultType="java.lang.String">
+        select to_id
+        from `like`
+        where update_time &lt;= (select update_time from `like` where to_id = #{toId} and is_deleted = 0)
+          and user_id = #{userId} and to_id != #{toId} and status = 1 and is_deleted = 0
+        order by update_time DESC, id DESC
+        limit #{limit}
+    </select>
+
+    <select id="listUserLikePostIdAhead" resultType="java.lang.String">
+        select to_id
+        from `like`
+        where user_id = #{userId} and status = 1 and is_deleted = 0
+        order by update_time DESC
+        limit #{limit}
+    </select>
+
+</mapper>

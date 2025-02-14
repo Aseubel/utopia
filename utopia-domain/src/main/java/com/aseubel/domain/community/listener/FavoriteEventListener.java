@@ -2,8 +2,7 @@ package com.aseubel.domain.community.listener;
 
 import com.aseubel.domain.community.adapter.repo.IDiscussPostRepository;
 import com.aseubel.domain.community.model.bo.CommunityBO;
-import com.aseubel.types.event.CustomEvent;
-import com.aseubel.types.event.LikeEvent;
+import com.aseubel.types.event.FavoriteEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -12,20 +11,20 @@ import javax.annotation.Resource;
 
 /**
  * @author Aseubel
- * @description 点赞事件监听处理
- * @date 2025-02-13 00:13
+ * @description 收藏事件监听器
+ * @date 2025-02-14 20:32
  */
 @Component
 @Slf4j
-public class LikeEventListener implements ApplicationListener<LikeEvent> {
+public class FavoriteEventListener implements ApplicationListener<FavoriteEvent> {
 
     @Resource
     private IDiscussPostRepository discussPostRepository;
 
     @Override
-    public void onApplicationEvent(LikeEvent event) {
-        log.info("监听到点赞事件");
+    public void onApplicationEvent(FavoriteEvent event) {
+        log.info("监听到收藏事件");
         CommunityBO communityBO = (CommunityBO) event.getSource();
-        discussPostRepository.likePost(communityBO.getUserId(), communityBO.getPostId(), communityBO.getEventTime());
+        discussPostRepository.favoritePost(communityBO.getUserId(), communityBO.getPostId());
     }
 }

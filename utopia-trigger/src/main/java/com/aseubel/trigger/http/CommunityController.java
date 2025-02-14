@@ -9,6 +9,7 @@ import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.community.service.ICommunityService;
 import com.aseubel.types.Response;
 import com.aseubel.types.event.CustomEvent;
+import com.aseubel.types.event.FavoriteEvent;
 import com.aseubel.types.event.LikeEvent;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.CustomMultipartFile;
@@ -74,6 +75,7 @@ public class CommunityController implements CommunityInterface {
                    .updateTime(discussPost.getUpdateTime())
                    .image(discussPost.getImage())
                    .isFavorite(discussPost.getIsFavorite())
+                   .isLike(discussPost.getIsLike())
                    .build());
         }
         return Response.SYSTEM_SUCCESS(responseDTOs);
@@ -144,7 +146,11 @@ public class CommunityController implements CommunityInterface {
     @Override
     @PutMapping("/post/favorite")
     public Response favoriteDiscussPost(@Valid @RequestBody FavoriteDiscussPostRequest requestDTO) {
-        communityService.favoriteDiscussPost(requestDTO.getUserId(), requestDTO.getPostId());
+//        communityService.favoriteDiscussPost(requestDTO.getUserId(), requestDTO.getPostId());
+        eventPublisher.publishEvent(new FavoriteEvent(CommunityBO.builder()
+                .userId(requestDTO.getUserId())
+                .postId(requestDTO.getPostId())
+                .build()));
         return Response.SYSTEM_SUCCESS();
     }
 
@@ -154,11 +160,11 @@ public class CommunityController implements CommunityInterface {
     @Override
     @PutMapping("/post/like")
     public Response likeDiscussPost(@Valid @RequestBody LikeDiscussPostRequest requestDTO) {
-        LikeEvent likeEvent = LikeEvent.builder()
+        eventPublisher.publishEvent(new LikeEvent(CommunityBO.builder()
                 .userId(requestDTO.getUserId())
                 .postId(requestDTO.getPostId())
-                .build();
-        eventPublisher.publishEvent(new CustomEvent(likeEvent, COMMUNITY_POST_LIKE));
+                .eventTime(requestDTO.getLikeTime())
+                .build()));
         return Response.SYSTEM_SUCCESS();
     }
 

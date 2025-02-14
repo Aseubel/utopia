@@ -23,7 +23,6 @@ public class UploadAvatarRequestDTO implements Serializable {
     @FieldDesc(name = "用户id")
     private String userId;
 
-    @NotNull(message = "头像文件不能为空")
     @FieldDesc(name = "头像文件")
     private MultipartFile avatar;
 

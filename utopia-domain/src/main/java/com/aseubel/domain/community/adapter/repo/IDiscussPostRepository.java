@@ -4,6 +4,7 @@ import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -84,4 +85,11 @@ public interface IDiscussPostRepository {
      * @param postId
      */
     void favoritePost(String userId, String postId);
+
+    /**
+     * 点赞帖子
+     * @param userId
+     * @param postId
+     */
+    void likePost(String userId, String postId, LocalDateTime likeTime);
 }

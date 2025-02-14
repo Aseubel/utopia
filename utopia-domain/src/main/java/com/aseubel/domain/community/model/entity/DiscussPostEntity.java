@@ -78,6 +78,9 @@ public class DiscussPostEntity {
     @FieldDesc(name = "是否收藏")
     private Boolean isFavorite;
 
+    @FieldDesc(name = "是否点赞")
+    private Boolean isLike;
+
     public void generatePostId() {
         this.discussPostId = "dp_" + UUID.randomUUID().toString().replaceAll("-", "");
     }

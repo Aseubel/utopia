@@ -1,8 +1,8 @@
 package com.aseubel.types.event;
 
 import com.aseubel.types.annotation.FieldDesc;
-import com.aseubel.types.enums.CustomServiceCode;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.context.ApplicationEvent;
 
 import java.time.Clock;
@@ -13,9 +13,8 @@ import java.time.LocalDateTime;
  * @description 点赞事件
  * @date 2025-02-12 23:51
  */
-@EqualsAndHashCode(callSuper = true)
-@Data
-@Builder
+@Getter
+@Setter
 public class LikeEvent extends ApplicationEvent {
 
     @FieldDesc(name = "用户id")
@@ -36,6 +35,20 @@ public class LikeEvent extends ApplicationEvent {
 
     public LikeEvent(Object source, Clock clock) {
         super(source, clock);
+    }
+
+    public LikeEvent(Object source, String userId, String postId) {
+        super(source);
+        this.userId = userId;
+        this.postId = postId;
+    }
+
+    public LikeEvent(Object source, String userId, String postId, LocalDateTime likeTime, String commentId) {
+        super(source);
+        this.userId = userId;
+        this.postId = postId;
+        this.likeTime = likeTime;
+        this.commentId = commentId;
     }
 
     public Object getSource() {

@@ -158,6 +158,8 @@ public class UserController implements UserInterface {
         } catch (ClientException e) {
             log.error("上传头像时oss服务异常，{}, code:{}, message:{}",OSS_UPLOAD_ERROR.getMessage(), e.getErrCode(), e.getErrMsg(), e);
             throw new AppException(OSS_UPLOAD_ERROR, e);
+        } catch (AppException e ) {
+            throw e;
         } catch (Exception e) {
             log.error("上传头像时出现未知异常", e);
             throw new AppException(OSS_UPLOAD_ERROR, e);

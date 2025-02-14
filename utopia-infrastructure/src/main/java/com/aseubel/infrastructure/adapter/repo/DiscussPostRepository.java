@@ -6,16 +6,14 @@ import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.infrastructure.convertor.CommunityImageConvertor;
 import com.aseubel.infrastructure.convertor.DiscussPostConvertor;
-import com.aseubel.infrastructure.dao.DiscussPostMapper;
-import com.aseubel.infrastructure.dao.FavoriteMapper;
-import com.aseubel.infrastructure.dao.ImageMapper;
-import com.aseubel.infrastructure.dao.SchoolMapper;
+import com.aseubel.infrastructure.dao.*;
 import com.aseubel.infrastructure.dao.po.DiscussPost;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +46,9 @@ public class DiscussPostRepository implements IDiscussPostRepository {
     @Resource
     private FavoriteMapper favoriteMapper;
 
+    @Resource
+    private LikeMapper likeMapper;
+
     @Override
     public List<DiscussPostEntity> listDiscussPost(String userId, String postId, Integer limit, String schoolCode) {
         return Optional.ofNullable(StringUtils.isEmpty(postId)
@@ -56,6 +57,7 @@ public class DiscussPostRepository implements IDiscussPostRepository {
                 .map(p -> p.stream()
                         .map(discussPostConvertor::convert)
                         .peek(d -> d.setIsFavorite(favoriteMapper.getFavoriteStatus(userId, d.getDiscussPostId()).orElse(false)))
+                        .peek(d -> d.setIsLike(likeMapper.getLikeStatus(userId, d.getDiscussPostId()).orElse(false)))
                         .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
     }
@@ -128,6 +130,18 @@ public class DiscussPostRepository implements IDiscussPostRepository {
             favoriteMapper.updateFavoriteStatus(userId, postId, isFavorite ? 0 : 1);
         } else {
             favoriteMapper.saveFavoriteRecord(userId, postId);
+        }
+    }
+
+    @Override
+    public void likePost(String userId, String postId, LocalDateTime likeTime) {
+        // 如果jdk升级到9以上可以使用Optional的ifPresentOrElse方法
+        boolean isExist = likeMapper.getLikePostIdByUserIdAndPostId(userId, postId) != null;
+        if (isExist) {
+            boolean isLike = likeMapper.getLikeStatus(userId, postId).orElse(false);
+            likeMapper.updateLikeStatus(userId, postId, likeTime, isLike ? 0 : 1);
+        } else {
+            likeMapper.saveLikeRecord(userId, postId, likeTime);
         }
     }
 
