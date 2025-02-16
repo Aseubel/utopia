@@ -35,4 +35,16 @@ public interface ImageMapper {
      * @return
      */
     String getImageUrl(String imageId);
+
+    /**
+     * 查询所有图片
+     * @return
+     */
+    List<Image> listAll();
+
+    /**
+     * 根据主键id删除图片
+     * @param imageIds
+     */
+    void deleteMissingImage(List<Long> imageIds);
 }

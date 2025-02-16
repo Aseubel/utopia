@@ -1,5 +1,7 @@
 package com.aseubel.domain.community.adapter.repo;
 
+import com.aliyuncs.exceptions.ClientException;
+import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import org.springframework.stereotype.Repository;
@@ -17,11 +19,9 @@ public interface IDiscussPostRepository {
 
     /**
      * 直接列举帖子
-     * @param postId 上一页查询最后一个帖子的id
-     * @param limit 每页显示数量
      * @return
      */
-    List<DiscussPostEntity> listDiscussPost(String userId, String postId, Integer limit, String schoolCode);
+    List<DiscussPostEntity> listDiscussPost(CommunityBO communityBO);
 
     /**
      * 保存帖子图片记录
@@ -152,4 +152,13 @@ public interface IDiscussPostRepository {
      */
     void decreaseCommentCount(String postId);
 
+    /**
+     * 统计帖子评论点赞收藏数
+     */
+    void countAll();
+
+    /**
+     * 删除已删除的图片记录
+     */
+    void deleteMissingImage() throws ClientException;
 }

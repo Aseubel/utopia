@@ -58,7 +58,7 @@ public class DiscussPostEntity {
     private Integer status;
 
     @FieldDesc(name = "标签")
-    private List<String> tags;
+    private String tag;
 
     @FieldDesc(name = "创建时间")
     private LocalDateTime createTime;

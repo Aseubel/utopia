@@ -55,8 +55,14 @@ public class CommunityController implements CommunityInterface {
     @Override
     @GetMapping("/post")
     public Response<List<QueryIndexDiscussPostResponseDTO>> queryIndexDiscussPost(@Valid QueryIndexDiscussPostRequestDTO requestDTO) {
-        List<DiscussPostEntity> discussPosts = communityService.listDiscussPost(
-                requestDTO.getUserId(), requestDTO.getPostId(), requestDTO.getLimit(), requestDTO.getSchoolCode());
+        CommunityBO communityBO = CommunityBO.builder()
+                .userId(requestDTO.getUserId())
+                .postId(requestDTO.getPostId())
+                .limit(requestDTO.getLimit())
+                .schoolCode(requestDTO.getSchoolCode())
+                .tag(requestDTO.getTag())
+                .build();
+        List<DiscussPostEntity> discussPosts = communityService.listDiscussPost(communityBO);
         List<QueryIndexDiscussPostResponseDTO> responseDTOs = new ArrayList<>();
         for (DiscussPostEntity discussPost : discussPosts) {
            responseDTOs.add(QueryIndexDiscussPostResponseDTO.builder()
@@ -132,7 +138,7 @@ public class CommunityController implements CommunityInterface {
                 .schoolCode(publishDiscussPostRequest.getSchoolCode())
                .title(publishDiscussPostRequest.getTitle())
                .content(publishDiscussPostRequest.getContent())
-               .tags(publishDiscussPostRequest.getTags())
+               .tag(publishDiscussPostRequest.getTag())
                .images(publishDiscussPostRequest.getImages())
                .build();
         communityService.publishDiscussPost(discussPostEntity);

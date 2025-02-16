@@ -45,13 +45,18 @@ public class CommunityService implements ICommunityService{
     private final AliOSSUtil aliOSSUtil;
 
     @Override
-    public List<DiscussPostEntity> listDiscussPost(String userId, String postId, Integer limit, String schoolCode) {
+    public List<DiscussPostEntity> listDiscussPost(CommunityBO communityBO) {
+        String userId = communityBO.getUserId();
+        String postId = communityBO.getPostId();
+        Integer limit = communityBO.getLimit();
+        String schoolCode = communityBO.getSchoolCode();
         log.info("获取帖子列表服务开始执行");
         checkUserIdValid(userId);
+        checkSchoolCodeValid(schoolCode);
         // 限制每页显示的帖子数量
         limit = limit == null ? PER_PAGE_DISCUSS_POST_SIZE : limit;
         // 查询帖子列表
-        List<DiscussPostEntity> discussPostEntities = discussPostRepository.listDiscussPost(userId, postId, limit, schoolCode);
+        List<DiscussPostEntity> discussPostEntities = discussPostRepository.listDiscussPost(communityBO);
         // 提取帖子的用户id
         List<String> userIds = Optional.ofNullable(discussPostEntities)
                 .map(d -> d.stream()

@@ -3,8 +3,8 @@
 <mapper namespace="com.aseubel.infrastructure.dao.DiscussPostMapper">
 
     <insert id="addDiscussPost">
-        insert into `discuss_post` (discuss_post_id, user_id, school_code, title, content)
-        values (#{discussPostId}, #{userId}, #{schoolCode}, #{title}, #{content})
+        insert into `discuss_post` (discuss_post_id, user_id, school_code, title, content, tag)
+        values (#{discussPostId}, #{userId}, #{schoolCode}, #{title}, #{content}, #{tag})
     </insert>
 
     <insert id="relateDiscussPostImage">
@@ -81,7 +81,8 @@
         <where>
             update_time &lt;= (select update_time from `discuss_post` where discuss_post_id = #{postId} and is_deleted = 0)
             and discuss_post_id != #{postId}
-            <if test="schoolCode != null and schoolCode != ''">school_code = #{schoolCode}</if>
+            <if test="schoolCode != null and schoolCode != ''">and school_code = #{schoolCode}</if>
+            <if test="tag != null and tag != ''">and tag = #{tag}</if>
             and is_deleted = 0
         </where>
         order by update_time DESC, id DESC
@@ -93,6 +94,7 @@
         from `discuss_post`
         <where>
             <if test="schoolCode != null and schoolCode != ''">school_code = #{schoolCode}</if>
+            <if test="tag != null and tag != ''">and tag = #{tag}</if>
             and is_deleted = 0
         </where>
         order by update_time DESC

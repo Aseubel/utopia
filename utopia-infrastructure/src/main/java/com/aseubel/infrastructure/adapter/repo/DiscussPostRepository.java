@@ -1,21 +1,23 @@
 package com.aseubel.infrastructure.adapter.repo;
 
+import cn.hutool.core.collection.CollectionUtil;
+import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.community.adapter.repo.IDiscussPostRepository;
+import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.infrastructure.convertor.CommunityImageConvertor;
 import com.aseubel.infrastructure.convertor.DiscussPostConvertor;
 import com.aseubel.infrastructure.dao.*;
+import com.aseubel.infrastructure.dao.po.Image;
+import com.aseubel.types.util.AliOSSUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -47,11 +49,20 @@ public class DiscussPostRepository implements IDiscussPostRepository {
     @Resource
     private LikeMapper likeMapper;
 
+    @Resource
+    private AliOSSUtil aliOSSUtil;
+
     @Override
-    public List<DiscussPostEntity> listDiscussPost(String userId, String postId, Integer limit, String schoolCode) {
+    public List<DiscussPostEntity> listDiscussPost(CommunityBO communityBO) {
+        String userId = communityBO.getUserId();
+        String postId = communityBO.getPostId();
+        Integer limit = communityBO.getLimit();
+        String schoolCode = communityBO.getSchoolCode();
+        String tag = communityBO.getTag();
+
         return Optional.ofNullable(StringUtils.isEmpty(postId)
-                        ? discussPostMapper.listDiscussPostAhead(limit, schoolCode)
-                        : discussPostMapper.listDiscussPost(postId, limit, schoolCode))
+                        ? discussPostMapper.listDiscussPostAhead(limit, schoolCode, tag)
+                        : discussPostMapper.listDiscussPost(postId, limit, schoolCode, tag))
                 .map(p -> p.stream()
                         .map(discussPostConvertor::convert)
                         .peek(d -> d.setIsFavorite(favoriteMapper.getFavoriteStatus(userId, d.getDiscussPostId()).orElse(false)))
@@ -186,6 +197,28 @@ public class DiscussPostRepository implements IDiscussPostRepository {
     @Override
     public void decreaseCommentCount(String postId) {
         discussPostMapper.decreaseCommentCount(postId);
+    }
+
+    @Override
+    public void countAll() {
+        return;
+    }
+
+    @Override
+    public void deleteMissingImage() throws ClientException {
+        // TODO 仅列举与帖子关联了的图片
+        List<Image> imageRecords = imageMapper.listAll();
+        Set<String> ossRecordSet = new HashSet<>(aliOSSUtil.listObjects());
+        List<Long> missingImageIds = new ArrayList<>();
+        // 找出数据库中存在但oss没有对应对象的记录
+        for (Image image : imageRecords) {
+            if (!ossRecordSet.contains(aliOSSUtil.getFileName(image.getImageUrl()))) {
+                missingImageIds.add(image.getId());
+            }
+        }
+        if (!CollectionUtil.isEmpty(missingImageIds)) {
+            imageMapper.deleteMissingImage(missingImageIds);
+        }
     }
 
 }

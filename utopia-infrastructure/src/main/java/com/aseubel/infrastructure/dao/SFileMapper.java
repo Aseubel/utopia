@@ -63,7 +63,7 @@ public interface SFileMapper {
     /**
      * 删除oss不存在的缺失文件记录
      */
-    void deleteMissingSFile(List<String> fileIds);
+    void deleteMissingSFile(List<Long> fileIds);
 
     /**
      * 根据文件id查询文件

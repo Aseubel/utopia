@@ -53,7 +53,7 @@ public interface DiscussPostMapper {
      * @param schoolCode 院校代码
      * @return
      */
-    List<DiscussPost> listDiscussPost(String postId, Integer limit, String schoolCode);
+    List<DiscussPost> listDiscussPost(String postId, Integer limit, String schoolCode, String tag);
 
     /**
      * 获取所有帖子信息，分页查询
@@ -61,7 +61,7 @@ public interface DiscussPostMapper {
      * @param schoolCode 院校代码
      * @return
      */
-    List<DiscussPost> listDiscussPostAhead(Integer limit, String schoolCode);
+    List<DiscussPost> listDiscussPostAhead(Integer limit, String schoolCode, String tag);
 
     /**
      * 关联帖子图片

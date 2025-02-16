@@ -36,4 +36,7 @@ public class QueryIndexDiscussPostRequestDTO implements Serializable {
     @FieldDesc(name = "每页记录数")
     private Integer limit;
 
+    @FieldDesc(name = "标签")
+    private String tag;
+
 }

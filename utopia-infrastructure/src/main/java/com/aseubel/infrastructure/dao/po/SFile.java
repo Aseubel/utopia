@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public class SFile {
 
     @FieldDesc(name = "主键")
-    private String id;
+    private Long id;
 
     @FieldDesc(name = "文件业务id")
     private String sfileId;

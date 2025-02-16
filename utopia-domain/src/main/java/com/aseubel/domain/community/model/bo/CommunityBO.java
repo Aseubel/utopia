@@ -31,6 +31,15 @@ public class CommunityBO {
     @FieldDesc(name = "评论id")
     private String commentId;
 
+    @FieldDesc(name = "标签")
+    private String tag;
+
+    @FieldDesc(name = "学校代号")
+    private String schoolCode;
+
+    @FieldDesc(name = "每页数量")
+    private Integer limit;
+
     @FieldDesc(name = "被操作实体id")
     private String toId;
 

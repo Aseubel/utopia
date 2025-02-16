@@ -24,7 +24,7 @@
     </delete>
 
     <update id="deleteMissingSFile">
-        update sfile set is_deleted = 1
+        update `sfile` set is_deleted = 1
         where id in
         <foreach collection="fileIds" item="fileId" open="(" separator="," close=")">
             #{fileId}
@@ -32,13 +32,13 @@
     </update>
 
     <update id="incrementDownloadCount">
-        update sfile set download_count = download_count + 1
+        update `sfile` set download_count = download_count + 1
         where sfile_id = #{fileId}
     </update>
 
     <select id="listSFile" resultType="com.aseubel.infrastructure.dao.po.SFile">
         select id, sfile_id, sfile_name, sfile_url, sfile_size, download_count, sfile_type, create_by, update_by, create_time, update_time
-        from sfile
+        from `sfile`
         where id > (select id from `sfile` where sfile_id = #{fileId} and is_deleted = 0)
           and is_deleted = 0
         order by #{sortField}
@@ -47,7 +47,7 @@
 
     <select id="listSFileAhead" resultType="com.aseubel.infrastructure.dao.po.SFile">
         select id, sfile_id, sfile_name, sfile_url, sfile_size, download_count, sfile_type, create_by, update_by, create_time, update_time
-        from sfile
+        from `sfile`
         where is_deleted = 0
         order by #{sortField}
         limit #{limit}
@@ -55,7 +55,7 @@
 
     <select id="listSFileByTypeId" resultType="com.aseubel.infrastructure.dao.po.SFile">
         select id, sfile_id, sfile_name, sfile_url, sfile_size, download_count, sfile_type, create_by, update_by, create_time, update_time
-        from sfile
+        from `sfile`
         where id > (select id from `sfile` where sfile_id = #{fileId} and is_deleted = 0)
           and sfile_type=#{typeId} and is_deleted = 0
         order by id DESC
@@ -64,7 +64,7 @@
 
     <select id="listSFileByTypeIdAhead" resultType="com.aseubel.infrastructure.dao.po.SFile">
         select id, sfile_id, sfile_name, sfile_url, sfile_size, download_count, sfile_type, create_by, update_by, create_time, update_time
-        from sfile
+        from `sfile`
         where sfile_type=#{typeId} and is_deleted = 0
         order by id DESC
         limit #{limit}
@@ -72,18 +72,18 @@
 
     <select id="listAllSFile" resultType="com.aseubel.infrastructure.dao.po.SFile">
         select id, sfile_id, sfile_url
-        from sfile
+        from `sfile`
     </select>
 
     <select id="getSFileBySFileId" resultType="com.aseubel.infrastructure.dao.po.SFile">
         select id, sfile_id, sfile_name, sfile_url, sfile_size, download_count, sfile_type, create_by, update_by, create_time, update_time
-        from sfile
+        from `sfile`
         where sfile_id = #{fileId} and is_deleted = 0
     </select>
 
     <select id="getSFileBySFileUrl" resultType="com.aseubel.infrastructure.dao.po.SFile">
         select id, sfile_id, sfile_name, sfile_url, sfile_size, download_count, sfile_type, create_by, update_by, create_time, update_time
-        from sfile
+        from `sfile`
         where sfile_url = #{fileUrl} and is_deleted = 0
     </select>
 

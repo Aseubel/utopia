@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.aseubel.infrastructure.dao.ImageMapper">
+    <update id="deleteMissingImage">
+        update `image` set is_deleted = 1
+        where id in
+        <foreach collection="imageIds" item="imageId" open="(" separator="," close=")">
+            #{imageId}
+        </foreach>
+    </update>
 
     <select id="listImageByImageIds" resultType="com.aseubel.infrastructure.dao.po.Image">
         select user_id, image_id, image_url
@@ -15,6 +22,12 @@
         select image_url
         from `image`
         where image_id = #{imageId} and is_deleted = 0
+    </select>
+
+    <select id="listAll" resultType="com.aseubel.infrastructure.dao.po.Image">
+        select id, image_url
+        from `image`
+        where is_deleted = 0
     </select>
 
 </mapper>

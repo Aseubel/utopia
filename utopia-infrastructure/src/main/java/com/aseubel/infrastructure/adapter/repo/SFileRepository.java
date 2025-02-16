@@ -37,7 +37,8 @@ public class SFileRepository implements IFileRepository {
 
     @Resource
     private SFileConvertor sFileConvertor;
-    @Autowired
+
+    @Resource
     private AliOSSUtil aliOSSUtil;
 
     @Override
@@ -77,10 +78,10 @@ public class SFileRepository implements IFileRepository {
     public void deleteMissingSFile() throws ClientException {
         List<SFile> fileRecords = sFileMapper.listAllSFile();
         Set<String> ossRecordSet = new HashSet<>(aliOSSUtil.listObjects());
-        List<String> missingFileIds = new ArrayList<>();
+        List<Long> missingFileIds = new ArrayList<>();
         // 找出数据库中存在但oss没有对应对象的记录
         for (SFile fileRecord : fileRecords) {
-            if (!ossRecordSet.contains(fileRecord.getSfileUrl())) {
+            if (!ossRecordSet.contains(fileRecord.getSfileUrl().substring(fileRecord.getSfileUrl().lastIndexOf("utopia/")))) {
                 missingFileIds.add(fileRecord.getId());
             }
         }

@@ -17,11 +17,9 @@ public interface ICommunityService {
 
     /**
      * 获取帖子列表
-     * @param postId 上一页查询最后一个帖子的id
-     * @param limit 每页显示数量
      * @return 帖子列表
      */
-    List<DiscussPostEntity> listDiscussPost(String userId, String postId, Integer limit, String schoolCode);
+    List<DiscussPostEntity> listDiscussPost(CommunityBO communityBO);
 
     /**
      * 上传帖子图片

@@ -55,11 +55,11 @@ public class SFileController implements SFileInterface {
 
             MultipartFile file = uploadFileRequestDTO.getFile();
 
-            String fileURL = fileService.upload(
+            String fileUrl = fileService.upload(
                     new SFileEntity(file, uploadFileRequestDTO.getFileName(), uploadFileRequestDTO.getUserId(), uploadFileRequestDTO.getFileType()));
 
             return Response.SYSTEM_SUCCESS(UploadFileResponseDTO.builder()
-                    .fileURL(fileURL)
+                    .fileUrl(fileUrl)
                     .build());
         } catch (AppException e) {
             throw e;

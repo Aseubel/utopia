@@ -36,7 +36,7 @@ public class PublishDiscussPostRequest implements Serializable {
     private String content;
 
     @FieldDesc(name = "标签")
-    private List<String> tags;
+    private String tag;
 
     @FieldDesc(name = "图片")
     private List<String> images;

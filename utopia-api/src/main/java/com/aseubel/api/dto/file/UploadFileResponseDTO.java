@@ -13,6 +13,6 @@ import java.io.Serializable;
 public class UploadFileResponseDTO implements Serializable {
 
     @FieldDesc(name = "文件url")
-    private String fileURL;
+    private String fileUrl;
 
 }

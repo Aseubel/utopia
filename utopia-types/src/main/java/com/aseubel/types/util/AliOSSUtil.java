@@ -354,7 +354,7 @@ public class AliOSSUtil {
     }
 
     public String getFileName(String path) {
-        return path.substring(path.lastIndexOf("/") + 1);
+        return path.substring(path.lastIndexOf(APP));
     }
 
     public List<String> listObjects() throws com.aliyuncs.exceptions.ClientException {
