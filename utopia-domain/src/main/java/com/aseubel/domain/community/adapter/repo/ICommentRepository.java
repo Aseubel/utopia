@@ -1,6 +1,7 @@
 package com.aseubel.domain.community.adapter.repo;
 
 import com.aseubel.domain.community.model.entity.CommentEntity;
+import com.aseubel.domain.community.model.entity.CommunityImage;
 
 import java.util.List;
 
@@ -18,4 +19,24 @@ public interface ICommentRepository {
      */
     List<CommentEntity> listPostMainComment(String postId);
 
+    /**
+     * 添加新评论
+     * @param commentEntity
+     */
+    void saveRootComment(CommentEntity commentEntity);
+
+    /**
+     * 添加回复评论
+     * @param commentEntity
+     */
+    void saveReplyComment(CommentEntity commentEntity);
+
+    /**
+     * 将图片关联到新评论
+     * @param commentId
+     * @param images
+     */
+    void relateNewCommentImage(String commentId, List<CommunityImage> images);
+
+    List<CommunityImage> listPostImagesByImageIds(List<String> imageIds);
 }

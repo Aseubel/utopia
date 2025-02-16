@@ -17,8 +17,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class UploadAvatarResponseDTO implements Serializable {
 
-//    @FieldDesc(name = "用户id")
-//    private String userId;
+    @FieldDesc(name = "用户id")
+    private String userId;
 //
 //    @FieldDesc(name = "头像id")
 //    private String avatarId;

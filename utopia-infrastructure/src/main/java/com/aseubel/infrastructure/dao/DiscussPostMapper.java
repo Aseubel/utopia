@@ -77,4 +77,11 @@ public interface DiscussPostMapper {
      * @return
      */
     String getPostFirstImage(String postId);
+
+    /**
+     * 置顶帖子
+     * @param userId
+     * @param postId
+     */
+    void topPost(String userId, String postId);
 }

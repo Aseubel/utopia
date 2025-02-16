@@ -115,6 +115,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void updateUserInfo(UserEntity user) {
         log.info("更新个人信息服务开始执行，user={}", user);
+        checkUserIdValid(user.getOpenid());
         checkSchoolCodeValid(user.getSchool().getSchoolCode());
         userRepository.saveUserInfo(user);
         log.info("更新个人信息服务结束执行，user={}", user);
@@ -135,7 +136,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     private void checkSchoolCodeValid(String schoolCode) {
-        if (StringUtils.isEmpty(schoolCode) || !userRepository.isSchoolCodeValid(schoolCode)) {
+        if (!StringUtils.isEmpty(schoolCode) && !userRepository.isSchoolCodeValid(schoolCode)) {
             log.error("学校代号无效！, user={}", schoolCode);
             throw new AppException("学校代号无效！");
         }

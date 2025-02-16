@@ -12,6 +12,14 @@
         values (#{rootId}, #{replyTo}, #{commentId}, #{postId}, #{userId}, #{content})
     </insert>
 
+    <insert id="relateCommentImage">
+        insert `comment_image` (comment_id, image_id)
+        values
+        <foreach collection="images" item="image" separator=",">
+            (#{commentId}, #{image.imageId})
+        </foreach>
+    </insert>
+
     <update id="updateComment">
         update `comment` set content = #{content}, like_count = #{likeCount}, unlike_count = #{unlikeCount}
         where comment_id = #{commentId} and is_deleted = 0

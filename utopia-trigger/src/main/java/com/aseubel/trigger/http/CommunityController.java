@@ -4,10 +4,12 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.api.CommunityInterface;
 import com.aseubel.api.dto.community.*;
 import com.aseubel.domain.community.model.bo.CommunityBO;
+import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.community.service.ICommunityService;
 import com.aseubel.types.Response;
+import com.aseubel.types.event.CommentPostEvent;
 import com.aseubel.types.event.CustomEvent;
 import com.aseubel.types.event.FavoriteEvent;
 import com.aseubel.types.event.LikeEvent;
@@ -28,7 +30,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.aseubel.types.enums.CustomServiceCode.COMMUNITY_POST_LIKE;
 import static com.aseubel.types.enums.CustomServiceCode.COMMUNITY_POST_PUBLISH;
 import static com.aseubel.types.enums.GlobalServiceStatusCode.OSS_UPLOAD_ERROR;
 import static com.aseubel.types.enums.GlobalServiceStatusCode.PARAM_NOT_COMPLETE;
@@ -164,6 +165,45 @@ public class CommunityController implements CommunityInterface {
                 .userId(requestDTO.getUserId())
                 .postId(requestDTO.getPostId())
                 .eventTime(requestDTO.getLikeTime())
+                .build()));
+        return Response.SYSTEM_SUCCESS();
+    }
+
+    /**
+     * 评论帖子
+     */
+    @Override
+    public Response commentDiscussPost(CommentPostRequest requestDTO) {
+        CommentEntity commentEntity = CommentEntity.builder()
+                .userId(requestDTO.getUserId())
+                .postId(requestDTO.getPostId())
+                .content(requestDTO.getContent())
+                .images(requestDTO.getImages())
+                .build();
+        communityService.commentDiscussPost(CommunityBO.builder()
+                .commentEntity(commentEntity)
+                .build());
+        eventPublisher.publishEvent(new CommentPostEvent(CommunityBO.builder()
+                .commentEntity(commentEntity)
+                .build()));
+        return Response.SYSTEM_SUCCESS();
+    }
+
+    /**
+     * 回复评论
+     */
+    @Override
+    public Response replyComment(ReplyCommentRequest requestDTO) {
+        CommentEntity commentEntity = CommentEntity.builder()
+                .userId(requestDTO.getUserId())
+                .postId(requestDTO.getPostId())
+                .content(requestDTO.getContent())
+                .build();
+        communityService.replyComment(CommunityBO.builder()
+                .commentEntity(commentEntity)
+                .build());
+        eventPublisher.publishEvent(new CommentPostEvent(CommunityBO.builder()
+                .commentEntity(commentEntity)
                 .build()));
         return Response.SYSTEM_SUCCESS();
     }

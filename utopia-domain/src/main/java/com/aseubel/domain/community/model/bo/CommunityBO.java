@@ -1,5 +1,6 @@
 package com.aseubel.domain.community.model.bo;
 
+import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.types.annotation.FieldDesc;
@@ -35,6 +36,9 @@ public class CommunityBO {
 
     @FieldDesc(name = "帖子实体")
     private DiscussPostEntity postEntity;
+
+    @FieldDesc(name = "评论实体")
+    private CommentEntity commentEntity;
 
     @FieldDesc(name = "事件发生时间")
     private LocalDateTime eventTime;

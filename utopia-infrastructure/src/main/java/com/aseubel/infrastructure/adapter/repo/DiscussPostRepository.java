@@ -69,8 +69,7 @@ public class DiscussPostRepository implements IDiscussPostRepository {
 
     @Override
     public void saveNewDiscussPost(DiscussPostEntity discussPostEntity) {
-        DiscussPost discussPost = discussPostConvertor.convert(discussPostEntity);
-        discussPostMapper.addDiscussPost(discussPost);
+        discussPostMapper.addDiscussPost(discussPostConvertor.convert(discussPostEntity));
     }
 
     @Override
@@ -143,6 +142,11 @@ public class DiscussPostRepository implements IDiscussPostRepository {
         } else {
             likeMapper.saveLikeRecord(userId, postId, likeTime);
         }
+    }
+
+    @Override
+    public void topPost(String userId, String postId) {
+        discussPostMapper.topPost(userId, postId);
     }
 
 }

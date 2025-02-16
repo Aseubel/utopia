@@ -92,4 +92,11 @@ public interface IDiscussPostRepository {
      * @param postId
      */
     void likePost(String userId, String postId, LocalDateTime likeTime);
+
+    /**
+     * 置顶帖子
+     * @param userId
+     * @param postId
+     */
+    void topPost(String userId, String postId);
 }

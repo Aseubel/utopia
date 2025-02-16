@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Aseubel
@@ -54,5 +56,18 @@ public class CommentEntity {
 
     @FieldDesc(name = "评论状态修改时间")
     private LocalDateTime updateTime;
+
+    @FieldDesc(name = "图片id列表")
+    private List<String> images;
+
+    @FieldDesc(name = "评论的回复列表")
+    private List<CommentEntity> replyList;
+
+    @FieldDesc(name = "是否点赞")
+    private Boolean isLike;
+
+    public void generateCommentId() {
+        this.commentId = "cmt_" + UUID.randomUUID().toString().replaceAll("-", "");
+    }
 
 }

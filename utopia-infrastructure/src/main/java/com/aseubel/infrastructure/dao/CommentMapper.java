@@ -1,6 +1,7 @@
 package com.aseubel.infrastructure.dao;
 
 import com.aseubel.infrastructure.dao.po.Comment;
+import com.aseubel.infrastructure.dao.po.Image;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -86,4 +87,10 @@ public interface CommentMapper {
      */
     List<Comment> listCommentByCommentIds(List<String> commentIds);
 
+    /**
+     * 关联评论图片
+     * @param commentId
+     * @param convert
+     */
+    void relateCommentImage(String commentId, List<Image> convert);
 }

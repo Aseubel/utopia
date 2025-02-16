@@ -5,6 +5,7 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.community.adapter.repo.ICommentRepository;
 import com.aseubel.domain.community.adapter.repo.ICommunityUserRepository;
 import com.aseubel.domain.community.adapter.repo.IDiscussPostRepository;
+import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
@@ -141,16 +142,6 @@ public class CommunityService implements ICommunityService{
     }
 
     @Override
-    public void likeDiscussPost(String postId) {
-        return;
-    }
-
-    @Override
-    public void commentDiscussPost(CommentEntity commentEntity) {
-        return;
-    }
-
-    @Override
     public void favoriteDiscussPost(String userId, String postId) {
         log.info("用户收藏帖子服务开始，userId: {}, postId: {}", userId, postId);
         discussPostRepository.favoritePost(userId, postId);
@@ -158,8 +149,48 @@ public class CommunityService implements ICommunityService{
     }
 
     @Override
-    public DiscussPostEntity topDiscussPost(String postId) {
-        return null;
+    public void topDiscussPost(String userId,String postId) {
+        discussPostRepository.topPost(userId, postId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void commentDiscussPost(CommunityBO communityBO) {
+        CommentEntity commentEntity = communityBO.getCommentEntity();
+        log.info("评论帖子服务开始执行，userId:{}", commentEntity.getUserId());
+        checkUserStatus(commentEntity.getUserId());
+
+        commentEntity.generateCommentId();
+        commentRepository.saveRootComment(commentEntity);
+
+        if (!CollectionUtil.isEmpty(commentEntity.getImages())) {
+            List<CommunityImage> images = commentRepository.listPostImagesByImageIds(commentEntity.getImages());
+            if (!CollectionUtil.isEmpty(images)) {
+                commentRepository.relateNewCommentImage(commentEntity.getCommentId(), images);
+            }
+        }
+
+        log.info("评论帖子服务结束执行，userId:{}", commentEntity.getUserId());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void replyComment(CommunityBO communityBO) {
+        CommentEntity commentEntity = communityBO.getCommentEntity();
+        log.info("回复评论服务开始执行，userId:{}", commentEntity.getUserId());
+        checkUserStatus(commentEntity.getUserId());
+
+        commentEntity.generateCommentId();
+        commentRepository.saveReplyComment(commentEntity);
+
+        if (!CollectionUtil.isEmpty(commentEntity.getImages())) {
+            List<CommunityImage> images = commentRepository.listPostImagesByImageIds(commentEntity.getImages());
+            if (!CollectionUtil.isEmpty(images)) {
+                commentRepository.relateNewCommentImage(commentEntity.getCommentId(), images);
+            }
+        }
+
+        log.info("回复评论服务结束执行，userId:{}", commentEntity.getUserId());
     }
 
     private void checkSchoolCodeValid(String schoolCode) {

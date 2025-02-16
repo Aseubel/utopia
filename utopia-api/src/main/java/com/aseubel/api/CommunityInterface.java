@@ -49,4 +49,18 @@ public interface CommunityInterface {
      * @return
      */
     Response likeDiscussPost(@Valid @RequestBody LikeDiscussPostRequest likeDiscussPostRequest);
+
+    /**
+     * 评论帖子
+     * @param commentPostRequest
+     * @return
+     */
+    Response commentDiscussPost(@Valid @RequestBody CommentPostRequest commentPostRequest);
+
+    /**
+     * 回复评论
+     * @param requestDTO 回复评论请求DTO，不带图片
+     * @return
+     */
+    Response replyComment(ReplyCommentRequest requestDTO);
 }

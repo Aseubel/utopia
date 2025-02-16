@@ -140,6 +140,7 @@ public class UserController implements UserInterface {
     /**
      * 上传头像
      */
+    @Override
     @PostMapping("/avatar")
     public Response<UploadAvatarResponseDTO> uploadAvatar(@Valid @ModelAttribute UploadAvatarRequestDTO uploadAvatarRequestDTO) {
         try {

@@ -27,6 +27,12 @@
         where discuss_post_id = #{discussPostId} and is_deleted = 0
     </update>
 
+    <update id="topPost">
+        update `discuss_post`
+        set type = 1
+        where discuss_post_id = #{postId} and is_deleted = 0
+    </update>
+
     <select id="getDiscussPostByPostId" resultType="com.aseubel.infrastructure.dao.po.DiscussPost">
         select id, discuss_post_id, user_id, title, content, like_count, favorite_count, comment_count, type, status, create_time, update_time
         from `discuss_post`
