@@ -91,7 +91,7 @@ public class CommunityController implements CommunityInterface {
         if (imageOrUserIdIsBlank(requestDTO)) {
             throw new AppException(PARAM_NOT_COMPLETE);
         }
-        MultipartFile file = requestDTO.getPostImage();
+        MultipartFile file = requestDTO.getImage();
         // 使用Thumbnailator进行压缩
         try (InputStream inputStream = file.getInputStream();
              ByteArrayOutputStream outputStream = new ByteArrayOutputStream()){
@@ -173,7 +173,8 @@ public class CommunityController implements CommunityInterface {
      * 评论帖子
      */
     @Override
-    public Response commentDiscussPost(CommentPostRequest requestDTO) {
+    @PostMapping("/comment/post")
+    public Response<CommentPostResponse> commentDiscussPost(@Valid @RequestBody CommentPostRequest requestDTO) {
         CommentEntity commentEntity = CommentEntity.builder()
                 .userId(requestDTO.getUserId())
                 .postId(requestDTO.getPostId())
@@ -186,17 +187,22 @@ public class CommunityController implements CommunityInterface {
         eventPublisher.publishEvent(new CommentPostEvent(CommunityBO.builder()
                 .commentEntity(commentEntity)
                 .build()));
-        return Response.SYSTEM_SUCCESS();
+        return Response.SYSTEM_SUCCESS(CommentPostResponse.builder()
+                .commentId(commentEntity.getCommentId())
+                .build());
     }
 
     /**
      * 回复评论
      */
     @Override
-    public Response replyComment(ReplyCommentRequest requestDTO) {
+    @PostMapping("/comment/reply")
+    public Response<ReplyCommentResponse> replyComment(@Valid @RequestBody ReplyCommentRequest requestDTO) {
         CommentEntity commentEntity = CommentEntity.builder()
                 .userId(requestDTO.getUserId())
                 .postId(requestDTO.getPostId())
+                .rootId(requestDTO.getRootId())
+                .replyTo(requestDTO.getReplyTo())
                 .content(requestDTO.getContent())
                 .build();
         communityService.replyComment(CommunityBO.builder()
@@ -205,11 +211,56 @@ public class CommunityController implements CommunityInterface {
         eventPublisher.publishEvent(new CommentPostEvent(CommunityBO.builder()
                 .commentEntity(commentEntity)
                 .build()));
-        return Response.SYSTEM_SUCCESS();
+        return Response.SYSTEM_SUCCESS(ReplyCommentResponse.builder()
+               .commentId(commentEntity.getCommentId())
+               .build());
+    }
+
+    /**
+     * 上传评论图片
+     */
+    @Override
+    @PostMapping("/comment/image")
+    public Response<UploadCommentImageResponse> uploadDiscussPostImage(@ModelAttribute UploadCommentImageRequest requestDTO) {
+        if (imageOrUserIdIsBlank(requestDTO)) {
+            throw new AppException(PARAM_NOT_COMPLETE);
+        }
+        MultipartFile file = requestDTO.getImage();
+        // 使用Thumbnailator进行压缩
+        try (InputStream inputStream = file.getInputStream();
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()){
+            Thumbnails.of(inputStream)
+                    .scale(1.0) // 设置压缩比例
+                    .outputQuality(0.15) // 设置输出质量（0.0到1.0之间）
+                    .toOutputStream(outputStream);
+            // 将压缩后的图片转换为Base64字符串
+            byte[] compressedBytes = outputStream.toByteArray();
+            CommunityImage resultImage = communityService.uploadCommentImage(
+                    CommunityImage.builder()
+                            .userId(requestDTO.getUserId())
+                            .image(new CustomMultipartFile(compressedBytes, file.getOriginalFilename()))
+                            .build());
+
+            return Response.SYSTEM_SUCCESS(
+                    UploadCommentImageResponse.builder()
+                            .imageId(resultImage.getImageId())
+                            .imageUrl(resultImage.getImageUrl())
+                            .build());
+        } catch (ClientException e) {
+            log.error("上传帖子图片时oss客户端异常，{}, code:{}, message:{}",OSS_UPLOAD_ERROR.getMessage(), e.getErrCode(), e.getErrMsg(), e);
+            throw new AppException(OSS_UPLOAD_ERROR, e);
+        } catch (Exception e) {
+            log.error("上传帖子图片时出现未知异常", e);
+            throw new AppException(OSS_UPLOAD_ERROR, e);
+        }
     }
 
     private boolean imageOrUserIdIsBlank(UploadDiscussPostImageRequest requestDTO) {
-        return StringUtils.isEmpty(requestDTO.getPostImage().getOriginalFilename()) || StringUtils.isEmpty(requestDTO.getUserId());
+        return StringUtils.isEmpty(requestDTO.getImage().getOriginalFilename()) || StringUtils.isEmpty(requestDTO.getUserId());
+    }
+
+    private boolean imageOrUserIdIsBlank(UploadCommentImageRequest requestDTO) {
+        return StringUtils.isEmpty(requestDTO.getImage().getOriginalFilename()) || StringUtils.isEmpty(requestDTO.getUserId());
     }
 
 }

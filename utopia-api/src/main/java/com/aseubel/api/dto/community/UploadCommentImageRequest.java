@@ -8,15 +8,15 @@ import java.io.Serializable;
 
 /**
  * @author Aseubel
- * @description 上传帖子图片请求参数
- * @date 2025-01-27 11:39
+ * @description 上传评论图片请求参数
+ * @date 2025-02-16 14:08
  */
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UploadDiscussPostImageRequest implements Serializable {
+public class UploadCommentImageRequest implements Serializable {
 
     @FieldDesc(name = "用户id")
     private String userId;

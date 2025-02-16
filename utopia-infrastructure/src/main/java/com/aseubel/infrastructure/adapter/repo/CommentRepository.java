@@ -54,9 +54,14 @@ public class CommentRepository implements ICommentRepository {
     }
 
     @Override
-    public List<CommunityImage> listPostImagesByImageIds(List<String> imageIds) {
+    public List<CommunityImage> listCommentImagesByImageIds(List<String> imageIds) {
         return communityImageConvertor.convert(
                 imageMapper.listImageByImageIds(imageIds), communityImageConvertor::convert);
+    }
+
+    @Override
+    public void saveCommentImage(CommunityImage postImage) {
+        imageMapper.addImage(communityImageConvertor.convert(postImage));
     }
 
 }

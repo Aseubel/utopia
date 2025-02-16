@@ -144,6 +144,7 @@ public class CommunityService implements ICommunityService{
     @Override
     public void favoriteDiscussPost(String userId, String postId) {
         log.info("用户收藏帖子服务开始，userId: {}, postId: {}", userId, postId);
+        checkUserIdValid(userId);
         discussPostRepository.favoritePost(userId, postId);
         log.info("用户收藏帖子服务开始，userId: {}, postId: {}", userId, postId);
     }
@@ -164,7 +165,7 @@ public class CommunityService implements ICommunityService{
         commentRepository.saveRootComment(commentEntity);
 
         if (!CollectionUtil.isEmpty(commentEntity.getImages())) {
-            List<CommunityImage> images = commentRepository.listPostImagesByImageIds(commentEntity.getImages());
+            List<CommunityImage> images = commentRepository.listCommentImagesByImageIds(commentEntity.getImages());
             if (!CollectionUtil.isEmpty(images)) {
                 commentRepository.relateNewCommentImage(commentEntity.getCommentId(), images);
             }
@@ -184,13 +185,29 @@ public class CommunityService implements ICommunityService{
         commentRepository.saveReplyComment(commentEntity);
 
         if (!CollectionUtil.isEmpty(commentEntity.getImages())) {
-            List<CommunityImage> images = commentRepository.listPostImagesByImageIds(commentEntity.getImages());
+            List<CommunityImage> images = commentRepository.listCommentImagesByImageIds(commentEntity.getImages());
             if (!CollectionUtil.isEmpty(images)) {
                 commentRepository.relateNewCommentImage(commentEntity.getCommentId(), images);
             }
         }
 
         log.info("回复评论服务结束执行，userId:{}", commentEntity.getUserId());
+    }
+
+    @Override
+    public CommunityImage uploadCommentImage(CommunityImage commentImage) throws ClientException {
+        log.info("上传评论图片服务开始执行，userId:{}", commentImage.getUserId());
+        if (ObjectUtils.isEmpty(communityUserRepository.queryUserStatus(commentImage.getUserId()))) {
+            throw new AppException("用户状态异常，请联系管理员");
+        }
+        // 上传图片到OSS
+        commentImage.generateImageId();
+        String imageUrl = aliOSSUtil.upload(commentImage.getImage(), commentImage.getPostObjectName());
+        commentImage.setImageUrl(imageUrl);
+        // 保存图片信息到数据库
+        commentRepository.saveCommentImage(commentImage);
+        log.info("上传帖子评论服务结束执行，userId:{}", commentImage.getUserId());
+        return commentImage;
     }
 
     private void checkSchoolCodeValid(String schoolCode) {

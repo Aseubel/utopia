@@ -72,4 +72,12 @@ public interface ICommunityService {
      */
     @Transactional(rollbackFor = Exception.class)
     void replyComment(CommunityBO communityBO);
+
+    /**
+     * 上传评论图片
+     * @param commentImage
+     * @return
+     * @throws ClientException
+     */
+    CommunityImage uploadCommentImage(CommunityImage commentImage) throws ClientException;
 }

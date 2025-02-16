@@ -3,6 +3,7 @@ package com.aseubel.api.dto.community;
 import com.aseubel.types.annotation.FieldDesc;
 import lombok.*;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -17,12 +18,15 @@ import java.util.List;
 @NoArgsConstructor
 public class CommentPostRequest implements Serializable {
 
+    @NotNull(message = "用户id不能为空")
     @FieldDesc(name = "用户id")
     private String userId;
 
+    @NotNull(message = "帖子id不能为空")
     @FieldDesc(name = "帖子id")
     private String postId;
 
+    @NotNull(message = "评论内容不能为空")
     @FieldDesc(name = "评论内容")
     private String content;
 

@@ -3,6 +3,7 @@ package com.aseubel.api;
 import com.aseubel.api.dto.community.*;
 import com.aseubel.types.Response;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
@@ -62,5 +63,12 @@ public interface CommunityInterface {
      * @param requestDTO 回复评论请求DTO，不带图片
      * @return
      */
-    Response replyComment(ReplyCommentRequest requestDTO);
+    Response replyComment(@Valid @RequestBody ReplyCommentRequest requestDTO);
+
+    /**
+     * 上传评论图片
+     * @param requestDTO
+     * @return
+     */
+    Response<UploadCommentImageResponse> uploadDiscussPostImage(@ModelAttribute UploadCommentImageRequest requestDTO);
 }

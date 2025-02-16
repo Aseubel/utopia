@@ -38,5 +38,16 @@ public interface ICommentRepository {
      */
     void relateNewCommentImage(String commentId, List<CommunityImage> images);
 
-    List<CommunityImage> listPostImagesByImageIds(List<String> imageIds);
+    /**
+     * 获取评论的图片列表
+     * @param imageIds
+     * @return
+     */
+    List<CommunityImage> listCommentImagesByImageIds(List<String> imageIds);
+
+    /**
+     * 保存评论图片
+     * @param postImage
+     */
+    void saveCommentImage(CommunityImage postImage);
 }
