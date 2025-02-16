@@ -1,6 +1,5 @@
 package com.aseubel.infrastructure.dao;
 
-import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.infrastructure.dao.po.DiscussPost;
 import com.aseubel.infrastructure.dao.po.Image;
 import org.apache.ibatis.annotations.Mapper;
@@ -84,4 +83,41 @@ public interface DiscussPostMapper {
      * @param postId
      */
     void topPost(String userId, String postId);
+
+    /**
+     * 增加帖子的收藏数
+     * @param postId
+     */
+    void increaseFavoriteCount(String postId);
+
+    /**
+     * 减少帖子的收藏数
+     * @param postId
+     */
+    void decreaseFavoriteCount(String postId);
+
+    /**
+     * 增加帖子的评论数
+     * @param postId
+     */
+    void increaseCommentCount(String postId);
+
+    /**
+     * 减少帖子的评论数
+     * @param postId
+     */
+    void decreaseCommentCount(String postId);
+
+    /**
+     * 增加帖子的点赞数
+     * @param postId
+     */
+    void increaseLikeCount(String postId);
+
+    /**
+     * 减少帖子的点赞数
+     * @param postId
+     */
+    void decreaseLikeCount(String postId);
+
 }

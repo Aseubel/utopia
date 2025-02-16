@@ -87,7 +87,7 @@ public class CommunityController implements CommunityInterface {
      */
     @Override
     @PostMapping("/post/image")
-    public Response<UploadDiscussPostImageResponse> uploadDiscussPostImage(@ModelAttribute UploadDiscussPostImageRequest requestDTO) {
+    public Response<UploadDiscussPostImageResponse> uploadDiscussPostImage(@Valid @ModelAttribute UploadDiscussPostImageRequest requestDTO) {
         if (imageOrUserIdIsBlank(requestDTO)) {
             throw new AppException(PARAM_NOT_COMPLETE);
         }
@@ -147,7 +147,7 @@ public class CommunityController implements CommunityInterface {
     @Override
     @PutMapping("/post/favorite")
     public Response favoriteDiscussPost(@Valid @RequestBody FavoriteDiscussPostRequest requestDTO) {
-//        communityService.favoriteDiscussPost(requestDTO.getUserId(), requestDTO.getPostId());
+        communityService.favoriteDiscussPost(requestDTO.getUserId(), requestDTO.getPostId());
         eventPublisher.publishEvent(new FavoriteEvent(CommunityBO.builder()
                 .userId(requestDTO.getUserId())
                 .postId(requestDTO.getPostId())
@@ -161,6 +161,12 @@ public class CommunityController implements CommunityInterface {
     @Override
     @PutMapping("/post/like")
     public Response likeDiscussPost(@Valid @RequestBody LikeDiscussPostRequest requestDTO) {
+        CommunityBO communityBO = CommunityBO.builder()
+                .userId(requestDTO.getUserId())
+                .postId(requestDTO.getPostId())
+                .eventTime(requestDTO.getLikeTime())
+                .build();
+        communityService.likeDiscussPost(communityBO);
         eventPublisher.publishEvent(new LikeEvent(CommunityBO.builder()
                 .userId(requestDTO.getUserId())
                 .postId(requestDTO.getPostId())

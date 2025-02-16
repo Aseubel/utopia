@@ -3,7 +3,10 @@ package com.aseubel.trigger.http;
 import com.aliyun.oss.OSSException;
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.api.SFileInterface;
-import com.aseubel.api.dto.file.*;
+import com.aseubel.api.dto.file.QuerySFileRequestDTO;
+import com.aseubel.api.dto.file.QuerySFileResponseDTO;
+import com.aseubel.api.dto.file.UploadFileRequestDTO;
+import com.aseubel.api.dto.file.UploadFileResponseDTO;
 import com.aseubel.domain.sfile.model.SFileEntity;
 import com.aseubel.domain.sfile.service.IFileService;
 import com.aseubel.types.Response;
@@ -11,7 +14,6 @@ import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.AliOSSUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -19,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,10 +83,8 @@ public class SFileController implements SFileInterface {
                 throw new AppException(PARAM_NOT_COMPLETE.getCode(), "文件路径不能为空");
             }
             return Response.SYSTEM_SUCCESS(fileService.download(filePath));
-        } catch (AppException e) {
+        } catch (AppException | OSSException e) {
             throw e;
-        } catch (OSSException oe) {
-            throw oe;
         } catch (Exception e) {
             log.error("未知异常", e);
             throw new AppException(OSS_DOWNLOAD_ERROR, e);
@@ -104,6 +103,7 @@ public class SFileController implements SFileInterface {
             }
             String fileName = aliOSSUtil.getFileName(filePath);
             aliOSSUtil.remove(fileName);
+            log.info("删除文件成功, 文件名: {}", fileName);
             return Response.SYSTEM_SUCCESS(fileName);
         } catch (ClientException e) {
             throw new AppException(OSS_DELETE_ERROR, e);

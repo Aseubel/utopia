@@ -2,7 +2,6 @@ package com.aseubel.domain.community.service;
 
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.community.model.bo.CommunityBO;
-import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +51,12 @@ public interface ICommunityService {
      * @param postId 帖子id
      */
     void favoriteDiscussPost(String userId, String postId);
+
+    /**
+     * 点赞帖子
+     * @param communityBO
+     */
+    void likeDiscussPost(CommunityBO communityBO);
 
     /**
      * 置顶帖子

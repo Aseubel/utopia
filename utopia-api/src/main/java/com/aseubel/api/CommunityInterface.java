@@ -3,7 +3,6 @@ package com.aseubel.api;
 import com.aseubel.api.dto.community.*;
 import com.aseubel.types.Response;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
@@ -28,7 +27,7 @@ public interface CommunityInterface {
      * @param uploadDiscussPostImageRequest
      * @return
      */
-    Response<UploadDiscussPostImageResponse> uploadDiscussPostImage(@ModelAttribute UploadDiscussPostImageRequest uploadDiscussPostImageRequest);
+    Response<UploadDiscussPostImageResponse> uploadDiscussPostImage(@Valid @ModelAttribute UploadDiscussPostImageRequest uploadDiscussPostImageRequest);
 
     /**
      * 发布帖子

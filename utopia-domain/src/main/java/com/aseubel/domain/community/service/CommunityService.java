@@ -150,6 +150,13 @@ public class CommunityService implements ICommunityService{
     }
 
     @Override
+    public void likeDiscussPost(CommunityBO communityBO) {
+        log.info("用户点赞帖子服务开始，userId: {}, postId: {}", communityBO.getUserId(), communityBO.getPostId());
+        discussPostRepository.likePost(communityBO.getUserId(), communityBO.getPostId(), communityBO.getEventTime());
+        log.info("用户点赞帖子服务结束，userId: {}, postId: {}", communityBO.getUserId(), communityBO.getPostId());
+    }
+
+    @Override
     public void topDiscussPost(String userId,String postId) {
         discussPostRepository.topPost(userId, postId);
     }

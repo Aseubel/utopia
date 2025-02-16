@@ -87,6 +87,14 @@ public interface IDiscussPostRepository {
     void favoritePost(String userId, String postId);
 
     /**
+     * 获取帖子收藏状态
+     * @param userId
+     * @param postId
+     * @return
+     */
+    boolean getPostFavoriteStatus(String userId, String postId);
+
+    /**
      * 点赞帖子
      * @param userId
      * @param postId
@@ -94,9 +102,54 @@ public interface IDiscussPostRepository {
     void likePost(String userId, String postId, LocalDateTime likeTime);
 
     /**
+     * 获取帖子点赞状态
+     * @param userId
+     * @param postId
+     * @return
+     */
+    boolean getPostLikeStatus(String userId, String postId);
+
+    /**
      * 置顶帖子
      * @param userId
      * @param postId
      */
     void topPost(String userId, String postId);
+
+    /**
+     * 增加帖子收藏数
+     * @param postId
+     */
+    void increaseFavoriteCount(String postId);
+
+    /**
+     * 增加帖子点赞数
+     * @param postId
+     */
+    void increaseLikeCount(String postId);
+
+    /**
+     * 增加帖子评论数
+     * @param postId
+     */
+    void increaseCommentCount(String postId);
+
+    /**
+     * 减少帖子收藏数
+     * @param postId
+     */
+    void decreaseFavoriteCount(String postId);
+
+    /**
+     * 减少帖子点赞数
+     * @param postId
+     */
+    void decreaseLikeCount(String postId);
+
+    /**
+     * 减少帖子评论数
+     * @param postId
+     */
+    void decreaseCommentCount(String postId);
+
 }

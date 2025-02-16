@@ -3,11 +3,9 @@ package com.aseubel.infrastructure.adapter.repo;
 import com.aseubel.domain.community.adapter.repo.IDiscussPostRepository;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
-import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.infrastructure.convertor.CommunityImageConvertor;
 import com.aseubel.infrastructure.convertor.DiscussPostConvertor;
 import com.aseubel.infrastructure.dao.*;
-import com.aseubel.infrastructure.dao.po.DiscussPost;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
@@ -129,7 +127,13 @@ public class DiscussPostRepository implements IDiscussPostRepository {
             favoriteMapper.updateFavoriteStatus(userId, postId, isFavorite ? 0 : 1);
         } else {
             favoriteMapper.saveFavoriteRecord(userId, postId);
+            discussPostMapper.increaseLikeCount(postId);
         }
+    }
+
+    @Override
+    public boolean getPostFavoriteStatus(String userId, String postId) {
+        return favoriteMapper.getFavoriteStatus(userId, postId).orElse(false);
     }
 
     @Override
@@ -145,8 +149,43 @@ public class DiscussPostRepository implements IDiscussPostRepository {
     }
 
     @Override
+    public boolean getPostLikeStatus(String userId, String postId) {
+        return likeMapper.getLikeStatus(userId, postId).orElse(false);
+    }
+
+    @Override
     public void topPost(String userId, String postId) {
         discussPostMapper.topPost(userId, postId);
+    }
+
+    @Override
+    public void increaseFavoriteCount(String postId) {
+        discussPostMapper.increaseFavoriteCount(postId);
+    }
+
+    @Override
+    public void increaseLikeCount(String postId) {
+        discussPostMapper.increaseLikeCount(postId);
+    }
+
+    @Override
+    public void increaseCommentCount(String postId) {
+        discussPostMapper.increaseCommentCount(postId);
+    }
+
+    @Override
+    public void decreaseFavoriteCount(String postId) {
+        discussPostMapper.decreaseFavoriteCount(postId);
+    }
+
+    @Override
+    public void decreaseLikeCount(String postId) {
+        discussPostMapper.decreaseLikeCount(postId);
+    }
+
+    @Override
+    public void decreaseCommentCount(String postId) {
+        discussPostMapper.decreaseCommentCount(postId);
     }
 
 }
