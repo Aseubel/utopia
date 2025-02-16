@@ -40,8 +40,12 @@
     <select id="listTradePost" resultType="com.aseubel.infrastructure.dao.po.TradePost">
         select id, trade_post_id, user_id, title, content, price, type, status, create_time, update_time
         from `trade_post`
-        where update_time &lt;= (select update_time from `trade_post` where trade_post_id = #{postId} and is_deleted = 0)
-          and is_deleted = 0 and trade_post_id != #{postId}
+        <where>
+            update_time &lt;= (select update_time from `trade_post` where trade_post_id = #{postId} and is_deleted = 0)
+            <if test="type != null and type != ''">and type = #{type}</if>
+            <if test="status != null and status != ''">and status = #{status}</if>
+            and is_deleted = 0 and trade_post_id != #{postId}
+        </where>
         order by update_time DESC, id DESC
         limit #{limit}
     </select>
@@ -49,7 +53,11 @@
     <select id="listTradePostAhead" resultType="com.aseubel.infrastructure.dao.po.TradePost">
         select id, trade_post_id, user_id, title, content, price, type, status, create_time, update_time
         from `trade_post`
-        where is_deleted = 0
+        <where>
+            <if test="type != null and type != ''">type = #{type}</if>
+            <if test="status != null and status != ''">and status = #{status}</if>
+            and is_deleted = 0
+        </where>
         order by update_time DESC
         limit #{limit}
     </select>

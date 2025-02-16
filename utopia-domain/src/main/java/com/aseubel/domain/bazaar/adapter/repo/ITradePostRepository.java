@@ -1,5 +1,6 @@
 package com.aseubel.domain.bazaar.adapter.repo;
 
+import com.aseubel.domain.bazaar.model.bo.BazaarBO;
 import com.aseubel.domain.bazaar.model.entity.TradeImage;
 import com.aseubel.domain.bazaar.model.entity.TradePostEntity;
 import org.springframework.stereotype.Repository;
@@ -16,11 +17,9 @@ public interface ITradePostRepository {
 
     /**
      * 直接列举帖子
-     * @param postId 上一页查询最后一个帖子的id
-     * @param limit 每页显示数量
      * @return
      */
-    List<TradePostEntity> listTradePost(String postId, Integer limit);
+    List<TradePostEntity> listTradePost(BazaarBO bazaarBO);
 
     /**
      * 保存帖子图片记录

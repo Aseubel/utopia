@@ -1,6 +1,7 @@
 package com.aseubel.domain.bazaar.service;
 
 import com.aliyuncs.exceptions.ClientException;
+import com.aseubel.domain.bazaar.model.bo.BazaarBO;
 import com.aseubel.domain.bazaar.model.entity.TradeImage;
 import com.aseubel.domain.bazaar.model.entity.TradePostEntity;
 
@@ -15,11 +16,9 @@ public interface IBazaarService {
 
     /**
      * 获取帖子列表
-     * @param postId 上一页查询最后一个帖子的id
-     * @param limit 每页显示数量
      * @return
      */
-    List<TradePostEntity> listTradePost(String postId, Integer limit);
+    List<TradePostEntity> listTradePost(BazaarBO bazaarBO);
 
     /**
      * 上传帖子图片

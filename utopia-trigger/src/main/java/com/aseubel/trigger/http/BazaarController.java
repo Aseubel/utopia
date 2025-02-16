@@ -2,9 +2,11 @@ package com.aseubel.trigger.http;
 
 import com.aseubel.api.BazaarInterface;
 import com.aseubel.api.dto.bazaar.*;
+import com.aseubel.domain.bazaar.model.bo.BazaarBO;
 import com.aseubel.domain.bazaar.model.entity.TradeImage;
 import com.aseubel.domain.bazaar.model.entity.TradePostEntity;
 import com.aseubel.domain.bazaar.service.IBazaarService;
+import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.types.Response;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.CustomMultipartFile;
@@ -51,7 +53,13 @@ public class BazaarController implements BazaarInterface {
     @Override
     @GetMapping("/post")
     public Response<List<QueryIndexTradePostResponse>> queryIndexTradePost(@Valid QueryIndexTradePostRequest requestDTO) {
-        List<TradePostEntity> tradePosts = bazaarService.listTradePost(requestDTO.getPostId(), requestDTO.getLimit());
+        List<TradePostEntity> tradePosts = bazaarService.listTradePost(BazaarBO.builder()
+                .userId(requestDTO.getUserId())
+                .postId(requestDTO.getPostId())
+                .limit(requestDTO.getLimit())
+                .type(requestDTO.getType())
+                .status(requestDTO.getStatus())
+                .build());
         List<QueryIndexTradePostResponse> responseDTOs = new ArrayList<>();
         for (TradePostEntity tradePost : tradePosts) {
            responseDTOs.add(QueryIndexTradePostResponse.builder()

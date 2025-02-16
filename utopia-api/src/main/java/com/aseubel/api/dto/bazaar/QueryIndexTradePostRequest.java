@@ -32,4 +32,10 @@ public class QueryIndexTradePostRequest implements Serializable {
     @FieldDesc(name = "每页记录数")
     private Integer limit;
 
+    @FieldDesc(name = "类型")
+    private Integer type;
+
+    @FieldDesc(name = "状态")
+    private Integer status;
+    
 }

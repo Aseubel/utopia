@@ -1,6 +1,7 @@
 package com.aseubel.infrastructure.adapter.repo;
 
 import com.aseubel.domain.bazaar.adapter.repo.ITradePostRepository;
+import com.aseubel.domain.bazaar.model.bo.BazaarBO;
 import com.aseubel.domain.bazaar.model.entity.TradeImage;
 import com.aseubel.domain.bazaar.model.entity.TradePostEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
@@ -39,10 +40,13 @@ public class TradePostRepository implements ITradePostRepository {
     private TradeImageConvertor tradeImageConvertor;
 
     @Override
-    public List<TradePostEntity> listTradePost(String postId, Integer limit) {
+    public List<TradePostEntity> listTradePost(BazaarBO bazaarBO) {
+        String postId = bazaarBO.getPostId();
+        Integer limit = bazaarBO.getLimit();
+
         return Optional.ofNullable(StringUtils.isEmpty(postId)
-                        ? tradePostMapper.listTradePostAhead(limit)
-                        : tradePostMapper.listTradePost(postId, limit))
+                        ? tradePostMapper.listTradePostAhead(limit, bazaarBO.getType(), bazaarBO.getStatus())
+                        : tradePostMapper.listTradePost(postId, limit, bazaarBO.getType(), bazaarBO.getStatus()))
                 .map(p -> p.stream().map(tradePostConvertor::convert).collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
     }

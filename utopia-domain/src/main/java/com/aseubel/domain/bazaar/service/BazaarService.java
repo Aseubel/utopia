@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.bazaar.adapter.repo.IBazaarUserRepository;
 import com.aseubel.domain.bazaar.adapter.repo.ITradePostRepository;
+import com.aseubel.domain.bazaar.model.bo.BazaarBO;
 import com.aseubel.domain.bazaar.model.entity.TradeImage;
 import com.aseubel.domain.bazaar.model.entity.TradePostEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
@@ -39,12 +40,14 @@ public class BazaarService implements IBazaarService{
     private final AliOSSUtil aliOSSUtil;
 
     @Override
-    public List<TradePostEntity> listTradePost(String postId, Integer limit) {
+    public List<TradePostEntity> listTradePost(BazaarBO bazaarBO) {
+        String postId = bazaarBO.getPostId();
+        Integer limit = bazaarBO.getLimit();
         log.info("获取集市帖子列表服务开始执行");
         // 限制每页显示的帖子数量
         limit = limit == null ? PER_PAGE_DISCUSS_POST_SIZE : limit;
         // 查询帖子列表
-        List<TradePostEntity> tradePostEntities = tradePostRepository.listTradePost(postId, limit);
+        List<TradePostEntity> tradePostEntities = tradePostRepository.listTradePost(bazaarBO);
         // 提取帖子的用户id
         List<String> userIds = Optional.ofNullable(tradePostEntities)
                 .map(d -> d.stream()
