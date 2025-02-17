@@ -14,4 +14,4 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # 添加应用
 ADD target/utopia-app.jar /utopia-app.jar
 
-ENTRYPOINT ["sh","-c","java -jar $JAVA_OPTS /polaris-app.jar $PARAMS"]
+ENTRYPOINT ["sh","-c","java -jar $JAVA_OPTS /utopia-app.jar $PARAMS"]
