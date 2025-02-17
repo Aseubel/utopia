@@ -47,7 +47,6 @@ public class CommunityService implements ICommunityService{
     @Override
     public List<DiscussPostEntity> listDiscussPost(CommunityBO communityBO) {
         String userId = communityBO.getUserId();
-        String postId = communityBO.getPostId();
         Integer limit = communityBO.getLimit();
         String schoolCode = communityBO.getSchoolCode();
         log.info("获取帖子列表服务开始执行");

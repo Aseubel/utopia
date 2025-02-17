@@ -72,6 +72,7 @@ public class CommunityController implements CommunityInterface {
                    .userAvatar(discussPost.getUserAvatar())
                    .title(discussPost.getTitle())
                    .content(discussPost.getContent())
+                   .tag(discussPost.getTag())
                    .likeCount(discussPost.getLikeCount())
                    .commentCount(discussPost.getCommentCount())
                    .favoriteCount(discussPost.getFavoriteCount())

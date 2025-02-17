@@ -5,6 +5,8 @@ import com.aseubel.domain.user.model.vo.School;
 import com.aseubel.infrastructure.dao.po.User;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 /**
  * @author Aseubel
  * @description 用户实体类转换器
@@ -22,7 +24,7 @@ public class UserConvertor {
                 .realName(userEntity.getRealName())
                 .avatar(userEntity.getAvatar())
                 .signature(userEntity.getSignature())
-                .schoolCode(userEntity.getSchool().getSchoolCode())
+                .schoolCode(Optional.ofNullable(userEntity.getSchool()).map(School::getSchoolCode).orElse(null))
                 .build();
     }
 

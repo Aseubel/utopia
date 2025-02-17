@@ -76,7 +76,7 @@
     </select>
 
     <select id="listDiscussPost" resultType="com.aseubel.infrastructure.dao.po.DiscussPost">
-        select id, discuss_post_id, user_id, school_code, title, content, like_count, favorite_count, comment_count, type, status, create_time, update_time
+        select id, discuss_post_id, user_id, school_code, title, content, tag, like_count, favorite_count, comment_count, type, status, create_time, update_time
         from `discuss_post`
         <where>
             update_time &lt;= (select update_time from `discuss_post` where discuss_post_id = #{postId} and is_deleted = 0)
@@ -90,7 +90,7 @@
     </select>
 
     <select id="listDiscussPostAhead" resultType="com.aseubel.infrastructure.dao.po.DiscussPost">
-        select id, discuss_post_id, user_id, school_code, title, content, like_count, favorite_count, comment_count, type, status, create_time, update_time
+        select id, discuss_post_id, user_id, school_code, title, content, tag, like_count, favorite_count, comment_count, type, status, create_time, update_time
         from `discuss_post`
         <where>
             <if test="schoolCode != null and schoolCode != ''">school_code = #{schoolCode}</if>
