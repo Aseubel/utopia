@@ -7,15 +7,18 @@ import com.aseubel.api.dto.user.UploadAvatarResponseDTO;
 import com.aseubel.api.dto.user.*;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.community.service.ICommunityService;
+import com.aseubel.domain.user.model.bo.UserBO;
 import com.aseubel.domain.user.model.entity.AvatarEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.domain.user.model.vo.School;
 import com.aseubel.domain.user.service.IUserService;
 import com.aseubel.types.Response;
+import com.aseubel.types.event.CancelAccountEvent;
 import com.aseubel.types.exception.AppException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,6 +45,8 @@ public class UserController implements UserInterface {
     private final IUserService userService;
 
     private final ICommunityService communityService;
+
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * 登录
@@ -191,6 +196,17 @@ public class UserController implements UserInterface {
                     .build());
         }
         return Response.SYSTEM_SUCCESS(responseDTOs);
+    }
+
+    /**
+     * 注销账号
+     */
+    @Override
+    @DeleteMapping("/cancel")
+    public Response cancelAccount(@Valid String userId) {
+        log.info("用户{}请求注销账号", userId);
+        eventPublisher.publishEvent(new CancelAccountEvent(new UserBO(userId)));
+        return Response.SYSTEM_SUCCESS();
     }
 
 }

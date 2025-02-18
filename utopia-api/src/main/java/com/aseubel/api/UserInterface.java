@@ -65,4 +65,9 @@ public interface UserInterface {
      * @return
      */
     Response<List<QueryFavoriteDiscussPostResponseDTO>> queryFavoriteDiscussPost(@Valid @RequestBody QueryFavoriteDiscussPostRequestDTO queryFavoriteDiscussPostRequestDTO);
+
+    /**
+     * 注销账号接口
+     */
+    Response cancelAccount(@Valid String userId);
 }
