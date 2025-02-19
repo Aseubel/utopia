@@ -8,7 +8,7 @@ services:
     container_name: utopia
     restart: on-failure
     ports:
-      - "611:611"
+      - "20611:20611"
     environment:
       - TZ=PRC
       - SPRING_DATASOURCE_USERNAME=root
@@ -16,9 +16,13 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/utopia?serverTimezone=UTC&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Shanghai
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
       - SPRING_HIKARI_POOL_NAME=Retail_HikariCP
-      - SERVER_PORT=8091
+      - SERVER_PORT=20611
       - REDIS_SDK_CONFIG_HOST=redis
       - REDIS_SDK_CONFIG_PORT=6379
+      - UTOPIA_SECRET=YOUR_SECRET_KEY
+      - UTOPIA_APPID=YOUR_APP_ID
+      - OSS_ACCESS_KEY_ID=YOUR_ACCESS_KEY_ID
+      - OSS_ACCESS_KEY_SECRET=YOUR_ACCESS_KEY_SECRET
     volumes:
       - ./log:/data/log
     logging:

@@ -2,10 +2,9 @@
 FROM openjdk:8
 
 # 作者
-MAINTAINER Aseubel
+LABEL maintainer="Aseubel"
 
 # 配置
-# ENV PARAMS=""
 
 # 时区
 ENV TZ=PRC
