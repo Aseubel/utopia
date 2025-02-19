@@ -55,4 +55,10 @@ public interface UserMapper {
      * @return
      */
     Integer CountStudentBySchoolCode(String schoolCode);
+
+    /**
+     * 删除用户信息
+     * @param userId
+     */
+    void deleteUserByUserId(String userId);
 }

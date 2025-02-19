@@ -26,4 +26,8 @@ public class CancelAccountEvent extends ApplicationEvent {
     public CancelAccountEvent(Object source, Clock clock) {
         super(source, clock);
     }
+
+    public Object getSource() {
+        return super.getSource();
+    }
 }

@@ -31,6 +31,12 @@
         </foreach>
     </update>
 
+    <update id="deleteUncompletedTradePost">
+        update `trade_post`
+        set is_deleted = 1
+        where user_id = #{userId} and status = 0 and is_deleted = 0
+    </update>
+
     <select id="getTradePostByPostId" resultType="com.aseubel.infrastructure.dao.po.TradePost">
         select id, trade_post_id, user_id, title, content, price, type, status, create_time, update_time
         from `trade_post`

@@ -74,4 +74,10 @@ public interface IUserRepository {
      * @return
      */
     boolean isUserIdValid(String userId);
+
+    /**
+     * 删除用户
+     * @param openid
+     */
+    void deleteUser(String openid);
 }

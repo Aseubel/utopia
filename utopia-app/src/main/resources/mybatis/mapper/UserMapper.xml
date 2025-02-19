@@ -21,6 +21,12 @@
         where user_id = #{userId} and is_deleted = 0
     </update>
 
+    <update id="deleteUserByUserId">
+        update `user`
+        set is_deleted = 1
+        where user_id = #{userId} and is_deleted = 0
+    </update>
+
     <select id="getUserByUserId" resultType="com.aseubel.infrastructure.dao.po.User">
         select id, user_id, user_name, real_name, phone, gender, avatar, signature, create_time, update_time, school_code
         from `user`

@@ -3,6 +3,7 @@ package com.aseubel.infrastructure.dao;
 import com.aseubel.infrastructure.dao.po.Image;
 import com.aseubel.infrastructure.dao.po.TradePost;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -67,5 +68,12 @@ public interface TradePostMapper {
      * @return
      */
     String getPostFirstImage(String postId);
+
+    /**
+     * 删除用户发布的未完成的交易帖子
+     * @param userId
+     * @return
+     */
+    List<TradePost> deleteUncompletedTradePost(@Param("userId") String userId);
 
 }

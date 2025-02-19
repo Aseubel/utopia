@@ -51,4 +51,10 @@ public interface IUserService {
      */
     String uploadAvatar(AvatarEntity avatar) throws ClientException;
 
+    /**
+     * 注销账户
+     * @param userId
+     */
+    void cancelAccount(String userId);
+
 }

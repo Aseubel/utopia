@@ -79,4 +79,9 @@ public class TradePostRepository implements ITradePostRepository {
         return Optional.ofNullable(tradePostMapper.getPostFirstImage(postId)).map(imageMapper::getImageUrl).orElse(null);
     }
 
+    @Override
+    public void deleteUncompletedTradePosts(String userId) {
+        tradePostMapper.deleteUncompletedTradePost(userId);
+    }
+
 }

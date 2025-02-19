@@ -314,7 +314,7 @@ CREATE TABLE IF NOT EXISTS `user` (
     -- 软删除标识 0-未删除 1-已删除
                                       `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
 ) ENGINE = InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '用户表';
-CREATE UNIQUE INDEX uk_user_id ON `user` (user_id);
+CREATE INDEX ind_user_id ON `user` (user_id);
 
 
 INSERT INTO `avatar` (`id`, `user_id`, `avatar_id`, `avatar_url`, `create_time`, `is_deleted`) VALUES (1, '0001', '20250125T151132125_0001', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/avatar/20250125T151132125_0001.jpg', '2025-01-25 15:11:33', 0);

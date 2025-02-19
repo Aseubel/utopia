@@ -54,4 +54,10 @@ public interface ITradePostRepository {
      */
     String getPostFirstImage(String postId);
 
+    /**
+     * 删除用户未完成的交易帖子
+     * @param userId
+     */
+    void deleteUncompletedTradePosts(String userId);
+
 }

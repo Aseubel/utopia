@@ -156,4 +156,9 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
         return Optional.ofNullable(userId).map(userMapper::getUserByUserId).isPresent();
     }
 
+    @Override
+    public void deleteUser(String openid) {
+        userMapper.deleteUserByUserId(openid);
+    }
+
 }

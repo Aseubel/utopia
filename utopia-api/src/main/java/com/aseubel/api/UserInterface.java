@@ -68,6 +68,7 @@ public interface UserInterface {
 
     /**
      * 注销账号接口
+     * 用户未完成的交易帖将被删除，讨论帖和评论会保留，但不显示该用户信息
      */
-    Response cancelAccount(@Valid String userId);
+    Response cancelAccount(String userId);
 }

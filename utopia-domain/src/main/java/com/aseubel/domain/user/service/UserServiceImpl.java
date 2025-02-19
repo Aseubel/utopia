@@ -135,6 +135,14 @@ public class UserServiceImpl implements IUserService {
         return ossUrl;
     }
 
+    @Override
+    public void cancelAccount(String openid) {
+        log.info("注销账户服务开始执行，openid={}", openid);
+        userRepository.deleteUser(openid);
+        userRepository.cleanUserToken(openid);
+        log.info("注销账户服务结束执行，openid={}", openid);
+    }
+
     private void checkSchoolCodeValid(String schoolCode) {
         if (!StringUtils.isEmpty(schoolCode) && !userRepository.isSchoolCodeValid(schoolCode)) {
             log.error("学校代号无效！, user={}", schoolCode);
