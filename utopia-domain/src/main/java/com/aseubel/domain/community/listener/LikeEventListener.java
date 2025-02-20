@@ -6,6 +6,7 @@ import com.aseubel.types.event.LikeEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -22,13 +23,15 @@ public class LikeEventListener implements ApplicationListener<LikeEvent> {
     private IDiscussPostRepository discussPostRepository;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void onApplicationEvent(LikeEvent event) {
         log.info("监听到点赞事件");
         CommunityBO communityBO = (CommunityBO) event.getSource();
+        discussPostRepository.likePost(communityBO.getUserId(), communityBO.getPostId(), communityBO.getEventTime());
         if (discussPostRepository.getPostLikeStatus(communityBO.getUserId(), communityBO.getPostId())) {
-            discussPostRepository.decreaseLikeCount(communityBO.getPostId());
+            discussPostRepository.increaseLikeCount(communityBO.getPostId());
         } else {
-            discussPostRepository.increaseFavoriteCount(communityBO.getPostId());
+            discussPostRepository.decreaseLikeCount(communityBO.getPostId());
         }
     }
 }

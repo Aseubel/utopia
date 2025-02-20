@@ -149,14 +149,13 @@ public class CommunityService implements ICommunityService{
     public void favoriteDiscussPost(String userId, String postId) {
         log.info("用户收藏帖子服务开始，userId: {}, postId: {}", userId, postId);
         checkUserIdValid(userId);
-        discussPostRepository.favoritePost(userId, postId);
         log.info("用户收藏帖子服务开始，userId: {}, postId: {}", userId, postId);
     }
 
     @Override
     public void likeDiscussPost(CommunityBO communityBO) {
         log.info("用户点赞帖子服务开始，userId: {}, postId: {}", communityBO.getUserId(), communityBO.getPostId());
-        discussPostRepository.likePost(communityBO.getUserId(), communityBO.getPostId(), communityBO.getEventTime());
+        // discussPostRepository.likePost(communityBO.getUserId(), communityBO.getPostId(), communityBO.getEventTime());
         log.info("用户点赞帖子服务结束，userId: {}, postId: {}", communityBO.getUserId(), communityBO.getPostId());
     }
 

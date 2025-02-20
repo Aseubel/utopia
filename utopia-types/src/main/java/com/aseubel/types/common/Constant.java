@@ -22,7 +22,7 @@ public class Constant {
 
     public static final String REFRESH_TOKEN = "refresh_token";
 
-    public static final String ENDPOINT = "oss-cn-guangzhou.aliyuncs.com";
+    public static final String ENDPOINT = "oss-cn-guangzhou.aliyuncs.com"; // oss-cn-guangzhou-internal.aliyuncs.com
 
     public static final String BUCKET_NAME = "yangaseubel";  // 填写Bucket名称，例如examplebucket。
 
@@ -37,5 +37,7 @@ public class Constant {
     public static final Integer PER_PAGE_TRADE_POST_SIZE = 20;
 
     public static final Integer PER_PAGE_FILE_SIZE = 20;
+
+    public static final Integer NETTY_PORT = 21611;
 
 }

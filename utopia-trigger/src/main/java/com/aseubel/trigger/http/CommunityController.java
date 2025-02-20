@@ -65,26 +65,26 @@ public class CommunityController implements CommunityInterface {
         List<DiscussPostEntity> discussPosts = communityService.listDiscussPost(communityBO);
         List<QueryIndexDiscussPostResponseDTO> responseDTOs = new ArrayList<>();
         for (DiscussPostEntity discussPost : discussPosts) {
-           responseDTOs.add(QueryIndexDiscussPostResponseDTO.builder()
-                   .discussPostId(discussPost.getDiscussPostId())
-                   .userId(discussPost.getUserId())
-                   .userName(discussPost.getUserName())
-                   .userAvatar(discussPost.getUserAvatar())
-                   .title(discussPost.getTitle())
-                   .content(discussPost.getContent())
-                   .tag(discussPost.getTag())
-                   .likeCount(discussPost.getLikeCount())
-                   .commentCount(discussPost.getCommentCount())
-                   .favoriteCount(discussPost.getFavoriteCount())
-                   .type(discussPost.getType())
-                   .status(discussPost.getStatus())
-                   .comments(discussPost.getComments())
-                   .createTime(discussPost.getCreateTime())
-                   .updateTime(discussPost.getUpdateTime())
-                   .image(discussPost.getImage())
-                   .isFavorite(discussPost.getIsFavorite())
-                   .isLike(discussPost.getIsLike())
-                   .build());
+            responseDTOs.add(QueryIndexDiscussPostResponseDTO.builder()
+                    .discussPostId(discussPost.getDiscussPostId())
+                    .userId(discussPost.getUserId())
+                    .userName(discussPost.getUserName())
+                    .userAvatar(discussPost.getUserAvatar())
+                    .title(discussPost.getTitle())
+                    .content(discussPost.getContent())
+                    .tag(discussPost.getTag())
+                    .likeCount(discussPost.getLikeCount())
+                    .commentCount(discussPost.getCommentCount())
+                    .favoriteCount(discussPost.getFavoriteCount())
+                    .type(discussPost.getType())
+                    .status(discussPost.getStatus())
+                    .comments(discussPost.getComments())
+                    .createTime(discussPost.getCreateTime())
+                    .updateTime(discussPost.getUpdateTime())
+                    .image(discussPost.getImage())
+                    .isFavorite(discussPost.getIsFavorite())
+                    .isLike(discussPost.getIsLike())
+                    .build());
         }
         return Response.SYSTEM_SUCCESS(responseDTOs);
     }
@@ -101,31 +101,33 @@ public class CommunityController implements CommunityInterface {
         MultipartFile file = requestDTO.getImage();
         // 使用Thumbnailator进行压缩
         try (InputStream inputStream = file.getInputStream();
-             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()){
-           Thumbnails.of(inputStream)
-                   .scale(1.0) // 设置压缩比例
-                   .outputQuality(0.15) // 设置输出质量（0.0到1.0之间）
-                   .toOutputStream(outputStream);
-           // 将压缩后的图片转换为Base64字符串
-           byte[] compressedBytes = outputStream.toByteArray();
-           CommunityImage resultImage = communityService.uploadPostImage(
-                   CommunityImage.builder()
-                           .userId(requestDTO.getUserId())
-                           .image(new CustomMultipartFile(compressedBytes, file.getOriginalFilename()))
-                           .build());
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            Thumbnails.of(inputStream)
+                    .scale(1.0) // 设置压缩比例
+                    .outputQuality(0.15) // 设置输出质量（0.0到1.0之间）
+                    .toOutputStream(outputStream);
+            // 将压缩后的图片转换为Base64字符串
+            byte[] compressedBytes = outputStream.toByteArray();
+            CommunityImage resultImage = communityService.uploadPostImage(
+                    CommunityImage.builder()
+                            .userId(requestDTO.getUserId())
+                            .image(new CustomMultipartFile(compressedBytes, file.getOriginalFilename()))
+                            .build());
 
-           return Response.SYSTEM_SUCCESS(
-                   UploadDiscussPostImageResponse.builder()
-                   .imageId(resultImage.getImageId())
-                   .imageUrl(resultImage.getImageUrl())
-                   .build());
-       } catch (ClientException e) {
-           log.error("上传帖子图片时oss客户端异常，{}, code:{}, message:{}",OSS_UPLOAD_ERROR.getMessage(), e.getErrCode(), e.getErrMsg(), e);
-           throw new AppException(OSS_UPLOAD_ERROR, e);
-       } catch (Exception e) {
-           log.error("上传帖子图片时出现未知异常", e);
-           throw new AppException(OSS_UPLOAD_ERROR, e);
-       }
+            return Response.SYSTEM_SUCCESS(
+                    UploadDiscussPostImageResponse.builder()
+                            .imageId(resultImage.getImageId())
+                            .imageUrl(resultImage.getImageUrl())
+                            .build());
+        } catch (ClientException e) {
+            log.error("上传帖子图片时oss客户端异常，{}, code:{}, message:{}", OSS_UPLOAD_ERROR.getMessage(), e.getErrCode(), e.getErrMsg(), e);
+            throw new AppException(OSS_UPLOAD_ERROR, e);
+        } catch (AppException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("上传帖子图片时出现未知异常", e);
+            throw new AppException(OSS_UPLOAD_ERROR, e);
+        }
     }
 
     /**
@@ -135,13 +137,13 @@ public class CommunityController implements CommunityInterface {
     @PostMapping("/post")
     public Response publishDiscussPost(@Valid @RequestBody PublishDiscussPostRequest publishDiscussPostRequest) {
         DiscussPostEntity discussPostEntity = DiscussPostEntity.builder()
-               .userId(publishDiscussPostRequest.getUserId())
+                .userId(publishDiscussPostRequest.getUserId())
                 .schoolCode(publishDiscussPostRequest.getSchoolCode())
-               .title(publishDiscussPostRequest.getTitle())
-               .content(publishDiscussPostRequest.getContent())
-               .tag(publishDiscussPostRequest.getTag())
-               .images(publishDiscussPostRequest.getImages())
-               .build();
+                .title(publishDiscussPostRequest.getTitle())
+                .content(publishDiscussPostRequest.getContent())
+                .tag(publishDiscussPostRequest.getTag())
+                .images(publishDiscussPostRequest.getImages())
+                .build();
         communityService.publishDiscussPost(discussPostEntity);
 
         eventPublisher.publishEvent(new CustomEvent(discussPostEntity, COMMUNITY_POST_PUBLISH));
@@ -225,8 +227,8 @@ public class CommunityController implements CommunityInterface {
                 .commentEntity(commentEntity)
                 .build()));
         return Response.SYSTEM_SUCCESS(ReplyCommentResponse.builder()
-               .commentId(commentEntity.getCommentId())
-               .build());
+                .commentId(commentEntity.getCommentId())
+                .build());
     }
 
     /**
@@ -241,7 +243,7 @@ public class CommunityController implements CommunityInterface {
         MultipartFile file = requestDTO.getImage();
         // 使用Thumbnailator进行压缩
         try (InputStream inputStream = file.getInputStream();
-             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()){
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             Thumbnails.of(inputStream)
                     .scale(1.0) // 设置压缩比例
                     .outputQuality(0.15) // 设置输出质量（0.0到1.0之间）
@@ -260,7 +262,7 @@ public class CommunityController implements CommunityInterface {
                             .imageUrl(resultImage.getImageUrl())
                             .build());
         } catch (ClientException e) {
-            log.error("上传帖子图片时oss客户端异常，{}, code:{}, message:{}",OSS_UPLOAD_ERROR.getMessage(), e.getErrCode(), e.getErrMsg(), e);
+            log.error("上传帖子图片时oss客户端异常，{}, code:{}, message:{}", OSS_UPLOAD_ERROR.getMessage(), e.getErrCode(), e.getErrMsg(), e);
             throw new AppException(OSS_UPLOAD_ERROR, e);
         } catch (Exception e) {
             log.error("上传帖子图片时出现未知异常", e);

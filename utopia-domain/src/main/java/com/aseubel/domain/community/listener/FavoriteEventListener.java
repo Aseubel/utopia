@@ -7,6 +7,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -22,16 +23,16 @@ public class FavoriteEventListener implements ApplicationListener<FavoriteEvent>
     @Resource
     private IDiscussPostRepository discussPostRepository;
 
-    @SneakyThrows
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void onApplicationEvent(FavoriteEvent event) {
         log.info("监听到收藏事件");
-        Thread.sleep(50);
         CommunityBO communityBO = (CommunityBO) event.getSource();
+        discussPostRepository.favoritePost(communityBO.getUserId(), communityBO.getPostId());
         if (discussPostRepository.getPostFavoriteStatus(communityBO.getUserId(), communityBO.getPostId())) {
-            discussPostRepository.decreaseFavoriteCount(communityBO.getPostId());
-        } else {
             discussPostRepository.increaseFavoriteCount(communityBO.getPostId());
+        } else {
+            discussPostRepository.decreaseFavoriteCount(communityBO.getPostId());
         }
     }
 }

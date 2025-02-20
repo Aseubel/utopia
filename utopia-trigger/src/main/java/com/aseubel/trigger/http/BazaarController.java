@@ -1,17 +1,21 @@
 package com.aseubel.trigger.http;
 
+import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.api.BazaarInterface;
 import com.aseubel.api.dto.bazaar.*;
+import com.aseubel.api.dto.community.UploadDiscussPostImageResponse;
 import com.aseubel.domain.bazaar.model.bo.BazaarBO;
 import com.aseubel.domain.bazaar.model.entity.TradeImage;
 import com.aseubel.domain.bazaar.model.entity.TradePostEntity;
 import com.aseubel.domain.bazaar.service.IBazaarService;
 import com.aseubel.domain.community.model.bo.CommunityBO;
+import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.types.Response;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.CustomMultipartFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -90,62 +94,35 @@ public class BazaarController implements BazaarInterface {
             throw new AppException(PARAM_NOT_COMPLETE);
         }
         MultipartFile file = requestDTO.getPostImage();
-        // 使用CompletableFuture进行异步处理
-        CompletableFuture<TradeImage> futureImage = CompletableFuture.supplyAsync(() -> {
-            try (InputStream inputStream = file.getInputStream();
-                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-                BufferedImage image = ImageIO.read(inputStream);
-                if (image == null) {
-                    throw new AppException("上传的图片格式不正确");
-                }
-                // 获取JPEG ImageWriter
-                Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
-                if (!writers.hasNext()) {
-                    throw new AppException("没有可用的JPEG ImageWriter");
-                }
-                ImageWriter writer = writers.next();
-                ImageWriteParam param = writer.getDefaultWriteParam();
-                param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-                param.setCompressionQuality(0.3f); // 设置压缩质量
+        // 使用Thumbnailator进行压缩
+        try (InputStream inputStream = file.getInputStream();
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            Thumbnails.of(inputStream)
+                    .scale(1.0) // 设置压缩比例
+                    .outputQuality(0.15) // 设置输出质量（0.0到1.0之间）
+                    .toOutputStream(outputStream);
+            // 将压缩后的图片转换为Base64字符串
+            byte[] compressedBytes = outputStream.toByteArray();
+            TradeImage resultImage = bazaarService.uploadPostImage(
+                    TradeImage.builder()
+                            .userId(requestDTO.getUserId())
+                            .image(new CustomMultipartFile(compressedBytes, file.getOriginalFilename()))
+                            .build());
 
-                ImageOutputStream ios = ImageIO.createImageOutputStream(outputStream);
-                writer.setOutput(ios);
-                writer.write(null, new javax.imageio.IIOImage(image, null, null), param);
-                writer.dispose();
-                ios.close();
-
-                // 将压缩后的图片转换为字节数组
-                byte[] compressedBytes = outputStream.toByteArray();
-
-                // 使用压缩后的图片进行上传
-                return bazaarService.uploadPostImage(
-                        TradeImage.builder()
-                                .userId(requestDTO.getUserId())
-                                .image(new CustomMultipartFile(compressedBytes, file.getOriginalFilename()))
-                                .build());
-            } catch (IOException e) {
-                log.error("图片压缩时出现IO异常", e);
-                throw new AppException(OSS_UPLOAD_ERROR, e);
-            } catch (Exception e) {
-                log.error("上传帖子图片时出现未知异常", e);
-                throw new AppException(OSS_UPLOAD_ERROR, e);
-            }
-        });
-
-        // 等待异步任务完成
-        TradeImage resultImage;
-        try {
-            resultImage = futureImage.get();
+            return Response.SYSTEM_SUCCESS(
+                    UploadTradePostImageResponse.builder()
+                            .imageId(resultImage.getImageId())
+                            .imageUrl(resultImage.getImageUrl())
+                            .build());
+        } catch (ClientException e) {
+            log.error("上传帖子图片时oss客户端异常，{}, code:{}, message:{}", OSS_UPLOAD_ERROR.getMessage(), e.getErrCode(), e.getErrMsg(), e);
+            throw new AppException(OSS_UPLOAD_ERROR, e);
+        } catch (AppException e) {
+            throw e;
         } catch (Exception e) {
-            log.error("异步图片压缩时出现异常", e);
+            log.error("上传帖子图片时出现未知异常", e);
             throw new AppException(OSS_UPLOAD_ERROR, e);
         }
-
-        return Response.SYSTEM_SUCCESS(
-                UploadTradePostImageResponse.builder()
-                        .imageId(resultImage.getImageId())
-                        .imageUrl(resultImage.getImageUrl())
-                        .build());
     }
 
 
