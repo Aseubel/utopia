@@ -84,7 +84,7 @@ public interface IDiscussPostRepository {
      * @param userId
      * @param postId
      */
-    void favoritePost(String userId, String postId);
+    boolean favoritePost(String userId, String postId);
 
     /**
      * 获取帖子收藏状态
@@ -99,7 +99,7 @@ public interface IDiscussPostRepository {
      * @param userId
      * @param postId
      */
-    void likePost(String userId, String postId, LocalDateTime likeTime);
+    boolean likePost(String userId, String postId, LocalDateTime likeTime);
 
     /**
      * 获取帖子点赞状态

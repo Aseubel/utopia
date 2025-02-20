@@ -27,8 +27,7 @@ public class LikeEventListener implements ApplicationListener<LikeEvent> {
     public void onApplicationEvent(LikeEvent event) {
         log.info("监听到点赞事件");
         CommunityBO communityBO = (CommunityBO) event.getSource();
-        discussPostRepository.likePost(communityBO.getUserId(), communityBO.getPostId(), communityBO.getEventTime());
-        if (discussPostRepository.getPostLikeStatus(communityBO.getUserId(), communityBO.getPostId())) {
+        if (discussPostRepository.likePost(communityBO.getUserId(), communityBO.getPostId(), communityBO.getEventTime())) {
             discussPostRepository.increaseLikeCount(communityBO.getPostId());
         } else {
             discussPostRepository.decreaseLikeCount(communityBO.getPostId());

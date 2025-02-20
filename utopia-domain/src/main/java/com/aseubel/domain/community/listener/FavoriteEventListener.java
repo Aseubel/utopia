@@ -28,8 +28,7 @@ public class FavoriteEventListener implements ApplicationListener<FavoriteEvent>
     public void onApplicationEvent(FavoriteEvent event) {
         log.info("监听到收藏事件");
         CommunityBO communityBO = (CommunityBO) event.getSource();
-        discussPostRepository.favoritePost(communityBO.getUserId(), communityBO.getPostId());
-        if (discussPostRepository.getPostFavoriteStatus(communityBO.getUserId(), communityBO.getPostId())) {
+        if (discussPostRepository.favoritePost(communityBO.getUserId(), communityBO.getPostId())) {
             discussPostRepository.increaseFavoriteCount(communityBO.getPostId());
         } else {
             discussPostRepository.decreaseFavoriteCount(communityBO.getPostId());

@@ -10,7 +10,9 @@ import com.aseubel.infrastructure.convertor.CommunityImageConvertor;
 import com.aseubel.infrastructure.convertor.DiscussPostConvertor;
 import com.aseubel.infrastructure.dao.*;
 import com.aseubel.infrastructure.dao.po.Image;
+import com.aseubel.infrastructure.redis.IRedisService;
 import com.aseubel.types.util.AliOSSUtil;
+import com.aseubel.types.util.RedisKeyBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
@@ -51,6 +53,9 @@ public class DiscussPostRepository implements IDiscussPostRepository {
 
     @Resource
     private AliOSSUtil aliOSSUtil;
+
+    @Resource
+    private IRedisService redisService;
 
     @Override
     public List<DiscussPostEntity> listDiscussPost(CommunityBO communityBO) {
@@ -130,16 +135,25 @@ public class DiscussPostRepository implements IDiscussPostRepository {
     }
 
     @Override
-    public void favoritePost(String userId, String postId) {
+    public boolean favoritePost(String userId, String postId) {
         // 如果jdk升级到9以上可以使用Optional的ifPresentOrElse方法
         boolean isExist = favoriteMapper.getFavoritePostIdByUserIdAndPostId(userId, postId) != null;
+        boolean isFavorite = true;
         if (isExist) {
-            boolean isFavorite = favoriteMapper.getFavoriteStatus(userId, postId).orElse(false);
+            isFavorite = favoriteMapper.getFavoriteStatus(userId, postId).orElse(false);
             favoriteMapper.updateFavoriteStatus(userId, postId, isFavorite ? 0 : 1);
         } else {
             favoriteMapper.saveFavoriteRecord(userId, postId);
             discussPostMapper.increaseLikeCount(postId);
         }
+
+        redisService.addToMap(RedisKeyBuilder.FavoriteStatusKey(userId), postId, !isFavorite);
+        if (isFavorite) {
+            redisService.decr(RedisKeyBuilder.discussPostFavoriteCountKey(postId));
+        } else {
+            redisService.incr(RedisKeyBuilder.discussPostFavoriteCountKey(postId));
+        }
+        return !isFavorite; // 返回新状态
     }
 
     @Override
@@ -148,15 +162,24 @@ public class DiscussPostRepository implements IDiscussPostRepository {
     }
 
     @Override
-    public void likePost(String userId, String postId, LocalDateTime likeTime) {
+    public boolean likePost(String userId, String postId, LocalDateTime likeTime) {
         // 如果jdk升级到9以上可以使用Optional的ifPresentOrElse方法
         boolean isExist = likeMapper.getLikePostIdByUserIdAndPostId(userId, postId) != null;
+        boolean isLike = true;
         if (isExist) {
-            boolean isLike = likeMapper.getLikeStatus(userId, postId).orElse(false);
+            isLike = likeMapper.getLikeStatus(userId, postId).orElse(false);
             likeMapper.updateLikeStatus(userId, postId, likeTime, isLike ? 0 : 1);
         } else {
             likeMapper.saveLikeRecord(userId, postId, likeTime);
         }
+
+        redisService.addToMap(RedisKeyBuilder.LikeStatusKey(userId), postId, !isLike);
+        if (isLike) {
+            redisService.decr(RedisKeyBuilder.discussPostLikeCountKey(postId));
+        } else {
+            redisService.incr(RedisKeyBuilder.discussPostLikeCountKey(postId));
+        }
+        return !isLike; // 返回新状态
     }
 
     @Override
