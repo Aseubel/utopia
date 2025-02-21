@@ -1,39 +1,38 @@
 package com.aseubel.infrastructure.netty;
 
+import com.aseubel.types.exception.AppException;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
-import io.netty.util.AttributeKey;
 
-import java.util.List;
+import static com.aseubel.types.common.Constant.WS_TOKEN_KEY;
 
-public class HttpHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
-    public static final AttributeKey<String> URI_KEY = AttributeKey.valueOf("uri");
+/**
+ * @author Aseubel
+ * @description 处理websocket连接请求，将code参数存入channel的attribute中
+ * @date 2025-02-21 15:34
+ */
+public class HttpHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        // 判断是否是连接请求
         if (msg instanceof FullHttpRequest) {
             FullHttpRequest request = (FullHttpRequest) msg;
-            QueryStringDecoder decoder = new QueryStringDecoder(request.uri());
-            ctx.channel().attr(URI_KEY).set(decoder.parameters().get("code").get(0));
-            // 可以在这里将 FullHttpRequest 转发到下一个 handler
+            try {
+                QueryStringDecoder decoder = new QueryStringDecoder(request.uri());
+                ctx.channel().attr(WS_TOKEN_KEY).set(decoder.parameters().get("code").get(0));
+            } catch (Exception e) {
+                throw new AppException("非法的websocket连接请求");
+            }
+            // 将 FullHttpRequest 转发到下一个 handler
             ctx.fireChannelRead(request);
-        } else {
-            super.channelRead(ctx, msg);
+            // 重新设置 uri，将请求转发到 websocket handler，否则无法成功建立连接
+            request.setUri("/ws");
         }
+        // 消息直接交给下一个 handler
+        super.channelRead(ctx, msg);
     }
 
-    @Override
-    protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
-        String uri = request.uri();
-        ctx.channel().attr(URI_KEY).set(uri);
-        // 可以在这里将 FullHttpRequest 转发到下一个 handler
-        ctx.fireChannelRead(request);
-    }
-
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        super.channelActive(ctx);
-    }
 }

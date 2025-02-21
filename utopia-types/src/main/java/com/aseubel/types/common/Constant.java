@@ -1,5 +1,7 @@
 package com.aseubel.types.common;
 
+import io.netty.util.AttributeKey;
+
 public class Constant {
 
     public static final String APP = "utopia";
@@ -40,6 +42,8 @@ public class Constant {
 
     public static final Integer PER_PAGE_FILE_SIZE = 20;
 
-    public static final Integer NETTY_PORT = 21611;
+    public static final int NETTY_PORT = 21611;
+
+    public static final AttributeKey<String> WS_TOKEN_KEY = AttributeKey.valueOf("code");
 
 }

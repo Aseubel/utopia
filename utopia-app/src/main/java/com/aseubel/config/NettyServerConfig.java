@@ -2,28 +2,73 @@ package com.aseubel.config;
 
 import com.aseubel.infrastructure.netty.HttpHandler;
 import com.aseubel.infrastructure.netty.MessageHandler;
+import com.aseubel.infrastructure.netty.TestWebSocketHandler;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import io.netty.handler.stream.ChunkedWriteHandler;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-@Configuration
-@EnableConfigurationProperties(NettyServerConfigProperties.class)
+import static com.aseubel.types.common.Constant.NETTY_PORT;
+
+@Component
 public class NettyServerConfig {
 
-    private EventLoopGroup bossGroup;
-    private EventLoopGroup workerGroup;
+    private ChannelFuture serverChannelFuture;
+
+    // 使用线程池管理
+    private final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+    private final EventLoopGroup workerGroup = new NioEventLoopGroup();
+
+    @PostConstruct
+    public void startNettyServer() {
+        // 使用独立线程启动Netty服务
+        new Thread(() -> {
+            try {
+                ServerBootstrap bootstrap = new ServerBootstrap();
+                bootstrap.group(bossGroup, workerGroup)
+                        .channel(NioServerSocketChannel.class)
+                        .childHandler(new ChannelInitializer<Channel>() {
+                            @Override
+                            protected void initChannel(Channel ch) {
+                                ChannelPipeline pipeline = ch.pipeline();
+                                pipeline.addLast(new HttpServerCodec());
+                                pipeline.addLast(new HttpObjectAggregator(65536));
+                                pipeline.addLast(new ChunkedWriteHandler());
+                                pipeline.addLast(new HttpHandler());
+                                pipeline.addLast(new WebSocketServerProtocolHandler("/ws", null, true));
+                                pipeline.addLast(new MessageHandler());
+                            }
+                        });
+
+                serverChannelFuture = bootstrap.bind(NETTY_PORT).sync();
+                System.out.println("WebSocket server started on port " + NETTY_PORT);
+
+                // 保持通道开放
+                serverChannelFuture.channel().closeFuture().sync();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }).start();
+    }
+
+    @PreDestroy
+    public void stopNettyServer() {
+        // 优雅关闭
+        if (serverChannelFuture != null) {
+            serverChannelFuture.channel().close();
+        }
+        bossGroup.shutdownGracefully();
+        workerGroup.shutdownGracefully();
+    }
 
     // 新增SSL配置
 //    @Bean
@@ -37,66 +82,67 @@ public class NettyServerConfig {
 //                .build();
 //    }
 
-    @Bean
-    public ChannelInitializer<SocketChannel> channelInitializer() {
-        return new ChannelInitializer<SocketChannel>() {
-            @Override
-            protected void initChannel(SocketChannel ch) {
-                ChannelPipeline pipeline = ch.pipeline();
-                // 添加SSL处理器
-                // pipeline.addLast(sslContext.newHandler(ch.alloc()));
-                pipeline.addLast(new HttpServerCodec());
-                pipeline.addLast(new HttpObjectAggregator(65536));
-                pipeline.addLast(new HttpHandler());
-                pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
-//                pipeline.addLast(sensitiveFilter);
-                pipeline.addLast(new MessageHandler());
-            }
-        };
-    }
-
-    @Bean
-    public ServerBootstrap serverBootstrap(NettyServerConfigProperties properties) {
-        bossGroup = new NioEventLoopGroup();
-        workerGroup = new NioEventLoopGroup();
-
-        ServerBootstrap b = new ServerBootstrap();
-        b.group(bossGroup, workerGroup)
-                .channel(NioServerSocketChannel.class)
-                .childHandler(channelInitializer());
-        b.bind(21611);
-        return b;
-    }
-
-    @PreDestroy
-    public void shutdown() {
-        if (bossGroup != null) {
-            bossGroup.shutdownGracefully().syncUninterruptibly();
-        }
-        if (workerGroup != null) {
-            workerGroup.shutdownGracefully().syncUninterruptibly();
-        }
-    }
+//    @Bean
+//    public ChannelInitializer<SocketChannel> channelInitializer() {
+//        return new ChannelInitializer<SocketChannel>() {
+//            @Override
+//            protected void initChannel(SocketChannel ch) {
+//                ChannelPipeline pipeline = ch.pipeline();
+//                // 添加SSL处理器
+//                // pipeline.addLast(sslContext.newHandler(ch.alloc()));
+//                pipeline.addLast(new HttpServerCodec());
+//                pipeline.addLast(new HttpObjectAggregator(65536));
+////                pipeline.addLast(new HttpHandler());
+//                pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
+//                pipeline.addLast(new TestWebSocketHandler());
+////                pipeline.addLast(sensitiveFilter);
+////                pipeline.addLast(new MessageHandler());
+//            }
+//        };
+//    }
+//
+//    @Bean
+//    public ServerBootstrap serverBootstrap(NettyServerConfigProperties properties) throws InterruptedException {
+//        bossGroup = new NioEventLoopGroup();
+//        workerGroup = new NioEventLoopGroup();
+//
+//        ServerBootstrap b = new ServerBootstrap();
+//        b.group(bossGroup, workerGroup)
+//                .channel(NioServerSocketChannel.class)
+//                .childHandler(channelInitializer());
+//        b.bind(NETTY_PORT).sync();
+//        return b;
+//    }
+//
+//    @PreDestroy
+//    public void shutdown() {
+//        if (bossGroup != null) {
+//            bossGroup.shutdownGracefully().syncUninterruptibly();
+//        }
+//        if (workerGroup != null) {
+//            workerGroup.shutdownGracefully().syncUninterruptibly();
+//        }
+//    }
 
 }
 
 /**
  * // 建立WebSocket连接
  * const socket = wx.connectSocket({
- *   url: 'ws://your-domain.com/ws?token=用户登录凭证'
+ * url: 'ws://your-domain.com/ws?token=用户登录凭证'
  * })
- *
+ * <p>
  * // 监听消息
  * socket.onMessage(res => {
- *   console.log('收到消息:', res.data)
+ * console.log('收到消息:', res.data)
  * })
- *
+ * <p>
  * // 发送消息
  * function sendMessage(toUserId, content) {
- *   const msg = JSON.stringify({
- *     to: toUserId,
- *     content: content
- *   })
- *   socket.send(msg)
+ * const msg = JSON.stringify({
+ * to: toUserId,
+ * content: content
+ * })
+ * socket.send(msg)
  * }
  */
