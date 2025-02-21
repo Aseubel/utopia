@@ -39,7 +39,7 @@ public class AliOSSUtil {
         ClientBuilderConfiguration clientBuilderConfiguration = new ClientBuilderConfiguration();
         clientBuilderConfiguration.setSignatureVersion(SignVersion.V4);
         OSS ossClient = OSSClientBuilder.create()
-                .endpoint(ENDPOINT)
+                .endpoint(INTERNAL_ENDPOINT)
                 .credentialsProvider(credentialsProvider)
                 .clientConfiguration(clientBuilderConfiguration)
                 .region(REGION)
@@ -108,7 +108,7 @@ public class AliOSSUtil {
         ClientBuilderConfiguration clientBuilderConfiguration = new ClientBuilderConfiguration();
         clientBuilderConfiguration.setSignatureVersion(SignVersion.V4);
         OSS ossClient = OSSClientBuilder.create()
-                .endpoint(ENDPOINT)
+                .endpoint(INTERNAL_ENDPOINT)
                 .credentialsProvider(credentialsProvider)
                 .clientConfiguration(clientBuilderConfiguration)
                 .region(REGION)
@@ -264,7 +264,7 @@ public class AliOSSUtil {
         ClientBuilderConfiguration clientBuilderConfiguration = new ClientBuilderConfiguration();
         clientBuilderConfiguration.setSignatureVersion(SignVersion.V4);
         OSS ossClient = OSSClientBuilder.create()
-                .endpoint(ENDPOINT)
+                .endpoint(INTERNAL_ENDPOINT)
                 .credentialsProvider(credentialsProvider)
                 .clientConfiguration(clientBuilderConfiguration)
                 .region(REGION)
@@ -324,7 +324,7 @@ public class AliOSSUtil {
         ClientBuilderConfiguration clientBuilderConfiguration = new ClientBuilderConfiguration();
         clientBuilderConfiguration.setSignatureVersion(SignVersion.V4);
         OSS ossClient = OSSClientBuilder.create()
-                .endpoint(ENDPOINT)
+                .endpoint(INTERNAL_ENDPOINT)
                 .credentialsProvider(credentialsProvider)
                 .clientConfiguration(clientBuilderConfiguration)
                 .region(REGION)
@@ -363,18 +363,35 @@ public class AliOSSUtil {
         ClientBuilderConfiguration clientBuilderConfiguration = new ClientBuilderConfiguration();
         clientBuilderConfiguration.setSignatureVersion(SignVersion.V4);
         OSS ossClient = OSSClientBuilder.create()
-                .endpoint(ENDPOINT)
+                .endpoint(INTERNAL_ENDPOINT)
                 .credentialsProvider(credentialsProvider)
                 .clientConfiguration(clientBuilderConfiguration)
                 .region(REGION)
                 .build();
 
+//        try {
+//            List<String> objectNames = new ArrayList<>();
+//            ossClient.listObjectsV2(BUCKET_NAME).getObjectSummaries().forEach(objectSummary -> {
+//                objectNames.add(objectSummary.getKey());
+////                log.info("文件名：{}，大小：{}，最后修改时间：{}", objectSummary.getKey(), objectSummary.getSize(), objectSummary.getLastModified());
+//            });
+//            return objectNames;
+//        }
         try {
             List<String> objectNames = new ArrayList<>();
-            ossClient.listObjectsV2(BUCKET_NAME).getObjectSummaries().forEach(objectSummary -> {
-                objectNames.add(objectSummary.getKey());
-//                log.info("文件名：{}，大小：{}，最后修改时间：{}", objectSummary.getKey(), objectSummary.getSize(), objectSummary.getLastModified());
-            });
+            String nextContinuationToken = null;
+            do {
+                ListObjectsV2Request request = new ListObjectsV2Request(BUCKET_NAME)
+                        .withMaxKeys(1000)  // 设置最大分页数量
+                        .withContinuationToken(nextContinuationToken);
+
+                ListObjectsV2Result result = ossClient.listObjectsV2(request);
+                result.getObjectSummaries().forEach(objectSummary -> {
+                    objectNames.add(objectSummary.getKey());
+                });
+                nextContinuationToken = result.getNextContinuationToken();
+            } while (nextContinuationToken != null);
+
             return objectNames;
         } catch (OSSException oe) {
             log.error("Caught an OSSException, which means your request made it to OSS, "

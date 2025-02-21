@@ -55,6 +55,9 @@ public class CommunityController implements CommunityInterface {
     @Override
     @GetMapping("/post")
     public Response<List<QueryIndexDiscussPostResponseDTO>> queryIndexDiscussPost(@Valid QueryIndexDiscussPostRequestDTO requestDTO) {
+        if (StringUtils.isEmpty(requestDTO.getUserId())) {
+            throw new AppException(400, "用户id不能为空!");
+        }
         CommunityBO communityBO = CommunityBO.builder()
                 .userId(requestDTO.getUserId())
                 .postId(requestDTO.getPostId())

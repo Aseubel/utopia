@@ -63,7 +63,7 @@ public interface TradePostMapper {
     void relateTradePostImage(String postId, List<Image> images);
 
     /**
-     * 获取帖子第一张图片的url
+     * 获取帖子第一张图片的image_id
      * @param postId
      * @return
      */
@@ -74,6 +74,6 @@ public interface TradePostMapper {
      * @param userId
      * @return
      */
-    List<TradePost> deleteUncompletedTradePost(@Param("userId") String userId);
+    void deleteUncompletedTradePost(@Param("userId") String userId);
 
 }

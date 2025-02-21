@@ -65,7 +65,9 @@ public class BazaarService implements IBazaarService{
         // 获取帖子的第一张图片
         if (!CollectionUtil.isEmpty(tradePostEntities)) {
             tradePostEntities.forEach(d ->
-                    d.setImage(tradePostRepository.getPostFirstImage(d.getTradePostId()))
+            {
+                String imageUrl = tradePostRepository.getPostFirstImage(d.getTradePostId());
+                d.setImage(imageUrl);}
             );
         }
         log.info("获取集市帖子列表服务结束执行");

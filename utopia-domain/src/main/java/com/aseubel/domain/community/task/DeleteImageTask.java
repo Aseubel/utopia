@@ -24,9 +24,9 @@ public class DeleteImageTask {
     private ICommentRepository commentRepository;
 
     /**
-     * 每小时执行一次，删除数据库中重复的sfile记录
+     * 每天执行一次，删除数据库中重复的sfile记录
      */
-    @Scheduled(cron = "0 0 * * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void deleteMissingImage() throws ClientException {
         log.info("task: 删除不存在的image数据库记录");
         discussPostRepository.deleteMissingImage();

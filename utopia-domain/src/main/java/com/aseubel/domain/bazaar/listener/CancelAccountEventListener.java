@@ -22,7 +22,8 @@ public class CancelAccountEventListener implements ApplicationListener<CancelAcc
 
     @Override
     public void onApplicationEvent(CancelAccountEvent event) {
-        log.info("bazaar domain：监听到用户{}注销账号", event.getUserId());
-        tradePostRepository.deleteUncompletedTradePosts(event.getUserId());
+        String userId = event.getSource().toString();
+        log.info("bazaar domain：监听到用户{}注销账号", userId);
+        tradePostRepository.deleteUncompletedTradePosts(userId);
     }
 }

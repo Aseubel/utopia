@@ -205,6 +205,7 @@ public class UserController implements UserInterface {
     @DeleteMapping("/cancel")
     public Response cancelAccount(String userId) {
         log.info("用户{}请求注销账号", userId);
+        userService.cancelAccount(userId);
         eventPublisher.publishEvent(new CancelAccountEvent(userId));
         return Response.SYSTEM_SUCCESS();
     }
