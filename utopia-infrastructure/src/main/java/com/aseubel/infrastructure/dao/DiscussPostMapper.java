@@ -78,6 +78,13 @@ public interface DiscussPostMapper {
     String getPostFirstImage(String postId);
 
     /**
+     * 获取帖子图片url列表
+     * @param postId
+     * @return
+     */
+    List<String> listImageUrlByPostId(String postId);
+
+    /**
      * 置顶帖子
      * @param userId
      * @param postId

@@ -84,6 +84,20 @@ public class CommunityService implements ICommunityService{
     }
 
     @Override
+    public DiscussPostEntity getDiscussPost(CommunityBO communityBO) {
+        String userId = communityBO.getUserId();
+        String postId = communityBO.getPostId();
+        log.info("获取帖子详情服务开始执行, userId:{}, postId:{}", userId, postId);
+        checkUserIdValid(userId);
+        // 查询帖子
+        DiscussPostEntity postEntity = discussPostRepository.getDiscussPost(communityBO);
+        // 获取帖子的图片
+        postEntity.setImages(discussPostRepository.listPostImages(postId));
+        log.info("获取帖子详情服务结束执行, userId:{}, postId:{}", userId, postId);
+        return postEntity;
+    }
+
+    @Override
     public CommunityImage uploadPostImage(CommunityImage postImage) throws ClientException {
         log.info("上传帖子图片服务开始执行，userId:{}", postImage.getUserId());
         if (ObjectUtils.isEmpty(communityUserRepository.queryUserStatus(postImage.getUserId()))) {

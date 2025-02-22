@@ -22,6 +22,12 @@ public interface ICommunityService {
     List<DiscussPostEntity> listDiscussPost(CommunityBO communityBO);
 
     /**
+     * 获取帖子详情
+     * @return
+     */
+    DiscussPostEntity getDiscussPost(CommunityBO communityBO);
+
+    /**
      * 上传帖子图片
      * @param postImage
      * @return

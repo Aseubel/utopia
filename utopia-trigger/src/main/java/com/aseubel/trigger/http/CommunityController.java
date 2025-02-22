@@ -55,9 +55,8 @@ public class CommunityController implements CommunityInterface {
     @Override
     @GetMapping("/post")
     public Response<List<QueryIndexDiscussPostResponseDTO>> queryIndexDiscussPost(@Valid QueryIndexDiscussPostRequestDTO requestDTO) {
-        if (StringUtils.isEmpty(requestDTO.getUserId())) {
-            throw new AppException(400, "用户id不能为空!");
-        }
+        validateUserId(requestDTO.getUserId());
+
         CommunityBO communityBO = CommunityBO.builder()
                 .userId(requestDTO.getUserId())
                 .postId(requestDTO.getPostId())
@@ -141,7 +140,7 @@ public class CommunityController implements CommunityInterface {
      */
     @Override
     @PostMapping("/post")
-    public Response publishDiscussPost(@Valid @RequestBody PublishDiscussPostRequest publishDiscussPostRequest) {
+    public Response<PublishDiscussPostResponse> publishDiscussPost(@Valid @RequestBody PublishDiscussPostRequest publishDiscussPostRequest) {
         DiscussPostEntity discussPostEntity = DiscussPostEntity.builder()
                 .userId(publishDiscussPostRequest.getUserId())
                 .schoolCode(publishDiscussPostRequest.getSchoolCode())
@@ -153,7 +152,14 @@ public class CommunityController implements CommunityInterface {
         communityService.publishDiscussPost(discussPostEntity);
 
         eventPublisher.publishEvent(new CustomEvent(discussPostEntity, COMMUNITY_POST_PUBLISH));
-        return Response.SYSTEM_SUCCESS();
+        return Response.SYSTEM_SUCCESS(PublishDiscussPostResponse.builder()
+                        .userId(discussPostEntity.getUserId())
+                        .postId(discussPostEntity.getDiscussPostId())
+                        .title(discussPostEntity.getTitle())
+                        .content(discussPostEntity.getContent())
+                        .tag(discussPostEntity.getTag())
+                        .image(discussPostEntity.getImage())
+                        .build());
     }
 
     /**
@@ -276,6 +282,42 @@ public class CommunityController implements CommunityInterface {
         }
     }
 
+    /**
+     * 查询帖子详情
+     */
+    @Override
+    @GetMapping("/post/detail")
+    public Response<QueryPostDetailResponse> queryPostDetail(QueryPostDetailRequest requestDTO) {
+        validateUserId(requestDTO.getUserId());
+        validatePostId(requestDTO.getPostId());
+
+        CommunityBO communityBO = CommunityBO.builder()
+                .userId(requestDTO.getUserId())
+                .postId(requestDTO.getPostId())
+                .build();
+        DiscussPostEntity discussPost = communityService.getDiscussPost(communityBO);
+        return Response.SYSTEM_SUCCESS(buildPostDetail(discussPost));
+    }
+
+    private QueryPostDetailResponse buildPostDetail(DiscussPostEntity discussPost) {
+        return QueryPostDetailResponse.builder()
+                .userId(discussPost.getUserId())
+                .title(discussPost.getTitle())
+                .content(discussPost.getContent())
+                .tag(discussPost.getTag())
+                .likeCount(discussPost.getLikeCount())
+                .commentCount(discussPost.getCommentCount())
+                .favoriteCount(discussPost.getFavoriteCount())
+                .type(discussPost.getType())
+                .status(discussPost.getStatus())
+                .createTime(discussPost.getCreateTime())
+                .updateTime(discussPost.getUpdateTime())
+                .images(discussPost.getImages())
+                .isFavorite(discussPost.getIsFavorite())
+                .isLike(discussPost.getIsLike())
+                .build();
+    }
+
     private boolean imageOrUserIdIsBlank(UploadDiscussPostImageRequest requestDTO) {
         return StringUtils.isEmpty(requestDTO.getImage().getOriginalFilename()) || StringUtils.isEmpty(requestDTO.getUserId());
     }
@@ -284,4 +326,15 @@ public class CommunityController implements CommunityInterface {
         return StringUtils.isEmpty(requestDTO.getImage().getOriginalFilename()) || StringUtils.isEmpty(requestDTO.getUserId());
     }
 
+    private void validateUserId(String userId) {
+        if (StringUtils.isEmpty(userId)) {
+            throw new AppException(400, "用户id不能为空!");
+        }
+    }
+
+    private void validatePostId(String postId) {
+        if (StringUtils.isEmpty(postId)) {
+            throw new AppException(400, "帖子id不能为空!");
+        }
+    }
 }

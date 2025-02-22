@@ -24,6 +24,12 @@ public interface IDiscussPostRepository {
     List<DiscussPostEntity> listDiscussPost(CommunityBO communityBO);
 
     /**
+     * 根据帖子id获取帖子
+     * @return
+     */
+    DiscussPostEntity getDiscussPost(CommunityBO communityBO);
+
+    /**
      * 保存帖子图片记录
      * @param postImage
      */
@@ -55,6 +61,13 @@ public interface IDiscussPostRepository {
      * @return
      */
     String getPostFirstImage(String postId);
+
+    /**
+     * 根据帖子id列举帖子图片
+     * @param postId
+     * @return
+     */
+    List<String> listPostImages(String postId);
 
     /**
      * 根据院校代号查询院校名称

@@ -70,7 +70,7 @@
     </update>
 
     <select id="getDiscussPostByPostId" resultType="com.aseubel.infrastructure.dao.po.DiscussPost">
-        select id, discuss_post_id, user_id, title, content, like_count, favorite_count, comment_count, type, status, create_time, update_time
+        select id, discuss_post_id, user_id, school_code, title, content, tag, like_count, favorite_count, comment_count, type, status, create_time, update_time
         from `discuss_post`
         where discuss_post_id = #{postId} and is_deleted = 0
     </select>
@@ -109,12 +109,19 @@
     </select>
 
     <select id="listDiscussPostByPostIds" resultType="com.aseubel.infrastructure.dao.po.DiscussPost">
-        select discuss_post_id, user_id, school_code, title, content, like_count, favorite_count, comment_count, type, status, create_time, update_time
+        select discuss_post_id, user_id, school_code, title, content, tag, like_count, favorite_count, comment_count, type, status, create_time, update_time
         from `discuss_post`
         where is_deleted = 0 and discuss_post_id in
         <foreach collection="postIds" item="postId" separator="," open="(" close=")">
             #{postId}
         </foreach>
+    </select>
+
+    <select id="listImageUrlByPostId" resultType="java.lang.String">
+        select image_url
+        from `image` a, `post_image` b
+        where a.image_id = b.image_id and b.post_id = #{postId}
+          and a.is_deleted = 0 and b.is_deleted = 0
     </select>
 
 </mapper>

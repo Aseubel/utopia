@@ -11,6 +11,7 @@ import com.aseubel.infrastructure.convertor.DiscussPostConvertor;
 import com.aseubel.infrastructure.dao.*;
 import com.aseubel.infrastructure.dao.po.Image;
 import com.aseubel.infrastructure.redis.IRedisService;
+import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.AliOSSUtil;
 import com.aseubel.types.util.RedisKeyBuilder;
 import org.apache.commons.lang3.StringUtils;
@@ -77,6 +78,21 @@ public class DiscussPostRepository implements IDiscussPostRepository {
     }
 
     @Override
+    public DiscussPostEntity getDiscussPost(CommunityBO communityBO) {
+        String postId = communityBO.getPostId();
+        String userId = communityBO.getUserId();
+
+        try {
+            DiscussPostEntity post = discussPostConvertor.convert(discussPostMapper.getDiscussPostByPostId(postId));
+            post.setIsFavorite(favoriteMapper.getFavoriteStatus(userId, postId).orElse(false));
+            post.setIsLike(likeMapper.getLikeStatus(userId, postId).orElse(false));
+            return post;
+        } catch (NullPointerException e) {
+            throw new AppException("帖子不存在");
+        }
+    }
+
+    @Override
     public void savePostImage(CommunityImage postImage) {
         imageMapper.addImage(communityImageConvertor.convert(postImage));
     }
@@ -101,6 +117,11 @@ public class DiscussPostRepository implements IDiscussPostRepository {
     public String getPostFirstImage(String postId) {
         // 先获取第一张图片的id。再去image表中查询图片的url
         return Optional.ofNullable(discussPostMapper.getPostFirstImage(postId)).map(imageMapper::getImageUrl).orElse(null);
+    }
+
+    @Override
+    public List<String> listPostImages(String postId) {
+        return Optional.ofNullable(discussPostMapper.listImageUrlByPostId(postId)).orElse(Collections.emptyList());
     }
 
     @Override
