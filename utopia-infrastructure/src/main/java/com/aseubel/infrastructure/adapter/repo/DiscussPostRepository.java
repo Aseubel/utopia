@@ -138,22 +138,23 @@ public class DiscussPostRepository implements IDiscussPostRepository {
     public boolean favoritePost(String userId, String postId) {
         // 如果jdk升级到9以上可以使用Optional的ifPresentOrElse方法
         boolean isExist = favoriteMapper.getFavoritePostIdByUserIdAndPostId(userId, postId) != null;
+        // 新状态
         boolean isFavorite = true;
         if (isExist) {
-            isFavorite = favoriteMapper.getFavoriteStatus(userId, postId).orElse(false);
-            favoriteMapper.updateFavoriteStatus(userId, postId, isFavorite ? 0 : 1);
+            isFavorite = !(favoriteMapper.getFavoriteStatus(userId, postId).orElse(false));
+            favoriteMapper.updateFavoriteStatus(userId, postId, isFavorite ? 1 : 0);
         } else {
             favoriteMapper.saveFavoriteRecord(userId, postId);
             discussPostMapper.increaseLikeCount(postId);
         }
 
-        redisService.addToMap(RedisKeyBuilder.FavoriteStatusKey(userId), postId, !isFavorite);
+        redisService.addToMap(RedisKeyBuilder.FavoriteStatusKey(userId), postId, isFavorite);
         if (isFavorite) {
-            redisService.decr(RedisKeyBuilder.discussPostFavoriteCountKey(postId));
-        } else {
             redisService.incr(RedisKeyBuilder.discussPostFavoriteCountKey(postId));
+        } else {
+            redisService.decr(RedisKeyBuilder.discussPostFavoriteCountKey(postId));
         }
-        return !isFavorite; // 返回新状态
+        return isFavorite; // 返回新状态
     }
 
     @Override
@@ -165,21 +166,22 @@ public class DiscussPostRepository implements IDiscussPostRepository {
     public boolean likePost(String userId, String postId, LocalDateTime likeTime) {
         // 如果jdk升级到9以上可以使用Optional的ifPresentOrElse方法
         boolean isExist = likeMapper.getLikePostIdByUserIdAndPostId(userId, postId) != null;
+        // 新状态
         boolean isLike = true;
         if (isExist) {
-            isLike = likeMapper.getLikeStatus(userId, postId).orElse(false);
-            likeMapper.updateLikeStatus(userId, postId, likeTime, isLike ? 0 : 1);
+            isLike = !(likeMapper.getLikeStatus(userId, postId).orElse(false));
+            likeMapper.updateLikeStatus(userId, postId, likeTime, isLike ? 1 : 0);
         } else {
             likeMapper.saveLikeRecord(userId, postId, likeTime);
         }
 
-        redisService.addToMap(RedisKeyBuilder.LikeStatusKey(userId), postId, !isLike);
+        redisService.addToMap(RedisKeyBuilder.LikeStatusKey(userId), postId, isLike);
         if (isLike) {
-            redisService.decr(RedisKeyBuilder.discussPostLikeCountKey(postId));
-        } else {
             redisService.incr(RedisKeyBuilder.discussPostLikeCountKey(postId));
+        } else {
+            redisService.decr(RedisKeyBuilder.discussPostLikeCountKey(postId));
         }
-        return !isLike; // 返回新状态
+        return isLike; // 返回新状态
     }
 
     @Override

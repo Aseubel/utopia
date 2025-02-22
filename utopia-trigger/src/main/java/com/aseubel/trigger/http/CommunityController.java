@@ -163,10 +163,10 @@ public class CommunityController implements CommunityInterface {
     @PutMapping("/post/favorite")
     public Response favoriteDiscussPost(@Valid @RequestBody FavoriteDiscussPostRequest requestDTO) {
         communityService.favoriteDiscussPost(requestDTO.getUserId(), requestDTO.getPostId());
-        eventPublisher.publishEvent(new FavoriteEvent(CommunityBO.builder()
-                .userId(requestDTO.getUserId())
-                .postId(requestDTO.getPostId())
-                .build()));
+//        eventPublisher.publishEvent(new FavoriteEvent(CommunityBO.builder()
+//                .userId(requestDTO.getUserId())
+//                .postId(requestDTO.getPostId())
+//                .build()));
         return Response.SYSTEM_SUCCESS();
     }
 
@@ -182,11 +182,11 @@ public class CommunityController implements CommunityInterface {
                 .eventTime(requestDTO.getLikeTime())
                 .build();
         communityService.likeDiscussPost(communityBO);
-        eventPublisher.publishEvent(new LikeEvent(CommunityBO.builder()
-                .userId(requestDTO.getUserId())
-                .postId(requestDTO.getPostId())
-                .eventTime(requestDTO.getLikeTime())
-                .build()));
+//        eventPublisher.publishEvent(new LikeEvent(CommunityBO.builder()
+//                .userId(requestDTO.getUserId())
+//                .postId(requestDTO.getPostId())
+//                .eventTime(requestDTO.getLikeTime())
+//                .build()));
         return Response.SYSTEM_SUCCESS();
     }
 

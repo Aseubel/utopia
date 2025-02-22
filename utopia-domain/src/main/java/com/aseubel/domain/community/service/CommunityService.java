@@ -149,14 +149,27 @@ public class CommunityService implements ICommunityService{
     public void favoriteDiscussPost(String userId, String postId) {
         log.info("用户收藏帖子服务开始，userId: {}, postId: {}", userId, postId);
         checkUserIdValid(userId);
+        if (discussPostRepository.favoritePost(userId, postId)) {
+            discussPostRepository.increaseFavoriteCount(postId);
+        } else {
+            discussPostRepository.decreaseFavoriteCount(postId);
+        }
         log.info("用户收藏帖子服务开始，userId: {}, postId: {}", userId, postId);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void likeDiscussPost(CommunityBO communityBO) {
-        log.info("用户点赞帖子服务开始，userId: {}, postId: {}", communityBO.getUserId(), communityBO.getPostId());
-        // discussPostRepository.likePost(communityBO.getUserId(), communityBO.getPostId(), communityBO.getEventTime());
-        log.info("用户点赞帖子服务结束，userId: {}, postId: {}", communityBO.getUserId(), communityBO.getPostId());
+        String userId = communityBO.getUserId();
+        String postId = communityBO.getPostId();
+
+        log.info("用户点赞帖子服务开始，userId: {}, postId: {}", userId, postId);
+        if (discussPostRepository.likePost(userId, postId, communityBO.getEventTime())) {
+            discussPostRepository.increaseLikeCount(postId);
+        } else {
+            discussPostRepository.decreaseLikeCount(postId);
+        }
+        log.info("用户点赞帖子服务结束，userId: {}, postId: {}", userId, communityBO.getPostId());
     }
 
     @Override
