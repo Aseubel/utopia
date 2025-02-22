@@ -2,20 +2,22 @@ package com.aseubel.aop;
 
 import com.aseubel.domain.user.adapter.repo.IUserRepository;
 import com.aseubel.infrastructure.redis.IRedisService;
-import com.aseubel.types.util.JwtUtil;
 import com.aseubel.properties.JwtProperties;
 import com.aseubel.types.Response;
 import com.aseubel.types.enums.GlobalServiceStatusCode;
 import com.aseubel.types.exception.AppException;
+import com.aseubel.types.util.JwtUtil;
 import com.aseubel.types.util.RedisKeyBuilder;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -31,13 +33,13 @@ import static com.aseubel.types.common.Constant.USER_ID_KEY;
 
 /**
  * @author Aseubel
- * @description 登录校验切面
- * @date 2025-01-11 21:01
+ * @description 刷新token切面
+ * @date 2025-02-22 11:05
  */
 @Aspect
 @Component
 @Slf4j
-public class LoginVerifyAspect {
+public class RefreshTokenAspect {
 
     @Autowired
     private JwtProperties jwtProperties;
@@ -51,12 +53,12 @@ public class LoginVerifyAspect {
     /**
      * 拦截入口
      */
-    @Pointcut("@annotation(com.aseubel.types.constraint.Login)")
+    @Pointcut("@annotation(com.aseubel.types.constraint.Refresh)")
     public void pointCut(){
     }
 
     @Around("pointCut()")
-    public Object checkJwtToken(ProceedingJoinPoint point) throws Throwable {
+    public Object refreshToken(ProceedingJoinPoint point) throws Throwable {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         HttpServletResponse response = attributes.getResponse();
@@ -66,39 +68,33 @@ public class LoginVerifyAspect {
         // 获取用户ID
         String userId = (String) arg.getClass().getMethod("getUserId").invoke(arg);
         String token = request.getHeader(jwtProperties.getTokenName());
+        // token为空，用户未登录，直接返回不需要刷新token
+        if(StringUtils.isEmpty(token)) {
+            return point.proceed();
+        }
 
         try {
-            // 校验redis中是否有token，没有就是过期
-            log.info("redis校验accessToken，id:{}，token:{}", userId, token);
+            log.info("RefreshTokenAspect：redis校验accessToken，id:{}，token:{}", userId, token);
             String accessToken = redisService.getFromMap(
                     RedisKeyBuilder.UserTokenKey(userId), ACCESS_TOKEN);
-            // token为空过期
-            if (accessToken == null) {
-                Optional.ofNullable(response).ifPresent(r -> r.setStatus(401));
-                return Response.CUSTOMIZE_ERROR(GlobalServiceStatusCode.USER_TOKEN_EXPIRED);
-            }
-            // 校验token是否正确
-            if (!accessToken.equals(token)) {
-                Optional.ofNullable(response).ifPresent(r -> r.setStatus(401));
-                return Response.CUSTOMIZE_ERROR(GlobalServiceStatusCode.USER_TOKEN_ERROR);
+            // token为空或与redis中不匹配
+            if (accessToken == null || !accessToken.equals(token)) {
+                return point.proceed();
             }
         } catch (Exception e) {
-            log.error("redis校验accessToken失败！id:{}，token:{}", userId, token);
+            log.warn("RefreshTokenAspect：redis校验accessToken失败！id:{}，token:{}", userId, token);
             // redis宕机，解码校验令牌
             try {
                 Claims claims = JwtUtil.parseJWT(jwtProperties.getSecretKey(), token);
                 // 校验用户id
                 if (!claims.get(USER_ID_KEY).equals(userId)) {
-                    throw new AppException("用户id与accessToken不匹配！");
+                    return point.proceed();
                 }
-                log.info("用户进行jwt校验通过，id:{}，token:{}", userId, token);
+                log.info("RefreshTokenAspect：用户进行jwt校验通过，id:{}，token:{}", userId, token);
             } catch (Exception ex) {
-                // 不通过，响应401状态码
-                log.error("用户进行jwt校验失败！id:{}，token:{}", userId, token);;
-                if (response != null) {
-                    response.setStatus(401);
-                }
-                return Response.CUSTOMIZE_ERROR(GlobalServiceStatusCode.USER_TOKEN_ERROR);
+                // 不通过，响应 401 状态码
+                log.warn("RefreshTokenAspect：用户进行jwt校验失败！id:{}，token:{}", userId, token);;
+                return point.proceed();
             }
         }
         String newToken = userRepository.generateUserToken(
@@ -108,7 +104,7 @@ public class LoginVerifyAspect {
         // 设置token到响应头
         Optional.ofNullable(response)
                 .ifPresent(r -> r.setHeader(jwtProperties.getTokenName(), newToken));
-        log.info("用户进行登录校验通过，id:{}，token:{}", userId, newToken);
+        log.info("RefreshTokenAspect：用户进行登录校验通过，id:{}，token:{}", userId, newToken);
         return point.proceed();
     }
 
