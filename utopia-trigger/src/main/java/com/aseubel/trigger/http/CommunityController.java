@@ -338,6 +338,41 @@ public class CommunityController implements CommunityInterface {
     }
 
     /**
+     * 查询评论子评论列表
+     */
+    @Override
+    @GetMapping("/comment/sub")
+    public Response<List<QuerySubCommentResponse>> querySubComment(QuerySubCommentRequest requestDTO) {
+        validateCommentId(requestDTO.getRootId());
+
+        CommunityBO communityBO = CommunityBO.builder()
+                .userId(requestDTO.getUserId())
+                .rootId(requestDTO.getRootId())
+                .commentId(requestDTO.getCommentId())
+                .limit(requestDTO.getLimit())
+                .sortType(requestDTO.getSortType())
+                .build();
+        List<CommentEntity> comments = communityService.listSubComment(communityBO);
+
+        List<QuerySubCommentResponse> responseDTOs = new ArrayList<>();
+        for (CommentEntity comment : comments) {
+            responseDTOs.add(QuerySubCommentResponse.builder()
+                    .commentId(comment.getCommentId())
+                    .userId(comment.getUserId())
+                    .userName(comment.getUserName())
+                    .userAvatar(comment.getUserAvatar())
+                    .content(comment.getContent())
+                    .likeCount(comment.getLikeCount())
+                    .replyCount(comment.getReplyCount())
+                    .commentTime(comment.getCommentTime())
+                    .updateTime(comment.getUpdateTime())
+                    .isLike(comment.getIsLike())
+                    .build());
+        }
+        return Response.SYSTEM_SUCCESS(responseDTOs);
+    }
+
+    /**
      * 点赞评论
      */
     @Override
@@ -393,6 +428,12 @@ public class CommunityController implements CommunityInterface {
     private void validatePostId(String postId) {
         if (StringUtils.isEmpty(postId)) {
             throw new AppException(400, "帖子id不能为空!");
+        }
+    }
+
+    private void validateCommentId(String postId) {
+        if (StringUtils.isEmpty(postId)) {
+            throw new AppException(400, "评论id不能为空!");
         }
     }
 }

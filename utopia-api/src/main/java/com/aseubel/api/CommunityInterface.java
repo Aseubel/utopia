@@ -87,6 +87,13 @@ public interface CommunityInterface {
     Response<List<QueryPostCommentResponse>> queryPostComment(QueryPostCommentRequest requestDTO);
 
     /**
+     * 查询子评论列表
+     * @param requestDTO
+     * @return
+     */
+    Response<List<QuerySubCommentResponse>> querySubComment(QuerySubCommentRequest requestDTO);
+
+    /**
      * 点赞评论
      * @param requestDTO
      * @return

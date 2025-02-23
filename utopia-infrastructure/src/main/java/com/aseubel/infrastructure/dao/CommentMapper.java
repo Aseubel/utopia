@@ -79,6 +79,18 @@ public interface CommentMapper {
     List<Comment> listCommentByPostIdAhead(String postId, Integer limit, Integer sortType);
 
     /**
+     * 根据根评论id查询评论列表
+     * @return
+     */
+    List<Comment> listSubCommentByRootId(String rootId, String commentId, Integer limit, Integer sortType);
+
+    /**
+     * 根据根评论id查询评论列表
+     * @return
+     */
+    List<Comment> listSubCommentByRootIdAhead(String rootId, Integer limit, Integer sortType);
+
+    /**
      * 根据根/顶级评论id查询子评论列表
      * @param rootId
      * @return
@@ -124,4 +136,10 @@ public interface CommentMapper {
      * @param commentId
      */
     void decreaseLikeCount(String commentId);
+
+    /**
+     * 增加评论数
+     * @param comment
+     */
+    void increaseCommentCount(Comment comment);
 }

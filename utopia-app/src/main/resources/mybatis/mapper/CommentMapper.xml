@@ -43,6 +43,12 @@
         where comment_id = #{commentId} and is_deleted = 0
     </update>
 
+    <update id="increaseCommentCount">
+        update `comment`
+        set reply_count = reply_count + 1
+        where comment_id = root_id  and comment_id = #{replyTo} and is_deleted = 0
+    </update>
+
     <select id="getCommentByCommentId" resultType="com.aseubel.infrastructure.dao.po.Comment">
         select id, root_id, reply_to, comment_id, post_id, user_id, content, like_count, unlike_count, reply_count, comment_time, update_time
         from `comment`
@@ -75,14 +81,14 @@
         select id, root_id, reply_to, comment_id, post_id, user_id, content, like_count, unlike_count, reply_count, comment_time, update_time
         from `comment`
         where id > (select id from `comment` where comment_id = #{commentId} and is_deleted = 0)
-          and is_deleted = 0 and root_id = #{rootId}
+          and root_id = #{rootId} and root_id != comment_id and is_deleted = 0
         order by id
     </select>
 
     <select id="listTop3CommentsByRootId" resultType="com.aseubel.infrastructure.dao.po.Comment">
         select id, root_id, reply_to, comment_id, post_id, user_id, content, like_count, unlike_count, comment_time, update_time
         from `comment`
-        where root_id = #{rootId} and is_deleted = 0
+        where root_id = #{rootId} and root_id != comment_id and is_deleted = 0
         order by like_count DESC, id
         limit 3
     </select>
@@ -126,6 +132,32 @@
         from `image` a, `comment_image` b
         where a.image_id = b.image_id and b.comment_id = #{commentId}
           and a.is_deleted = 0 and b.is_deleted = 0
+    </select>
+
+    <select id="listSubCommentByRootId" resultType="com.aseubel.infrastructure.dao.po.Comment">
+        select id, root_id, reply_to, comment_id, post_id, user_id, content, like_count, unlike_count, reply_count, comment_time, update_time
+        from `comment`
+        where
+        id > (select id from `comment` where comment_id = #{commentId} and is_deleted = 0)
+        and root_id = #{rootId}
+        and root_id != comment_id
+        and is_deleted = 0
+        order by
+        <if test="sortType == 0 or sortType == null">id</if>
+        <if test="sortType == 1">id DESC</if>
+        <if test="sortType == 2">like_count DESC, id</if>
+        limit #{limit}
+    </select>
+
+    <select id="listSubCommentByRootIdAhead" resultType="com.aseubel.infrastructure.dao.po.Comment">
+        select id, root_id, reply_to, comment_id, post_id, user_id, content, like_count, unlike_count, reply_count, comment_time, update_time
+        from `comment`
+        where root_id = #{rootId} and root_id != comment_id and is_deleted = 0
+        order by
+        <if test="sortType == 0 or sortType == null">id</if>
+        <if test="sortType == 1">id DESC</if>
+        <if test="sortType == 2">like_count DESC, id</if>
+        limit #{limit}
     </select>
 
 </mapper>

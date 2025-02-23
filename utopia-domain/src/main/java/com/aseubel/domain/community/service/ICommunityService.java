@@ -96,6 +96,13 @@ public interface ICommunityService {
     List<CommentEntity> listPostComment(CommunityBO communityBO);
 
     /**
+     * 获取评论的子评论列表
+     * @param communityBO
+     * @return
+     */
+    List<CommentEntity> listSubComment(CommunityBO communityBO);
+
+    /**
      * 点赞评论
      * @param communityBO
      */

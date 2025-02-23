@@ -87,4 +87,11 @@ public interface ICommentRepository {
      * @param commentId
      */
     void decreaseLikeCount(String commentId);
+
+    /**
+     * 获取评论的子评论列表
+     * @param communityBO
+     * @return
+     */
+    List<CommentEntity> listSubComment(CommunityBO communityBO);
 }

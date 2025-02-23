@@ -66,7 +66,7 @@ public class CommentRepository implements ICommentRepository {
                 .map(p -> p.stream()
                         .map(commentConvertor::convert)
                         .peek(d -> d.setReplyList(
-                                commentConvertor.convert(commentMapper.listCommentsByRootId(d.getCommentId()), commentConvertor::convert)))
+                                commentConvertor.convert(commentMapper.listTop3CommentsByRootId(d.getCommentId()), commentConvertor::convert)))
                         .peek(d -> d.setIsLike(likeMapper.getLikeStatus(communityBO.getUserId(), d.getCommentId()).orElse(false)))
                         .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
@@ -85,6 +85,7 @@ public class CommentRepository implements ICommentRepository {
     @Override
     public void saveReplyComment(CommentEntity commentEntity) {
         commentMapper.addChildComment(commentConvertor.convert(commentEntity));
+        commentMapper.increaseCommentCount(commentConvertor.convert(commentEntity));
     }
 
     @Override
@@ -133,6 +134,23 @@ public class CommentRepository implements ICommentRepository {
     @Override
     public void decreaseLikeCount(String commentId) {
         commentMapper.decreaseLikeCount(commentId);
+    }
+
+    @Override
+    public List<CommentEntity> listSubComment(CommunityBO communityBO) {
+        String rootId = communityBO.getRootId();
+        String commentId = communityBO.getCommentId();
+        Integer limit = communityBO.getLimit();
+        Integer sortType = communityBO.getSortType();
+
+        return Optional.ofNullable(StringUtils.isEmpty(commentId)
+                        ? commentMapper.listSubCommentByRootIdAhead(rootId, limit, sortType)
+                        : commentMapper.listSubCommentByRootId(rootId, commentId, limit, sortType))
+                .map(p -> p.stream()
+                        .map(commentConvertor::convert)
+                        .peek(d -> d.setIsLike(likeMapper.getLikeStatus(communityBO.getUserId(), d.getCommentId()).orElse(false)))
+                        .collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
     }
 
 }

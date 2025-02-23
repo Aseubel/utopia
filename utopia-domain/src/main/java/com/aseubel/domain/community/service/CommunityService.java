@@ -24,8 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.aseubel.types.common.Constant.PER_PAGE_COMMENT_SIZE;
-import static com.aseubel.types.common.Constant.PER_PAGE_DISCUSS_POST_SIZE;
+import static com.aseubel.types.common.Constant.*;
 
 /**
  * @author Aseubel
@@ -258,13 +257,13 @@ public class CommunityService implements ICommunityService{
         communityBO.setLimit(limit == null ? PER_PAGE_COMMENT_SIZE : limit);
         // 查询评论列表
         List<CommentEntity> comments = commentRepository.listPostComment(communityBO);
-        // 提取帖子的用户id
+        // 提取评论的用户id
         List<String> userIds = Optional.ofNullable(comments)
                 .map(d -> d.stream()
                         .map(CommentEntity::getUserId)
                         .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
-        // 获取发帖人的用户名和头像，repo层已经保证了顺序
+        // 获取评论人的用户名和头像，repo层已经保证了顺序
         List<UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyList() : communityUserRepository.queryUserBaseInfo(userIds);
         if (!CollectionUtil.isEmpty(comments) && !CollectionUtil.isEmpty(users)) {
             for (int i = 0;i < comments.size();i++) {
@@ -272,11 +271,39 @@ public class CommunityService implements ICommunityService{
                 comments.get(i).setUserAvatar(users.get(i).getAvatar());
             }
         }
-        // 获取帖子的第一张图片
+        // 获取评论的图片
         if (!CollectionUtil.isEmpty(comments)) {
             comments.forEach(d -> d.setImages(commentRepository.listCommentImages(d.getCommentId())));
         }
         log.info("获取帖子评论列表服务结束执行, userId:{}, postId:{}", userId, postId);
+        return comments;
+    }
+
+    @Override
+    public List<CommentEntity> listSubComment(CommunityBO communityBO) {
+        String userId = communityBO.getUserId();
+        String commentId = communityBO.getCommentId();
+        Integer limit = communityBO.getLimit();
+        log.info("获取子评论服务开始执行, userId:{}, commentId:{}", userId, commentId);
+        // 限制每页显示的帖子数量
+        communityBO.setLimit(limit == null ? PER_PAGE_SUB_COMMENT_SIZE : limit);
+        // 查询评论列表
+        List<CommentEntity> comments = commentRepository.listSubComment(communityBO);
+        // 提取评论的用户id
+        List<String> userIds = Optional.ofNullable(comments)
+                .map(d -> d.stream()
+                        .map(CommentEntity::getUserId)
+                        .collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
+        // 获取评论人的用户名和头像，repo层已经保证了顺序
+        List<UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyList() : communityUserRepository.queryUserBaseInfo(userIds);
+        if (!CollectionUtil.isEmpty(comments) && !CollectionUtil.isEmpty(users)) {
+            for (int i = 0;i < comments.size();i++) {
+                comments.get(i).setUserName(users.get(i).getUserName());
+                comments.get(i).setUserAvatar(users.get(i).getAvatar());
+            }
+        }
+        log.info("获取子评论服务结束执行, userId:{}, commentId:{}", userId, commentId);
         return comments;
     }
 
