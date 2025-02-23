@@ -2,7 +2,8 @@ package com.aseubel.trigger.http;
 
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.api.CommunityInterface;
-import com.aseubel.api.dto.community.*;
+import com.aseubel.api.dto.community.comment.*;
+import com.aseubel.api.dto.community.post.*;
 import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.community.model.entity.CommunityImage;
@@ -334,6 +335,26 @@ public class CommunityController implements CommunityInterface {
                     .build());
         }
         return Response.SYSTEM_SUCCESS(responseDTOs);
+    }
+
+    /**
+     * 点赞评论
+     */
+    @Override
+    @PutMapping("/comment/like")
+    public Response likeComment(@Valid @RequestBody LikeCommentRequest requestDTO) {
+        CommunityBO communityBO = CommunityBO.builder()
+                .userId(requestDTO.getUserId())
+                .commentId(requestDTO.getCommentId())
+                .eventTime(requestDTO.getLikeTime())
+                .build();
+        communityService.likeComment(communityBO);
+//        eventPublisher.publishEvent(new LikeEvent(CommunityBO.builder()
+//                .userId(requestDTO.getUserId())
+//                .postId(requestDTO.getPostId())
+//                .eventTime(requestDTO.getLikeTime())
+//                .build()));
+        return Response.SYSTEM_SUCCESS();
     }
 
     private QueryPostDetailResponse buildPostDetail(DiscussPostEntity discussPost) {

@@ -33,12 +33,22 @@ public class RedisKeyBuilder {
 
     /**
      * 构造帖子的点赞数量的redis key
-     * utopia:discuss:post:lc:{postId}
+     * utopia:community:post:lc:{postId}
      * @param postId 帖子id
      * @return redis key
      */
     public static String discussPostLikeCountKey(String postId) {
         return PREFIX + SPLIT + DISCUSS_POST + SPLIT + LIKE_COUNT + SPLIT + postId;
+    }
+
+    /**
+     * 构造评论的点赞数量的redis key
+     * utopia:community:comment:lc:{commentId}
+     * @param commentId 评论id
+     * @return redis key
+     */
+    public static String commentLikeCountKey(String commentId) {
+        return PREFIX + SPLIT + DISCUSS_COMMENT + SPLIT + LIKE_COUNT + SPLIT + commentId;
     }
 
     /**

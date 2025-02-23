@@ -1,6 +1,7 @@
 package com.aseubel.api;
 
-import com.aseubel.api.dto.community.*;
+import com.aseubel.api.dto.community.comment.*;
+import com.aseubel.api.dto.community.post.*;
 import com.aseubel.types.Response;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -84,4 +85,11 @@ public interface CommunityInterface {
      * @return
      */
     Response<List<QueryPostCommentResponse>> queryPostComment(QueryPostCommentRequest requestDTO);
+
+    /**
+     * 点赞评论
+     * @param requestDTO
+     * @return
+     */
+    Response likeComment(@Valid @RequestBody LikeCommentRequest requestDTO);
 }

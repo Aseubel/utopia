@@ -9,11 +9,13 @@ import com.aseubel.infrastructure.convertor.CommunityImageConvertor;
 import com.aseubel.infrastructure.dao.CommentMapper;
 import com.aseubel.infrastructure.dao.ImageMapper;
 import com.aseubel.infrastructure.dao.LikeMapper;
-import com.aseubel.infrastructure.dao.po.Comment;
+import com.aseubel.infrastructure.redis.IRedisService;
+import com.aseubel.types.util.RedisKeyBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +43,9 @@ public class CommentRepository implements ICommentRepository {
 
     @Resource
     private CommunityImageConvertor communityImageConvertor;
+
+    @Resource
+    private IRedisService redisService;
 
     @Override
     public List<CommentEntity> listPostMainComment(String postId) {
@@ -96,6 +101,38 @@ public class CommentRepository implements ICommentRepository {
     @Override
     public void saveCommentImage(CommunityImage postImage) {
         imageMapper.addImage(communityImageConvertor.convert(postImage));
+    }
+
+    @Override
+    public boolean likeComment(String userId, String commentId, LocalDateTime likeTime) {
+        // 如果jdk升级到9以上可以使用Optional的ifPresentOrElse方法
+        boolean isExist = likeMapper.getLikePostIdByUserIdAndToId(userId, commentId) != null;
+        // 新状态
+        boolean isLike = true;
+        if (isExist) {
+            isLike = !(likeMapper.getLikeStatus(userId, commentId).orElse(false));
+            likeMapper.updateLikeStatus(userId, commentId, likeTime, isLike ? 1 : 0);
+        } else {
+            likeMapper.saveLikeRecord(userId, commentId, likeTime);
+        }
+
+        redisService.addToMap(RedisKeyBuilder.LikeStatusKey(userId), commentId, isLike);
+        if (isLike) {
+            redisService.incr(RedisKeyBuilder.commentLikeCountKey(commentId));
+        } else {
+            redisService.decr(RedisKeyBuilder.commentLikeCountKey(commentId));
+        }
+        return isLike; // 返回新状态
+    }
+
+    @Override
+    public void increaseLikeCount(String commentId) {
+        commentMapper.increaseLikeCount(commentId);
+    }
+
+    @Override
+    public void decreaseLikeCount(String commentId) {
+        commentMapper.decreaseLikeCount(commentId);
     }
 
 }

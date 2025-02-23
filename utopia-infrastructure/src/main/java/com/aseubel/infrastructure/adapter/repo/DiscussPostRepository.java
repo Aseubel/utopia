@@ -186,7 +186,7 @@ public class DiscussPostRepository implements IDiscussPostRepository {
     @Override
     public boolean likePost(String userId, String postId, LocalDateTime likeTime) {
         // 如果jdk升级到9以上可以使用Optional的ifPresentOrElse方法
-        boolean isExist = likeMapper.getLikePostIdByUserIdAndPostId(userId, postId) != null;
+        boolean isExist = likeMapper.getLikePostIdByUserIdAndToId(userId, postId) != null;
         // 新状态
         boolean isLike = true;
         if (isExist) {

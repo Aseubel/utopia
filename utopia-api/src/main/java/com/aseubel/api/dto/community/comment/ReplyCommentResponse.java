@@ -1,14 +1,13 @@
-package com.aseubel.api.dto.community;
+package com.aseubel.api.dto.community.comment;
 
 import com.aseubel.types.annotation.FieldDesc;
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author Aseubel
+ * @description 规定回复评论的评论不带图片
  * @date 2025-02-16 13:52
  */
 @Getter
@@ -16,9 +15,10 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentPostResponse implements Serializable {
+public class ReplyCommentResponse implements Serializable {
 
     @FieldDesc(name = "评论id")
     private String commentId;
+
 
 }

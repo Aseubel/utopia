@@ -94,4 +94,10 @@ public interface ICommunityService {
      * @return
      */
     List<CommentEntity> listPostComment(CommunityBO communityBO);
+
+    /**
+     * 点赞评论
+     * @param communityBO
+     */
+    void likeComment(CommunityBO communityBO);
 }

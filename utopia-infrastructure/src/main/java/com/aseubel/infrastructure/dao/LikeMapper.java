@@ -24,7 +24,7 @@ public interface LikeMapper {
      * @return
      */
     @Select("SELECT id FROM `like` WHERE user_id = #{userId} AND to_id = #{toId} AND is_deleted = 0")
-    Integer getLikePostIdByUserIdAndPostId(String userId, String toId);
+    Integer getLikePostIdByUserIdAndToId(String userId, String toId);
 
     /**
      * 判断用户是否点赞了某个帖子/评论

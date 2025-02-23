@@ -1,4 +1,4 @@
-package com.aseubel.api.dto.community;
+package com.aseubel.api.dto.community.comment;
 
 import com.aseubel.types.annotation.FieldDesc;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -14,23 +14,22 @@ import java.time.LocalDateTime;
 
 /**
  * @author Aseubel
- * @description 点赞请求参数
- * @date 2025-02-12 23:35
+ * @date 2025-02-23 20:17
  */
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LikeDiscussPostRequest implements Serializable {
+public class LikeCommentRequest implements Serializable {
 
     @NotNull(message = "用户id不能为空")
     @FieldDesc(name = "用户id")
     private String userId;
 
-    @NotNull(message = "帖子id不能为空")
-    @FieldDesc(name = "帖子id")
-    private String postId;
+    @NotNull(message = "评论id不能为空")
+    @FieldDesc(name = "评论id")
+    private String commentId;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -38,5 +37,4 @@ public class LikeDiscussPostRequest implements Serializable {
     @NotNull(message = "点赞时间不能为空")
     @FieldDesc(name = "点赞时间")
     private LocalDateTime likeTime;
-
 }

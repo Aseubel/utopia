@@ -4,6 +4,7 @@ import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -65,4 +66,25 @@ public interface ICommentRepository {
      * @param postImage
      */
     void saveCommentImage(CommunityImage postImage);
+
+    /**
+     * 点赞评论
+     * @param userId
+     * @param commentId
+     * @param likeTime
+     * @return
+     */
+    boolean likeComment(String userId, String commentId, LocalDateTime likeTime);
+
+    /**
+     * 增加评论点赞数量
+     * @param commentId
+     */
+    void increaseLikeCount(String commentId);
+
+    /**
+     * 减少评论点赞数量
+     * @param commentId
+     */
+    void decreaseLikeCount(String commentId);
 }

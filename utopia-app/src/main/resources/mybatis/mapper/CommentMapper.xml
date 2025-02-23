@@ -31,6 +31,18 @@
         where comment_id = #{commentId} and is_deleted = 0
     </update>
 
+    <update id="increaseLikeCount">
+        update `comment`
+        set like_count = like_count + 1
+        where comment_id = #{commentId} and is_deleted = 0
+    </update>
+
+    <update id="decreaseLikeCount">
+        update `comment`
+        set like_count = like_count + 1
+        where comment_id = #{commentId} and is_deleted = 0
+    </update>
+
     <select id="getCommentByCommentId" resultType="com.aseubel.infrastructure.dao.po.Comment">
         select id, root_id, reply_to, comment_id, post_id, user_id, content, like_count, unlike_count, reply_count, comment_time, update_time
         from `comment`

@@ -112,4 +112,16 @@ public interface CommentMapper {
      * @return
      */
     List<String> listImageUrlByCommentId(String commentId);
+
+    /**
+     * 增加评论点赞数
+     * @param commentId
+     */
+    void increaseLikeCount(String commentId);
+
+    /**
+     * 减少评论点赞数
+     * @param commentId
+     */
+    void decreaseLikeCount(String commentId);
 }

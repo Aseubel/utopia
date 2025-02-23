@@ -1,4 +1,4 @@
-package com.aseubel.api.dto.community;
+package com.aseubel.api.dto.community.comment;
 
 import com.aseubel.types.annotation.FieldDesc;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -6,25 +6,31 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Aseubel
- * @description 查询首页帖子列表返回DTO
- * @date 2025-01-23 19:18
+ * @description 查询帖子评论返回结果，单个response相当于一个commentEntity
+ * @date 2025-02-23 11:01
  */
-@Getter
-@Setter
-@Builder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class QueryIndexDiscussPostResponseDTO implements Serializable {
+@Builder
+public class QueryPostCommentResponse implements Serializable {
+
+    @FieldDesc(name = "评论id")
+    private String commentId;
 
     @FieldDesc(name = "帖子id")
-    private String discussPostId;
+    private String postId;
 
     @FieldDesc(name = "用户id")
     private String userId;
@@ -35,50 +41,32 @@ public class QueryIndexDiscussPostResponseDTO implements Serializable {
     @FieldDesc(name = "用户头像")
     private String userAvatar;
 
-    @FieldDesc(name = "标题")
-    private String title;
-
-    @FieldDesc(name = "内容")
+    @FieldDesc(name = "评论内容")
     private String content;
-
-    @FieldDesc(name = "标签")
-    private String tag;
 
     @FieldDesc(name = "点赞数")
     private Integer likeCount;
 
-    @FieldDesc(name = "评论数")
-    private Integer commentCount;
-
-    @FieldDesc(name = "收藏数")
-    private Integer favoriteCount;
-
-    @FieldDesc(name = "0-普通;1-置顶")
-    private Integer type;
-
-    @FieldDesc(name = "0-普通;1-封禁")
-    private Integer status;
-
-    @FieldDesc(name = "主要评论列表")
-    private Object comments;
+    @FieldDesc(name = "回复数")
+    private Integer replyCount;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @FieldDesc(name = "创建时间")
-    private LocalDateTime createTime;
+    @FieldDesc(name = "评论时间")
+    private LocalDateTime commentTime;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @FieldDesc(name = "更新时间")
+    @FieldDesc(name = "评论状态修改时间")
     private LocalDateTime updateTime;
 
-    @FieldDesc(name = "图片url，因为展示在首页，所以只展示第一张图片")
-    private String image;
+    @FieldDesc(name = "图片id列表")
+    private List<String> images;
 
-    @FieldDesc(name = "是否收藏")
-    private Boolean isFavorite;
+    @FieldDesc(name = "评论的回复列表，List<CommentEntity>")
+    private Object replyList;
 
     @FieldDesc(name = "是否点赞")
     private Boolean isLike;

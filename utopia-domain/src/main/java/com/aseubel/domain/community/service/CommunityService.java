@@ -280,6 +280,20 @@ public class CommunityService implements ICommunityService{
         return comments;
     }
 
+    @Override
+    public void likeComment(CommunityBO communityBO) {
+        String userId = communityBO.getUserId();
+        String commentId = communityBO.getCommentId();
+
+        log.info("用户点赞评论服务开始，userId: {}, commentId: {}", userId, commentId);
+        if (commentRepository.likeComment(userId, commentId, communityBO.getEventTime())) {
+            commentRepository.increaseLikeCount(commentId);
+        } else {
+            commentRepository.decreaseLikeCount(commentId);
+        }
+        log.info("用户点赞评论服务结束，userId: {}, commentId: {}", userId, commentId);
+    }
+
     private void checkSchoolCodeValid(String schoolCode) {
         if (StringUtils.isEmpty(schoolCode) || !discussPostRepository.isSchoolCodeValid(schoolCode)) {
             log.error("学校代号无效！, user={}", schoolCode);

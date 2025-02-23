@@ -1,4 +1,4 @@
-package com.aseubel.api.dto.community;
+package com.aseubel.api.dto.community.post;
 
 import com.aseubel.types.annotation.FieldDesc;
 import lombok.*;
