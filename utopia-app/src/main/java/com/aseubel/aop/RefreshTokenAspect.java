@@ -69,7 +69,7 @@ public class RefreshTokenAspect {
         String userId = (String) arg.getClass().getMethod("getUserId").invoke(arg);
         String token = request.getHeader(jwtProperties.getTokenName());
         // token为空，用户未登录，直接返回不需要刷新token
-        if(StringUtils.isEmpty(token)) {
+        if(!isLogin(userId, token)) {
             return point.proceed();
         }
 
@@ -106,6 +106,10 @@ public class RefreshTokenAspect {
                 .ifPresent(r -> r.setHeader(jwtProperties.getTokenName(), newToken));
         log.info("RefreshTokenAspect：用户进行登录校验通过，id:{}，token:{}", userId, newToken);
         return point.proceed();
+    }
+
+    private boolean isLogin(String userId, String token) {
+        return !(StringUtils.isEmpty(token) || StringUtils.isEmpty(userId));
     }
 
 }

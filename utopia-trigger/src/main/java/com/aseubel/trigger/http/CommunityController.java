@@ -11,8 +11,6 @@ import com.aseubel.domain.community.service.ICommunityService;
 import com.aseubel.types.Response;
 import com.aseubel.types.event.CommentPostEvent;
 import com.aseubel.types.event.CustomEvent;
-import com.aseubel.types.event.FavoriteEvent;
-import com.aseubel.types.event.LikeEvent;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.CustomMultipartFile;
 import lombok.RequiredArgsConstructor;
@@ -55,8 +53,6 @@ public class CommunityController implements CommunityInterface {
     @Override
     @GetMapping("/post")
     public Response<List<QueryIndexDiscussPostResponseDTO>> queryIndexDiscussPost(@Valid QueryIndexDiscussPostRequestDTO requestDTO) {
-        validateUserId(requestDTO.getUserId());
-
         CommunityBO communityBO = CommunityBO.builder()
                 .userId(requestDTO.getUserId())
                 .postId(requestDTO.getPostId())
@@ -64,7 +60,9 @@ public class CommunityController implements CommunityInterface {
                 .schoolCode(requestDTO.getSchoolCode())
                 .tag(requestDTO.getTag())
                 .build();
+
         List<DiscussPostEntity> discussPosts = communityService.listDiscussPost(communityBO);
+
         List<QueryIndexDiscussPostResponseDTO> responseDTOs = new ArrayList<>();
         for (DiscussPostEntity discussPost : discussPosts) {
             responseDTOs.add(QueryIndexDiscussPostResponseDTO.builder()
@@ -288,7 +286,6 @@ public class CommunityController implements CommunityInterface {
     @Override
     @GetMapping("/post/detail")
     public Response<QueryPostDetailResponse> queryPostDetail(QueryPostDetailRequest requestDTO) {
-        validateUserId(requestDTO.getUserId());
         validatePostId(requestDTO.getPostId());
 
         CommunityBO communityBO = CommunityBO.builder()
@@ -297,6 +294,46 @@ public class CommunityController implements CommunityInterface {
                 .build();
         DiscussPostEntity discussPost = communityService.getDiscussPost(communityBO);
         return Response.SYSTEM_SUCCESS(buildPostDetail(discussPost));
+    }
+
+    /**
+     * 查询帖子评论列表
+     * @param requestDTO
+     * @return
+     */
+    @Override
+    @GetMapping("/post/comment")
+    public Response<List<QueryPostCommentResponse>> queryPostComment(QueryPostCommentRequest requestDTO) {
+        validatePostId(requestDTO.getPostId());
+
+        CommunityBO communityBO = CommunityBO.builder()
+                .userId(requestDTO.getUserId())
+                .postId(requestDTO.getPostId())
+                .commentId(requestDTO.getCommentId())
+                .limit(requestDTO.getLimit())
+                .sortType(requestDTO.getSortType())
+                .build();
+        List<CommentEntity> comments = communityService.listPostComment(communityBO);
+
+        List<QueryPostCommentResponse> responseDTOs = new ArrayList<>();
+        for (CommentEntity comment : comments) {
+            responseDTOs.add(QueryPostCommentResponse.builder()
+                    .commentId(comment.getCommentId())
+                    .postId(comment.getPostId())
+                    .userId(comment.getUserId())
+                    .userName(comment.getUserName())
+                    .userAvatar(comment.getUserAvatar())
+                    .content(comment.getContent())
+                    .likeCount(comment.getLikeCount())
+                    .replyCount(comment.getReplyCount())
+                    .commentTime(comment.getCommentTime())
+                    .updateTime(comment.getUpdateTime())
+                    .images(comment.getImages())
+                    .replyList(comment.getReplyList())
+                    .isLike(comment.getIsLike())
+                    .build());
+        }
+        return Response.SYSTEM_SUCCESS(responseDTOs);
     }
 
     private QueryPostDetailResponse buildPostDetail(DiscussPostEntity discussPost) {

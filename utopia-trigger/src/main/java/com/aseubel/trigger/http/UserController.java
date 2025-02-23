@@ -5,6 +5,7 @@ import com.aseubel.api.UserInterface;
 import com.aseubel.api.dto.user.UploadAvatarRequestDTO;
 import com.aseubel.api.dto.user.UploadAvatarResponseDTO;
 import com.aseubel.api.dto.user.*;
+import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.community.service.ICommunityService;
 import com.aseubel.domain.user.model.bo.UserBO;
@@ -156,15 +157,15 @@ public class UserController implements UserInterface {
 
             String avatarUrl = userService.uploadAvatar(
                     AvatarEntity.builder()
-                    .avatar(avatar)
-                    .userId(uploadAvatarRequestDTO.getUserId())
-                    .build());
+                            .avatar(avatar)
+                            .userId(uploadAvatarRequestDTO.getUserId())
+                            .build());
 
             return Response.SYSTEM_SUCCESS(UploadAvatarResponseDTO.builder().avatarUrl(avatarUrl).build());
         } catch (ClientException e) {
-            log.error("上传头像时oss服务异常，{}, code:{}, message:{}",OSS_UPLOAD_ERROR.getMessage(), e.getErrCode(), e.getErrMsg(), e);
+            log.error("上传头像时oss服务异常，{}, code:{}, message:{}", OSS_UPLOAD_ERROR.getMessage(), e.getErrCode(), e.getErrMsg(), e);
             throw new AppException(OSS_UPLOAD_ERROR, e);
-        } catch (AppException e ) {
+        } catch (AppException e) {
             throw e;
         } catch (Exception e) {
             log.error("上传头像时出现未知异常", e);
@@ -178,8 +179,12 @@ public class UserController implements UserInterface {
     @Override
     @GetMapping("/favorite/post")
     public Response<List<QueryFavoriteDiscussPostResponseDTO>> queryFavoriteDiscussPost(@Valid @RequestBody QueryFavoriteDiscussPostRequestDTO requestDTO) {
-        List<DiscussPostEntity> discussPosts = communityService.queryUserFavoritePosts(
-                requestDTO.getUserId(), requestDTO.getPostId(), requestDTO.getLimit());
+        List<DiscussPostEntity> discussPosts = communityService
+                .queryUserFavoritePosts(CommunityBO.builder()
+                        .userId(requestDTO.getUserId())
+                        .postId(requestDTO.getPostId())
+                        .limit(requestDTO.getLimit())
+                        .build());
         List<QueryFavoriteDiscussPostResponseDTO> responseDTOs = new ArrayList<>();
         for (DiscussPostEntity discussPost : discussPosts) {
             responseDTOs.add(QueryFavoriteDiscussPostResponseDTO.builder()

@@ -1,5 +1,6 @@
 package com.aseubel.domain.community.adapter.repo;
 
+import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 
@@ -18,6 +19,20 @@ public interface ICommentRepository {
      * @return
      */
     List<CommentEntity> listPostMainComment(String postId);
+
+    /**
+     * 获取帖子的评论列表
+     * @param communityBO
+     * @return
+     */
+    List<CommentEntity> listPostComment(CommunityBO communityBO);
+
+    /**
+     * 获取评论的图片列表
+     * @param commentId
+     * @return
+     */
+    List<String> listCommentImages(String commentId);
 
     /**
      * 添加新评论

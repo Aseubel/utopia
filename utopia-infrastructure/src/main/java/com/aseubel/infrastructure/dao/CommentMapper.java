@@ -67,6 +67,18 @@ public interface CommentMapper {
     List<Comment> listTop3CommentsByPostId(String postId);
 
     /**
+     * 根据帖子id查询评论列表
+     * @return
+     */
+    List<Comment> listCommentByPostId(String postId, String commentId, Integer limit, Integer sortType);
+
+    /**
+     * 根据帖子id查询评论列表
+     * @return
+     */
+    List<Comment> listCommentByPostIdAhead(String postId, Integer limit, Integer sortType);
+
+    /**
      * 根据根/顶级评论id查询子评论列表
      * @param rootId
      * @return
@@ -93,4 +105,11 @@ public interface CommentMapper {
      * @param convert
      */
     void relateCommentImage(String commentId, List<Image> convert);
+
+    /**
+     * 获取评论图片url列表
+     * @param commentId
+     * @return
+     */
+    List<String> listImageUrlByCommentId(String commentId);
 }

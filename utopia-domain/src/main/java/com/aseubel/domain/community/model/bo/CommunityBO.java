@@ -52,4 +52,7 @@ public class CommunityBO {
     @FieldDesc(name = "事件发生时间")
     private LocalDateTime eventTime;
 
+    @FieldDesc(name = "排序类型")
+    private Integer sortType;
+
 }

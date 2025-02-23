@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.aseubel.types.common.Constant.PER_PAGE_COMMENT_SIZE;
 import static com.aseubel.types.common.Constant.PER_PAGE_DISCUSS_POST_SIZE;
 
 /**
@@ -46,14 +47,12 @@ public class CommunityService implements ICommunityService{
 
     @Override
     public List<DiscussPostEntity> listDiscussPost(CommunityBO communityBO) {
-        String userId = communityBO.getUserId();
         Integer limit = communityBO.getLimit();
         String schoolCode = communityBO.getSchoolCode();
         log.info("获取帖子列表服务开始执行");
-        checkUserIdValid(userId);
         checkSchoolCodeValid(schoolCode);
         // 限制每页显示的帖子数量
-        limit = limit == null ? PER_PAGE_DISCUSS_POST_SIZE : limit;
+        communityBO.setLimit(limit == null ? PER_PAGE_DISCUSS_POST_SIZE : limit);
         // 查询帖子列表
         List<DiscussPostEntity> discussPostEntities = discussPostRepository.listDiscussPost(communityBO);
         // 提取帖子的用户id
@@ -88,7 +87,6 @@ public class CommunityService implements ICommunityService{
         String userId = communityBO.getUserId();
         String postId = communityBO.getPostId();
         log.info("获取帖子详情服务开始执行, userId:{}, postId:{}", userId, postId);
-        checkUserIdValid(userId);
         // 查询帖子
         DiscussPostEntity postEntity = discussPostRepository.getDiscussPost(communityBO);
         // 获取帖子的图片
@@ -134,11 +132,14 @@ public class CommunityService implements ICommunityService{
     }
 
     @Override
-    public List<DiscussPostEntity> queryUserFavoritePosts(String userId, String postId, Integer limit) {
+    public List<DiscussPostEntity> queryUserFavoritePosts(CommunityBO communityBO) {
+        String userId = communityBO.getUserId();
+        String postId = communityBO.getPostId();
+        Integer limit = communityBO.getLimit();
+        communityBO.setLimit(limit == null ? PER_PAGE_DISCUSS_POST_SIZE : limit);
+
         log.info("查询用户收藏帖子服务开始执行，userId:{}", userId);
         checkUserIdValid(userId);
-        // 限制每页显示的帖子数量
-        limit = limit == null ? PER_PAGE_DISCUSS_POST_SIZE : limit;
         // 查询帖子列表
         List<DiscussPostEntity> discussPostEntities = discussPostRepository.queryUserFavoritePosts(userId, postId, limit);
         // 提取帖子的用户id
@@ -245,6 +246,38 @@ public class CommunityService implements ICommunityService{
         commentRepository.saveCommentImage(commentImage);
         log.info("上传帖子评论服务结束执行，userId:{}", commentImage.getUserId());
         return commentImage;
+    }
+
+    @Override
+    public List<CommentEntity> listPostComment(CommunityBO communityBO) {
+        String userId = communityBO.getUserId();
+        String postId = communityBO.getPostId();
+        Integer limit = communityBO.getLimit();
+        log.info("获取帖子评论列表服务开始执行, userId:{}, postId:{}", userId, postId);
+        // 限制每页显示的帖子数量
+        communityBO.setLimit(limit == null ? PER_PAGE_COMMENT_SIZE : limit);
+        // 查询评论列表
+        List<CommentEntity> comments = commentRepository.listPostComment(communityBO);
+        // 提取帖子的用户id
+        List<String> userIds = Optional.ofNullable(comments)
+                .map(d -> d.stream()
+                        .map(CommentEntity::getUserId)
+                        .collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
+        // 获取发帖人的用户名和头像，repo层已经保证了顺序
+        List<UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyList() : communityUserRepository.queryUserBaseInfo(userIds);
+        if (!CollectionUtil.isEmpty(comments) && !CollectionUtil.isEmpty(users)) {
+            for (int i = 0;i < comments.size();i++) {
+                comments.get(i).setUserName(users.get(i).getUserName());
+                comments.get(i).setUserAvatar(users.get(i).getAvatar());
+            }
+        }
+        // 获取帖子的第一张图片
+        if (!CollectionUtil.isEmpty(comments)) {
+            comments.forEach(d -> d.setImages(commentRepository.listCommentImages(d.getCommentId())));
+        }
+        log.info("获取帖子评论列表服务结束执行, userId:{}, postId:{}", userId, postId);
+        return comments;
     }
 
     private void checkSchoolCodeValid(String schoolCode) {

@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.aseubel.types.common.Constant.PER_PAGE_DISCUSS_POST_SIZE;
+import static com.aseubel.types.common.Constant.PER_PAGE_TRADE_POST_SIZE;
 
 /**
  * @author Aseubel
@@ -45,7 +46,7 @@ public class BazaarService implements IBazaarService{
         Integer limit = bazaarBO.getLimit();
         log.info("获取集市帖子列表服务开始执行");
         // 限制每页显示的帖子数量
-        limit = limit == null ? PER_PAGE_DISCUSS_POST_SIZE : limit;
+        bazaarBO.setLimit(limit == null ? PER_PAGE_TRADE_POST_SIZE : limit);
         // 查询帖子列表
         List<TradePostEntity> tradePostEntities = tradePostRepository.listTradePost(bazaarBO);
         // 提取帖子的用户id

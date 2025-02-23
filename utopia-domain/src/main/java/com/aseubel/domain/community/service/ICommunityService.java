@@ -2,6 +2,7 @@ package com.aseubel.domain.community.service;
 
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.community.model.bo.CommunityBO;
+import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,12 +43,9 @@ public interface ICommunityService {
 
     /**
      * 获取用户收藏帖子列表
-     * @param userId 用户id
-     * @param postId 上一页查询最后一个帖子的id
-     * @param limit 每页显示数量
      * @return
      */
-    List<DiscussPostEntity> queryUserFavoritePosts(String userId, String postId, Integer limit);
+    List<DiscussPostEntity> queryUserFavoritePosts(CommunityBO communityBO);
 
     /**
      * 收藏帖子
@@ -89,4 +87,11 @@ public interface ICommunityService {
      * @throws ClientException
      */
     CommunityImage uploadCommentImage(CommunityImage commentImage) throws ClientException;
+
+    /**
+     * 获取帖子的评论列表
+     * @param communityBO
+     * @return
+     */
+    List<CommentEntity> listPostComment(CommunityBO communityBO);
 }

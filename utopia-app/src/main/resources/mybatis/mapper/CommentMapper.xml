@@ -84,4 +84,36 @@
         </foreach> and is_deleted = 0
     </select>
 
+    <select id="listCommentByPostId" resultType="com.aseubel.infrastructure.dao.po.Comment">
+        select id, root_id, reply_to, comment_id, post_id, user_id, content, like_count, unlike_count, reply_count, comment_time, update_time
+        from `comment`
+        where
+            id > (select id from `comment` where comment_id = #{commentId} and is_deleted = 0)
+            and post_id = #{postId}
+            and is_deleted = 0
+        order by
+            <if test="sortType == 0 or sortType == null">id</if>
+            <if test="sortType == 1">id DESC</if>
+            <if test="sortType == 2">like_count DESC, id</if>
+        limit #{limit}
+    </select>
+
+    <select id="listCommentByPostIdAhead" resultType="com.aseubel.infrastructure.dao.po.Comment">
+        select id, root_id, reply_to, comment_id, post_id, user_id, content, like_count, unlike_count, reply_count, comment_time, update_time
+        from `comment`
+            where post_id = #{postId} and is_deleted = 0
+        order by
+            <if test="sortType == 0 or sortType == null">id</if>
+            <if test="sortType == 1">id DESC</if>
+            <if test="sortType == 2">like_count DESC, id</if>
+        limit #{limit}
+    </select>
+
+    <select id="listImageUrlByCommentId" resultType="java.lang.String">
+        select image_url
+        from `image` a, `comment_image` b
+        where a.image_id = b.image_id and b.comment_id = #{commentId}
+          and a.is_deleted = 0 and b.is_deleted = 0
+    </select>
+
 </mapper>

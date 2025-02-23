@@ -22,7 +22,7 @@ public interface BazaarInterface {
      * @param queryIndexTradePostRequest
      * @return
      */
-    Response<List<QueryIndexTradePostResponse>> queryIndexTradePost(@Valid QueryIndexTradePostRequest queryIndexTradePostRequest);
+    Response<List<QueryIndexTradePostResponse>> queryIndexTradePost(QueryIndexTradePostRequest queryIndexTradePostRequest);
 
     /**
      * 上传帖子图片

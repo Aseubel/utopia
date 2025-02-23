@@ -63,6 +63,12 @@ public class CommentEntity {
     @FieldDesc(name = "评论的回复列表")
     private List<CommentEntity> replyList;
 
+    @FieldDesc(name = "用户昵称")
+    private String userName;
+
+    @FieldDesc(name = "用户头像")
+    private String userAvatar;
+
     @FieldDesc(name = "是否点赞")
     private Boolean isLike;
 
