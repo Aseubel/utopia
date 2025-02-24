@@ -1,5 +1,7 @@
 package com.aseubel.infrastructure.adapter.repo;
 
+import cn.hutool.core.collection.CollectionUtil;
+import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.community.adapter.repo.ICommentRepository;
 import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.community.model.entity.CommentEntity;
@@ -9,16 +11,16 @@ import com.aseubel.infrastructure.convertor.CommunityImageConvertor;
 import com.aseubel.infrastructure.dao.CommentMapper;
 import com.aseubel.infrastructure.dao.ImageMapper;
 import com.aseubel.infrastructure.dao.LikeMapper;
+import com.aseubel.infrastructure.dao.po.Image;
 import com.aseubel.infrastructure.redis.IRedisService;
+import com.aseubel.types.util.AliOSSUtil;
 import com.aseubel.types.util.RedisKeyBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +48,9 @@ public class CommentRepository implements ICommentRepository {
 
     @Resource
     private IRedisService redisService;
+
+    @Resource
+    private AliOSSUtil aliOSSUtil;
 
     @Override
     public List<CommentEntity> listPostMainComment(String postId) {
@@ -151,6 +156,22 @@ public class CommentRepository implements ICommentRepository {
                         .peek(d -> d.setIsLike(likeMapper.getLikeStatus(communityBO.getUserId(), d.getCommentId()).orElse(false)))
                         .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public void deleteMissingImage() throws ClientException {
+        List<Image> imageRecords = imageMapper.listAllCommentImageIdAndUrl();
+        Set<String> ossRecordSet = new HashSet<>(aliOSSUtil.listObjects());
+        List<Long> missingImageIds = new ArrayList<>();
+        // 找出数据库中存在但oss没有对应对象的记录
+        for (Image image : imageRecords) {
+            if (!ossRecordSet.contains(aliOSSUtil.getFileName(image.getImageUrl()))) {
+                missingImageIds.add(image.getId());
+            }
+        }
+        if (!CollectionUtil.isEmpty(missingImageIds)) {
+            imageMapper.deleteMissingImage(missingImageIds);
+        }
     }
 
 }

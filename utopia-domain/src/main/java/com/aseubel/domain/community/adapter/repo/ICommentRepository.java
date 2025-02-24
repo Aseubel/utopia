@@ -1,5 +1,6 @@
 package com.aseubel.domain.community.adapter.repo;
 
+import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.community.model.entity.CommunityImage;
@@ -94,4 +95,10 @@ public interface ICommentRepository {
      * @return
      */
     List<CommentEntity> listSubComment(CommunityBO communityBO);
+
+    /**
+     * 删除不存在的评论图片
+     * @throws ClientException
+     */
+    void deleteMissingImage() throws ClientException;
 }

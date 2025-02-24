@@ -24,10 +24,18 @@
         where image_id = #{imageId} and is_deleted = 0
     </select>
 
-    <select id="listAll" resultType="com.aseubel.infrastructure.dao.po.Image">
-        select id, image_url
-        from `image`
-        where is_deleted = 0
+    <select id="listAllPostImageIdAndUrl" resultType="com.aseubel.infrastructure.dao.po.Image">
+        select a.id, a.image_url
+        from `image` a, `post_image` b
+        where a.image_id = b.image_id
+          and a.is_deleted = 0 and b.is_deleted = 0
+    </select>
+
+    <select id="listAllCommentImageIdAndUrl" resultType="com.aseubel.infrastructure.dao.po.Image">
+        select a.id, a.image_url
+        from `image` a, `comment_image` b
+        where a.image_id = b.image_id
+          and a.is_deleted = 0 and b.is_deleted = 0
     </select>
 
 </mapper>

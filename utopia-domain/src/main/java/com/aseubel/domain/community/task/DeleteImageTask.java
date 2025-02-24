@@ -30,6 +30,7 @@ public class DeleteImageTask {
     public void deleteMissingImage() throws ClientException {
         log.info("task: 删除不存在的image数据库记录");
         discussPostRepository.deleteMissingImage();
+        commentRepository.deleteMissingImage();
     }
 
 }

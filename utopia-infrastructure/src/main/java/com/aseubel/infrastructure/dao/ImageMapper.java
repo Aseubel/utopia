@@ -37,14 +37,20 @@ public interface ImageMapper {
     String getImageUrl(String imageId);
 
     /**
-     * 查询所有图片
+     * 查询所有讨论帖子图片
      * @return
      */
-    List<Image> listAll();
+    List<Image> listAllPostImageIdAndUrl();
 
     /**
      * 根据主键id删除图片
      * @param imageIds
      */
     void deleteMissingImage(List<Long> imageIds);
+
+    /**
+     * 查询所有评论图片
+     * @return
+     */
+    List<Image> listAllCommentImageIdAndUrl();
 }

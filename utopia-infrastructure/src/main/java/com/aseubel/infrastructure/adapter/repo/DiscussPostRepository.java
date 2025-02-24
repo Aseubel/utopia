@@ -252,8 +252,7 @@ public class DiscussPostRepository implements IDiscussPostRepository {
 
     @Override
     public void deleteMissingImage() throws ClientException {
-        // TODO 仅列举与帖子关联了的图片
-        List<Image> imageRecords = imageMapper.listAll();
+        List<Image> imageRecords = imageMapper.listAllPostImageIdAndUrl();
         Set<String> ossRecordSet = new HashSet<>(aliOSSUtil.listObjects());
         List<Long> missingImageIds = new ArrayList<>();
         // 找出数据库中存在但oss没有对应对象的记录
