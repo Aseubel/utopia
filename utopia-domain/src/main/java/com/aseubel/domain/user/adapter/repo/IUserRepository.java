@@ -17,6 +17,13 @@ public interface IUserRepository {
     UserEntity queryUserInfo(String userId);
 
     /**
+     * 根据用户id查询其他信息
+     * @param userId 用户id
+     * @return 用户信息
+     */
+    UserEntity queryOtherInfo(String userId);
+
+    /**
      * 保存用户信息
      * @param userEntity 用户信息
      */

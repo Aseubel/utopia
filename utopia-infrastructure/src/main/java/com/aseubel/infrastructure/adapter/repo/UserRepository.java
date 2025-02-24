@@ -55,6 +55,17 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
     }
 
     @Override
+    public UserEntity queryOtherInfo(String userId) {
+        return Optional.ofNullable(userMapper.getOtherInfoByUserId(userId))
+                .map(user -> {
+                    UserEntity userEntity = userConvertor.convert(user);
+                    userEntity.setSchool(schoolMapper.getSchoolBySchoolCode(user.getSchoolCode()));
+                    return userEntity;
+                })
+                .orElse(null);
+    }
+
+    @Override
     public void saveUserInfo(UserEntity userEntity) {
         userMapper.updateUser(userConvertor.convert(userEntity));
     }

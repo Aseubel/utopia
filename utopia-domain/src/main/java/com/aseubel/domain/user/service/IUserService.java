@@ -32,6 +32,14 @@ public interface IUserService {
     UserEntity queryUserInfo(String openid);
 
     /**
+     * 查询其他用户信息
+     * @param userId
+     * @param targetId
+     * @return
+     */
+    UserEntity queryOtherInfo(String userId, String targetId);
+
+    /**
      * 刷新token接口
      * @param user 用户实体
      * @return 用户实体

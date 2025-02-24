@@ -124,6 +124,25 @@ public class UserController implements UserInterface {
     }
 
     /**
+     * 查询其他用户信息
+     */
+    @Override
+    @GetMapping("/other/info")
+    public Response<QueryOtherInfoResponse> queryOtherInfo(QueryOtherInfoRequest requestDTO) {
+        UserEntity user = userService.queryOtherInfo(requestDTO.getUserId(), requestDTO.getTargetId());
+
+        return Response.SYSTEM_SUCCESS(
+                QueryOtherInfoResponse.builder()
+                        .userId(user.getOpenid())
+                        .userName(user.getUserName())
+                        .gender(user.getGender())
+                        .avatarUrl(user.getAvatar())
+                        .signature(user.getSignature())
+                        .schoolCode(user.getSchool().getSchoolCode())
+                        .build());
+    }
+
+    /**
      * 修改用户信息
      */
     @Override

@@ -96,6 +96,14 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public UserEntity queryOtherInfo(String userId, String targetId) {
+        log.info("查询个人信息服务开始执行，userId={}, targetId={}", userId, targetId);
+        UserEntity user = userRepository.queryOtherInfo(targetId);
+        log.info("查询个人信息服务结束执行，userId={}, targetId={}", userId, targetId);
+        return user;
+    }
+
+    @Override
     public UserEntity refreshToken(UserEntity user) {
         log.info("刷新token服务开始执行，user={}", user);
         if (!userRepository.checkRefreshToken(user, secretKey)) {

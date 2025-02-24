@@ -46,6 +46,13 @@ public interface UserInterface {
     Response<QueryUserInfoResponseDTO> queryUserInfo(@Valid QueryUserInfoRequestDTO queryUserInfoRequestDTO);
 
     /**
+     * 查询其他用户信息
+     * @param queryOtherInfoRequest 查询其他用户信息请求DTO，包含用户id和目标用户id
+     * @return 目标用户信息
+     */
+    Response<QueryOtherInfoResponse> queryOtherInfo(QueryOtherInfoRequest queryOtherInfoRequest);
+
+    /**
      * 修改用户个人信息接口
      * @param modifyUserInfoRequestDTO 修改用户个人信息请求DTO
      * @return 修改结果
