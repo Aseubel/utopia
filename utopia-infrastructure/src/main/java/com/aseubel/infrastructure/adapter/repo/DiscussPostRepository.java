@@ -166,7 +166,6 @@ public class DiscussPostRepository implements IDiscussPostRepository {
             favoriteMapper.updateFavoriteStatus(userId, postId, isFavorite ? 1 : 0);
         } else {
             favoriteMapper.saveFavoriteRecord(userId, postId);
-            discussPostMapper.increaseLikeCount(postId);
         }
 
         redisService.addToMap(RedisKeyBuilder.FavoriteStatusKey(userId), postId, isFavorite);
