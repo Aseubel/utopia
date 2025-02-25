@@ -66,4 +66,13 @@
         where user_id = #{userId} and is_deleted = 0
     </select>
 
+    <select id="listUserNamesByUserIds" resultType="java.lang.String">
+        select user_name
+        from `user`
+        where is_deleted = 0 and user_id in
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+
 </mapper>

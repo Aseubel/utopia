@@ -50,6 +50,13 @@ public interface UserMapper {
     List<User> listUserBaseInfoByUserIds(List<String> userIds);
 
     /**
+     * 根据用户id获取用户名
+     * @param userIds
+     * @return
+     */
+    List<String> listUserNamesByUserIds(List<String> userIds);
+
+    /**
      * 根据用户id获取用户状态
      * @param userId
      * @return

@@ -2,6 +2,7 @@ package com.aseubel.infrastructure.adapter.repo;
 
 import com.aseubel.domain.bazaar.adapter.repo.IBazaarUserRepository;
 import com.aseubel.domain.community.adapter.repo.ICommunityUserRepository;
+import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.user.adapter.repo.IUserRepository;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.domain.user.model.vo.School;
@@ -155,6 +156,16 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
         return Optional.ofNullable(userMapper.getUserStatusByUserId(userId))
                 .map(userConvertor::convert)
                 .orElse(null);
+    }
+
+    @Override
+    public List<String> queryUserNames(List<CommentEntity> comments) {
+        List<String> userIds = comments.stream().map(CommentEntity::getUserId).collect(Collectors.toList());
+        List<String> names = new ArrayList<>();
+        for (String userId : userIds) {
+            names.add(userMapper.getUserNameByUserId(userId));
+        }
+        return names;
     }
 
     @Override

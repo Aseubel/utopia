@@ -1,5 +1,6 @@
 package com.aseubel.domain.community.adapter.repo;
 
+import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
 
 import java.util.List;
@@ -25,4 +26,10 @@ public interface ICommunityUserRepository {
      */
     UserEntity queryUserStatus(String userId);
 
+    /**
+     * 查询评论的用户昵称
+     * @param comments
+     * @return
+     */
+    List<String> queryUserNames(List<CommentEntity> comments);
 }
