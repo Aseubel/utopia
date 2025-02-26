@@ -151,7 +151,7 @@ public class CommunityService implements ICommunityService {
         log.info("查询用户收藏帖子服务开始执行，userId:{}", userId);
         checkUserIdValid(userId);
         // 查询帖子列表
-        List<DiscussPostEntity> discussPostEntities = discussPostRepository.queryUserFavoritePosts(userId, postId, limit);
+        List<DiscussPostEntity> discussPostEntities = discussPostRepository.queryUserFavoritePosts(communityBO);
         // 提取帖子的用户id
         List<String> userIds = Optional.ofNullable(discussPostEntities)
                 .map(d -> d.stream()
@@ -167,6 +167,35 @@ public class CommunityService implements ICommunityService {
             }
         }
         log.info("查询用户收藏帖子服务结束执行，userId:{}", userId);
+        return discussPostEntities;
+    }
+
+    @Override
+    public List<DiscussPostEntity> queryMyDiscussPosts(CommunityBO communityBO) {
+        String userId = communityBO.getUserId();
+        String postId = communityBO.getPostId();
+        Integer limit = communityBO.getLimit();
+        communityBO.setLimit(limit == null ? PER_PAGE_DISCUSS_POST_SIZE : limit);
+
+        log.info("查询用户发布的讨论帖子服务开始执行，userId:{}", userId);
+        checkUserIdValid(userId);
+        // 查询帖子列表
+        List<DiscussPostEntity> discussPostEntities = discussPostRepository.queryUserFavoritePosts(communityBO);
+        // 提取帖子的用户id
+        List<String> userIds = Optional.ofNullable(discussPostEntities)
+                .map(d -> d.stream()
+                        .map(DiscussPostEntity::getUserId)
+                        .collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
+        // 获取发帖人的用户名和头像，repo层已经保证了顺序
+        List<UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyList() : communityUserRepository.queryUserBaseInfo(userIds);
+        if (!CollectionUtil.isEmpty(discussPostEntities) && !CollectionUtil.isEmpty(users)) {
+            for (int i = 0; i < discussPostEntities.size(); i++) {
+                discussPostEntities.get(i).setUserName(users.get(i).getUserName());
+                discussPostEntities.get(i).setUserAvatar(users.get(i).getAvatar());
+            }
+        }
+        log.info("查询用户发布的讨论帖子服务结束执行，userId:{}", userId);
         return discussPostEntities;
     }
 

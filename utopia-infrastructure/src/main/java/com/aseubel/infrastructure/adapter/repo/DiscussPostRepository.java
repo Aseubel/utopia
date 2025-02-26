@@ -15,6 +15,7 @@ import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.AliOSSUtil;
 import com.aseubel.types.util.RedisKeyBuilder;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
@@ -135,11 +136,25 @@ public class DiscussPostRepository implements IDiscussPostRepository {
     }
 
     @Override
-    public List<DiscussPostEntity> queryUserFavoritePosts(String userId, String postId, Integer limit) {
-        List<String> postIds = Optional.ofNullable(StringUtils.isEmpty(postId)
-                        ? favoriteMapper.listUserFavoritePostIdAhead(userId, limit)
-                        : favoriteMapper.listUserFavoritePostId(userId, postId, limit))
+    public List<DiscussPostEntity> queryUserFavoritePosts(CommunityBO bo) {
+        List<String> postIds = Optional.ofNullable(StringUtils.isEmpty(bo.getPostId())
+                        ? favoriteMapper.listUserFavoritePostIdAhead(bo.getUserId(), bo.getLimit())
+                        : favoriteMapper.listUserFavoritePostId(bo.getUserId(), bo.getPostId(), bo.getLimit()))
                 .orElse(Collections.emptyList());
+        return listSimpleDiscussPost(postIds);
+    }
+
+    @Override
+    public List<DiscussPostEntity> queryUserDiscussPosts(CommunityBO bo) {
+        List<String> postIds = Optional.ofNullable(StringUtils.isEmpty(bo.getPostId())
+                        ? favoriteMapper.listUserDiscussPostIdAhead(bo.getUserId(), bo.getLimit())
+                        : favoriteMapper.listUserDiscussPostId(bo.getUserId(), bo.getPostId(), bo.getLimit()))
+                .orElse(Collections.emptyList());
+        return listSimpleDiscussPost(postIds);
+    }
+
+    @NotNull
+    private List<DiscussPostEntity> listSimpleDiscussPost(List<String> postIds) {
         if (CollectionUtils.isEmpty(postIds)) {
             return Collections.emptyList();
         }

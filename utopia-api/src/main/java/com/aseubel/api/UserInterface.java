@@ -71,7 +71,14 @@ public interface UserInterface {
      * @param queryFavoriteDiscussPostRequestDTO
      * @return
      */
-    Response<List<QueryFavoriteDiscussPostResponseDTO>> queryFavoriteDiscussPost(@Valid @RequestBody QueryFavoriteDiscussPostRequestDTO queryFavoriteDiscussPostRequestDTO);
+    Response<List<QueryFavoriteDiscussPostResponseDTO>> queryFavoriteDiscussPost(QueryFavoriteDiscussPostRequestDTO queryFavoriteDiscussPostRequestDTO);
+
+    /**
+     * 查询我的讨论帖子列表
+     * @param queryMyDiscussPostRequest
+     * @return
+     */
+    Response<List<QueryMyDiscussPostResponse>> queryMyDiscussPost(QueryMyDiscussPostRequest queryMyDiscussPostRequest);
 
     /**
      * 注销账号接口

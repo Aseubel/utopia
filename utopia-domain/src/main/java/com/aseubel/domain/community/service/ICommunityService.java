@@ -48,6 +48,13 @@ public interface ICommunityService {
     List<DiscussPostEntity> queryUserFavoritePosts(CommunityBO communityBO);
 
     /**
+     * 获取用户发布的帖子列表
+     * @param communityBO
+     * @return
+     */
+    List<DiscussPostEntity> queryMyDiscussPosts(CommunityBO communityBO);
+
+    /**
      * 收藏帖子
      * @param userId 用户id
      * @param postId 帖子id

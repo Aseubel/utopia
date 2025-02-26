@@ -9,6 +9,7 @@ services:
     restart: on-failure
     ports:
       - "20611:20611"
+      - "21611:21611"
     environment:
       - TZ=PRC
       - SPRING_DATASOURCE_USERNAME=root

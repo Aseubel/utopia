@@ -85,12 +85,15 @@ public interface IDiscussPostRepository {
 
     /**
      * 根据用户id和帖子id分页查询用户收藏的帖子
-     * @param userId 用户id
-     * @param postId 相当于游标，上一页最后一个帖子的id
-     * @param limit 每页显示数量
      * @return
      */
-    List<DiscussPostEntity> queryUserFavoritePosts(String userId, String postId, Integer limit);
+    List<DiscussPostEntity> queryUserFavoritePosts(CommunityBO communityBO);
+
+    /**
+     * 根据用户id和帖子id分页查询用户发布的帖子
+     * @return
+     */
+    List<DiscussPostEntity> queryUserDiscussPosts(CommunityBO communityBO);
 
     /**
      * 收藏帖子

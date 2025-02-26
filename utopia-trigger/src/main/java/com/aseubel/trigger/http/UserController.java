@@ -196,8 +196,8 @@ public class UserController implements UserInterface {
      * 查询用户收藏的帖子
      */
     @Override
-    @GetMapping("/favorite/post")
-    public Response<List<QueryFavoriteDiscussPostResponseDTO>> queryFavoriteDiscussPost(@Valid @RequestBody QueryFavoriteDiscussPostRequestDTO requestDTO) {
+    @GetMapping("/post/favorite")
+    public Response<List<QueryFavoriteDiscussPostResponseDTO>> queryFavoriteDiscussPost(QueryFavoriteDiscussPostRequestDTO requestDTO) {
         List<DiscussPostEntity> discussPosts = communityService
                 .queryUserFavoritePosts(CommunityBO.builder()
                         .userId(requestDTO.getUserId())
@@ -207,6 +207,36 @@ public class UserController implements UserInterface {
         List<QueryFavoriteDiscussPostResponseDTO> responseDTOs = new ArrayList<>();
         for (DiscussPostEntity discussPost : discussPosts) {
             responseDTOs.add(QueryFavoriteDiscussPostResponseDTO.builder()
+                    .discussPostId(discussPost.getDiscussPostId())
+                    .userName(discussPost.getUserName())
+                    .userAvatar(discussPost.getUserAvatar())
+                    .title(discussPost.getTitle())
+                    .content(discussPost.getContent())
+                    .likeCount(discussPost.getLikeCount())
+                    .commentCount(discussPost.getCommentCount())
+                    .favoriteCount(discussPost.getFavoriteCount())
+                    .createTime(discussPost.getCreateTime())
+                    .updateTime(discussPost.getUpdateTime())
+                    .build());
+        }
+        return Response.SYSTEM_SUCCESS(responseDTOs);
+    }
+
+    /**
+     * 查询用户发布的讨论帖
+     */
+    @Override
+    @GetMapping("/post/my")
+    public Response<List<QueryMyDiscussPostResponse>> queryMyDiscussPost(QueryMyDiscussPostRequest requestDTO) {
+        List<DiscussPostEntity> discussPosts = communityService
+                .queryMyDiscussPosts(CommunityBO.builder()
+                        .userId(requestDTO.getUserId())
+                        .postId(requestDTO.getPostId())
+                        .limit(requestDTO.getLimit())
+                        .build());
+        List<QueryMyDiscussPostResponse> responseDTOs = new ArrayList<>();
+        for (DiscussPostEntity discussPost : discussPosts) {
+            responseDTOs.add(QueryMyDiscussPostResponse.builder()
                     .discussPostId(discussPost.getDiscussPostId())
                     .userName(discussPost.getUserName())
                     .userAvatar(discussPost.getUserAvatar())
