@@ -297,6 +297,17 @@ public class CommunityService implements ICommunityService {
         communityBO.setLimit(limit == null ? PER_PAGE_COMMENT_SIZE : limit);
         // 查询评论列表
         List<CommentEntity> comments = commentRepository.listPostComment(communityBO);
+        if (CollectionUtil.isEmpty(comments)) {
+            return Collections.emptyList();
+        }
+        for (CommentEntity comment : comments) {
+            List<String> userNames = communityUserRepository.queryUserNames(comment.getReplyList());
+            if (!CollectionUtil.isEmpty(userNames)) {
+                for (int i = 0; i < comment.getReplyList().size(); i++) {
+                    comment.getReplyList().get(i).setUserName(userNames.get(i));
+                }
+            }
+        }
         // 提取评论的用户id
         List<String> userIds = Optional.ofNullable(comments)
                 .map(d -> d.stream()
