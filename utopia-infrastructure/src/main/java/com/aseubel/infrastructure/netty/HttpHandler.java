@@ -31,13 +31,10 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
             ctx.fireChannelRead(request);
             // 重新设置 uri，将请求转发到 websocket handler，否则无法成功建立连接
             request.setUri("/ws");
-            ctx.fireChannelRead(request);
-            // 消息直接交给下一个 handler
-//            super.channelRead(ctx, msg);
-        } else {
-            // 处理 websocket 连接请求
-            ctx.fireChannelRead(msg);
+//            ctx.fireChannelRead(request);
         }
+        // 消息直接交给下一个 handler
+        super.channelRead(ctx, msg);
     }
 
 }

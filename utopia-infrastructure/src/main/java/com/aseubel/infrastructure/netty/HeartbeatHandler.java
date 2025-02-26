@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class HeartbeatHandler extends SimpleChannelInboundHandler<PongWebSocketFrame> {
+public class HeartbeatHandler extends ChannelInboundHandlerAdapter {
     private static final int HEARTBEAT_INTERVAL = 15; // 心跳间隔(秒)
     private static final int MAX_MISSED_HEARTBEATS = 2; // 允许丢失的心跳次数
     private final Map<ChannelId, Integer> missedHeartbeats = new ConcurrentHashMap<>();
@@ -43,11 +43,6 @@ public class HeartbeatHandler extends SimpleChannelInboundHandler<PongWebSocketF
         } else {
             ctx.fireChannelRead(msg);
         }
-    }
-
-    @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, PongWebSocketFrame pongWebSocketFrame) throws Exception {
-        System.out.println("收到 Pong 响应");
     }
 
     @Override

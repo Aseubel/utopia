@@ -51,9 +51,9 @@ public class NettyServerConfig {
                                 pipeline.addLast(new HttpObjectAggregator(10 * 1024 * 1024));// 最大10MB
                                 pipeline.addLast(new ChunkedWriteHandler());
                                 pipeline.addLast(new HttpHandler());
-                                pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
-                                pipeline.addLast(new IdleStateHandler(0, 0, 0, TimeUnit.SECONDS));
+                                pipeline.addLast(new IdleStateHandler(READ_TIMEOUT, 0, 0, TimeUnit.SECONDS));
                                 pipeline.addLast(new HeartbeatHandler());
+                                pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
                                 pipeline.addLast(new MessageHandler());
                             }
                         });
