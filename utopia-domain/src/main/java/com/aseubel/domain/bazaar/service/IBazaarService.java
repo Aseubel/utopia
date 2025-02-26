@@ -4,6 +4,7 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.bazaar.model.bo.BazaarBO;
 import com.aseubel.domain.bazaar.model.entity.TradeImage;
 import com.aseubel.domain.bazaar.model.entity.TradePostEntity;
+import com.aseubel.domain.community.model.bo.CommunityBO;
 
 import java.util.List;
 
@@ -32,5 +33,11 @@ public interface IBazaarService {
      * @param tradePostEntity
      */
     void publishTradePost(TradePostEntity tradePostEntity);
-    
+
+    /**
+     * 查询我帖子
+     * @param bazaarBO
+     * @return
+     */
+    List<TradePostEntity> queryMyTradePosts(BazaarBO bazaarBO);
 }

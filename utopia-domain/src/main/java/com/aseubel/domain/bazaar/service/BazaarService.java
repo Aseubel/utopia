@@ -111,5 +111,40 @@ public class BazaarService implements IBazaarService{
 
         log.info("发布集市帖子服务结束执行，userId:{}", tradePostEntity.getUserId());
     }
-    
+
+    @Override
+    public List<TradePostEntity> queryMyTradePosts(BazaarBO bazaarBO) {
+        String postId = bazaarBO.getPostId();
+        Integer limit = bazaarBO.getLimit();
+        log.info("获取我的交易帖子列表服务开始执行");
+        // 限制每页显示的帖子数量
+        bazaarBO.setLimit(limit == null ? PER_PAGE_TRADE_POST_SIZE : limit);
+        // 查询帖子列表
+        List<TradePostEntity> tradePostEntities = tradePostRepository.listUserTradePost(bazaarBO);
+        // 提取帖子的用户id
+        List<String> userIds = Optional.ofNullable(tradePostEntities)
+                .map(d -> d.stream()
+                        .map(TradePostEntity::getUserId)
+                        .collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
+        // 获取发帖人的用户名和头像，repo层已经保证了顺序
+        List<UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyList() : bazaarUserRepository.queryUserBaseInfo(userIds);
+        if (!CollectionUtil.isEmpty(tradePostEntities) && !CollectionUtil.isEmpty(users)) {
+            for (int i = 0;i < tradePostEntities.size();i++) {
+                tradePostEntities.get(i).setUserName(users.get(i).getUserName());
+                tradePostEntities.get(i).setUserAvatar(users.get(i).getAvatar());
+            }
+        }
+        // 获取帖子的第一张图片
+        if (!CollectionUtil.isEmpty(tradePostEntities)) {
+            tradePostEntities.forEach(d ->
+                    {
+                        String imageUrl = tradePostRepository.getPostFirstImage(d.getTradePostId());
+                        d.setImage(imageUrl);}
+            );
+        }
+        log.info("获取我的交易帖子列表服务结束执行");
+        return tradePostEntities;
+    }
+
 }

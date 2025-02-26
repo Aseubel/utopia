@@ -1,4 +1,4 @@
-package com.aseubel.api.dto.user;
+package com.aseubel.api.dto.user.post;
 
 import com.aseubel.types.annotation.FieldDesc;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -13,14 +13,14 @@ import java.time.LocalDateTime;
 
 /**
  * @author Aseubel
- * @date 2025-02-07 19:55
+ * @date 2025-02-26 12:42
  */
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class QueryFavoriteDiscussPostResponseDTO implements Serializable {
+public class QueryMyDiscussPostResponse implements Serializable {
 
     @FieldDesc(name = "帖子id")
     private String discussPostId;

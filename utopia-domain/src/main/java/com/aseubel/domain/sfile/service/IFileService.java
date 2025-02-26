@@ -35,7 +35,7 @@ public interface IFileService {
      * @param sortType
      * @return
      */
-    List<SFileEntity> listSFile(String fileId, Integer limit, Integer sortType);
+    List<SFileEntity> listSFile(String fileId, Integer limit, Integer sortType, String courseName);
 
     /**
      * 根据文件类型查询文件

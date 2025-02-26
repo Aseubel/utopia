@@ -3,6 +3,7 @@ package com.aseubel.api;
 import com.aseubel.api.dto.user.UploadAvatarRequestDTO;
 import com.aseubel.api.dto.user.UploadAvatarResponseDTO;
 import com.aseubel.api.dto.user.*;
+import com.aseubel.api.dto.user.post.*;
 import com.aseubel.types.Response;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -79,6 +80,13 @@ public interface UserInterface {
      * @return
      */
     Response<List<QueryMyDiscussPostResponse>> queryMyDiscussPost(QueryMyDiscussPostRequest queryMyDiscussPostRequest);
+
+    /**
+     * 查询我的交易帖子列表
+     * @param queryMyTradePostRequest
+     * @return
+     */
+    Response<List<QueryMyTradePostResponse>> queryMyTradePost(QueryMyTradePostRequest queryMyTradePostRequest);
 
     /**
      * 注销账号接口

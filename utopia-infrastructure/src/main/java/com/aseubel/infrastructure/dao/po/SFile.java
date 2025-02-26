@@ -34,8 +34,8 @@ public class SFile {
     @FieldDesc(name = "文件大小")
     private Long sfileSize;
 
-    @FieldDesc(name = "文件类型")
-    private String sfileType;
+    @FieldDesc(name = "课程名称")
+    private String courseName;
 
     @FieldDesc(name = "下载次数")
     private Integer downloadCount;

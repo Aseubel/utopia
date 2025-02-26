@@ -22,9 +22,9 @@
     <select id="listUserDiscussPostId" resultType="java.lang.String">
         select discuss_post_id
         from `discuss_post`
-        where update_time &lt;= (select update_time from `discuss_post` where discuss_post_id = #{postId} and is_deleted = 0)
+        where id &lt; (select id from `discuss_post` where discuss_post_id = #{postId} and is_deleted = 0)
           and user_id = #{userId} and discuss_post_id != #{postId} and status = 1 and is_deleted = 0
-        order by update_time DESC, id DESC
+        order by id DESC
         limit #{limit}
     </select>
 
@@ -32,7 +32,7 @@
         select discuss_post_id
         from `discuss_post`
         where user_id = #{userId} and status = 1 and is_deleted = 0
-        order by update_time DESC
+        order by id DESC
         limit #{limit}
     </select>
 

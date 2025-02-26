@@ -56,6 +56,21 @@ public interface TradePostMapper {
     List<TradePost> listTradePostAhead(Integer limit, Integer type, Integer status);
 
     /**
+     * 获取用户所有帖子信息，分页查询
+     * @param postId 上一页最后一条帖子的id，用于分页查询
+     * @param limit 每页显示的数量
+     * @return
+     */
+    List<String> listUserTradePostId(String postId, Integer limit, Integer type, Integer status, String userId);
+
+    /**
+     * 获取用户所有帖子信息，分页查询
+     * @param limit 每页显示的数量
+     * @return
+     */
+    List<String> listUserTradePostAheadId(Integer limit, Integer type, Integer status, String userId);
+
+    /**
      * 关联帖子图片
      * @param postId
      * @param images
@@ -76,4 +91,9 @@ public interface TradePostMapper {
      */
     void deleteUncompletedTradePost(@Param("userId") String userId);
 
+    /**
+     * 获取交易帖信息
+     * @return
+     */
+    List<TradePost> listDiscussPostByPostIds(List<String> postIds);
 }

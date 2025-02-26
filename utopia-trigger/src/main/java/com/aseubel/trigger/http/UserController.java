@@ -5,10 +5,13 @@ import com.aseubel.api.UserInterface;
 import com.aseubel.api.dto.user.UploadAvatarRequestDTO;
 import com.aseubel.api.dto.user.UploadAvatarResponseDTO;
 import com.aseubel.api.dto.user.*;
+import com.aseubel.api.dto.user.post.*;
+import com.aseubel.domain.bazaar.model.bo.BazaarBO;
+import com.aseubel.domain.bazaar.model.entity.TradePostEntity;
+import com.aseubel.domain.bazaar.service.IBazaarService;
 import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.community.service.ICommunityService;
-import com.aseubel.domain.user.model.bo.UserBO;
 import com.aseubel.domain.user.model.entity.AvatarEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.domain.user.model.vo.School;
@@ -48,6 +51,8 @@ public class UserController implements UserInterface {
     private final ICommunityService communityService;
 
     private final ApplicationEventPublisher eventPublisher;
+
+    private final IBazaarService bazaarService;
 
     /**
      * 登录
@@ -226,7 +231,7 @@ public class UserController implements UserInterface {
      * 查询用户发布的讨论帖
      */
     @Override
-    @GetMapping("/post/my")
+    @GetMapping("/post/community")
     public Response<List<QueryMyDiscussPostResponse>> queryMyDiscussPost(QueryMyDiscussPostRequest requestDTO) {
         List<DiscussPostEntity> discussPosts = communityService
                 .queryMyDiscussPosts(CommunityBO.builder()
@@ -253,6 +258,39 @@ public class UserController implements UserInterface {
     }
 
     /**
+     * 查询用户发布的交易帖
+     */
+    @Override
+    @GetMapping("/post/trade")
+    public Response<List<QueryMyTradePostResponse>> queryMyTradePost(QueryMyTradePostRequest requestDTO) {
+        validateUserId(requestDTO.getUserId());
+        List<TradePostEntity> discussPosts = bazaarService
+                .queryMyTradePosts(BazaarBO.builder()
+                        .userId(requestDTO.getUserId())
+                        .postId(requestDTO.getPostId())
+                        .limit(requestDTO.getLimit())
+                        .status(requestDTO.getStatus())
+                        .type(requestDTO.getType())
+                        .build());
+        List<QueryMyTradePostResponse> responseDTOs = new ArrayList<>();
+        for (TradePostEntity post : discussPosts) {
+            responseDTOs.add(QueryMyTradePostResponse.builder()
+                    .tradePostId(post.getTradePostId())
+                    .userName(post.getUserName())
+                    .userAvatar(post.getUserAvatar())
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .type(post.getType())
+                    .price(post.getPrice())
+                    .image(post.getImage())
+                    .createTime(post.getCreateTime())
+                    .updateTime(post.getUpdateTime())
+                    .build());
+        }
+        return Response.SYSTEM_SUCCESS(responseDTOs);
+    }
+
+    /**
      * 注销账号
      */
     @Override
@@ -262,6 +300,12 @@ public class UserController implements UserInterface {
         userService.cancelAccount(userId);
         eventPublisher.publishEvent(new CancelAccountEvent(userId));
         return Response.SYSTEM_SUCCESS();
+    }
+
+    private void validateUserId(String userId) {
+        if (StringUtils.isEmpty(userId)) {
+            throw new AppException(400, "用户id不能为空!");
+        }
     }
 
 }

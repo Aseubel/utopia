@@ -43,8 +43,8 @@ public class SFileEntity {
     @FieldDesc(name = "文件大小")
     private Long sfileSize;
 
-    @FieldDesc(name = "文件类型")
-    private String sfileType;
+    @FieldDesc(name = "课程名称")
+    private String courseName;
 
     @FieldDesc(name = "下载次数")
     private Integer downloadCount;
@@ -56,11 +56,11 @@ public class SFileEntity {
      * 获取在OSS中的文件名称（在类型文件夹下）
      */
     public String generateObjectName() {
-        if (sfileType == null || sfileName == null) {
-            throw new AppException("文件类型或文件名不能为空");
+        if (courseName == null || sfileName == null) {
+            throw new AppException("课程名称或文件名不能为空");
         }
         StringBuilder objectName = new StringBuilder();
-        objectName.append(APP).append("/").append(sfileType).append("/").append(sfileName);
+        objectName.append(APP).append("/").append(courseName).append("/").append(sfileName);
         return objectName.toString();
     }
 
@@ -74,7 +74,7 @@ public class SFileEntity {
     public SFileEntity(MultipartFile file, String fileName, String userId, String fileType) {
         this.sfile = file;
         this.uploaderId = userId;
-        this.sfileType = fileType;
+        this.courseName = fileType;
         this.sfileId = UUID.randomUUID().toString();
         this.sfileName = StringUtils.isEmpty(fileName) ? file.getOriginalFilename() : (fileName+file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")));
         this.sfileSize = file.getSize();
@@ -83,7 +83,7 @@ public class SFileEntity {
     public SFileEntity(MultipartFile file, String userId, String fileType) {
         this.sfile = file;
         this.uploaderId = userId;
-        this.sfileType = fileType;
+        this.courseName = fileType;
         this.sfileId = UUID.randomUUID().toString();
         this.sfileSize = file.getSize();
     }

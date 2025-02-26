@@ -56,7 +56,7 @@ public class SFileController implements SFileInterface {
             MultipartFile file = uploadFileRequestDTO.getFile();
 
             String fileUrl = fileService.upload(
-                    new SFileEntity(file, uploadFileRequestDTO.getFileName(), uploadFileRequestDTO.getUserId(), uploadFileRequestDTO.getFileType()));
+                    new SFileEntity(file, uploadFileRequestDTO.getFileName(), uploadFileRequestDTO.getUserId(), uploadFileRequestDTO.getCourseName()));
 
             return Response.SYSTEM_SUCCESS(UploadFileResponseDTO.builder()
                     .fileUrl(fileUrl)
@@ -115,17 +115,14 @@ public class SFileController implements SFileInterface {
      */
     @Override
     @GetMapping("/list")
-    public Response<List<QuerySFileResponseDTO>> querySFiles(@Valid QuerySFileRequestDTO querySFileRequestDTO) {
-        if (StringUtils.isEmpty(querySFileRequestDTO.getUserId())) {
-            throw new AppException(PARAM_NOT_COMPLETE);
-        }
-        List<SFileEntity> sFileEntities = fileService.listSFile(querySFileRequestDTO.getFileId(), querySFileRequestDTO.getLimit(), querySFileRequestDTO.getSortType());
+    public Response<List<QuerySFileResponseDTO>> querySFiles(QuerySFileRequestDTO requestDTO) {
+        List<SFileEntity> sFileEntities = fileService.listSFile(requestDTO.getFileId(), requestDTO.getLimit(), requestDTO.getSortType(), requestDTO.getCourseName());
         List<QuerySFileResponseDTO> querySFileResponseDTOS = sFileEntities.stream()
                .map(sFileEntity -> QuerySFileResponseDTO.builder()
                        .fileId(sFileEntity.getSfileId())
                        .fileName(sFileEntity.getSfileName())
                        .fileSize(sFileEntity.getSfileSize())
-                       .fileType(sFileEntity.getSfileType())
+                       .fileType(sFileEntity.getCourseName())
                        .fileUrl(sFileEntity.getSfileUrl())
                        .downloadCount(sFileEntity.getDownloadCount())
                        .createTime(sFileEntity.getCreateTime())

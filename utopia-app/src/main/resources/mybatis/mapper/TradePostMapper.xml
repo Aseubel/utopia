@@ -75,4 +75,44 @@
         limit 1
     </select>
 
+    <select id="listUserTradePostId" resultType="java.lang.String">
+        select trade_post_id
+        from `trade_post`
+        <where>
+            id &lt; (select id from `trade_post` where trade_post_id = #{postId} and is_deleted = 0)
+            <if test="status != null">and status = #{status}</if>
+            <if test="type != null">and type = #{type}</if>
+            and user_id = #{userId}
+            and is_deleted = 0 and trade_post_id != #{postId}
+        </where>
+        order by id DESC
+        limit #{limit}
+    </select>
+
+    <select id="listUserTradePostAheadId" resultType="java.lang.String">
+        select trade_post_id
+        from `trade_post`
+        <where>
+            <if test="status != null">and status = #{status}</if>
+            <if test="type != null">and type = #{type}</if>
+            and user_id = #{userId}
+            and is_deleted = 0
+        </where>
+        order by id DESC
+        limit #{limit}
+    </select>
+
+    <select id="listDiscussPostByPostIds" resultType="com.aseubel.infrastructure.dao.po.TradePost">
+        select id, trade_post_id, user_id, title, content, price, type, status, create_time, update_time
+        from `trade_post`
+        <where>
+            trade_post_id in
+            <foreach collection="postIds" item="postId" separator="," open="(" close=")">
+                #{postId}
+            </foreach>
+            and is_deleted = 0
+        </where>
+        order by id DESC
+    </select>
+
 </mapper>

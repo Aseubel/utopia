@@ -4,6 +4,7 @@ import com.aseubel.domain.bazaar.adapter.repo.ITradePostRepository;
 import com.aseubel.domain.bazaar.model.bo.BazaarBO;
 import com.aseubel.domain.bazaar.model.entity.TradeImage;
 import com.aseubel.domain.bazaar.model.entity.TradePostEntity;
+import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.infrastructure.convertor.TradeImageConvertor;
 import com.aseubel.infrastructure.convertor.TradePostConvertor;
@@ -12,10 +13,12 @@ import com.aseubel.infrastructure.dao.TradePostMapper;
 import com.aseubel.infrastructure.dao.po.TradePost;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -48,6 +51,30 @@ public class TradePostRepository implements ITradePostRepository {
                         ? tradePostMapper.listTradePostAhead(limit, bazaarBO.getType(), bazaarBO.getStatus())
                         : tradePostMapper.listTradePost(postId, limit, bazaarBO.getType(), bazaarBO.getStatus()))
                 .map(p -> p.stream().map(tradePostConvertor::convert).collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<TradePostEntity> listUserTradePost(BazaarBO bazaarBO) {
+        String postId = bazaarBO.getPostId();
+        Integer limit = bazaarBO.getLimit();
+
+        List<String> postIds = Optional.ofNullable(StringUtils.isEmpty(postId)
+                        ? tradePostMapper.listUserTradePostAheadId(limit, bazaarBO.getType(), bazaarBO.getStatus(), bazaarBO.getUserId())
+                        : tradePostMapper.listUserTradePostId(postId, limit, bazaarBO.getType(), bazaarBO.getStatus(), bazaarBO.getUserId()))
+                .orElse(Collections.emptyList());
+        if (CollectionUtils.isEmpty(postIds)) {
+            return Collections.emptyList();
+        }
+        return Optional.ofNullable(tradePostMapper.listDiscussPostByPostIds(postIds))
+                .map(l -> {
+                    Map<String, TradePostEntity> postMap = l.stream()
+                            .map(tradePostConvertor::convert) // 先转换为 UserEntity
+                            .collect(Collectors.toMap(TradePostEntity::getTradePostId, post -> post));
+                    return postIds.stream()
+                            .map(postMap::get)
+                            .collect(Collectors.toList());
+                })
                 .orElse(Collections.emptyList());
     }
 

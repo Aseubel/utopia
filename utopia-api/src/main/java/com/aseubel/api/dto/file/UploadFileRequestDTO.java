@@ -30,7 +30,7 @@ public class UploadFileRequestDTO implements Serializable {
     @FieldDesc(name = "用户指定的文件名")
     private String fileName;
 
-    @FieldDesc(name = "文件类型")
-    private String fileType;
+    @FieldDesc(name = "课程名称")
+    private String courseName;
 
 }

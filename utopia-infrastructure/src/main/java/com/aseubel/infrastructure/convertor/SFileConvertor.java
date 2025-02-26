@@ -20,7 +20,7 @@ public class SFileConvertor {
                 .sfileName(sFileEntity.getSfileName())
                 .sfileUrl(sFileEntity.getSfileUrl())
                 .sfileSize(sFileEntity.getSfileSize())
-                .sfileType(sFileEntity.getSfileType())
+                .courseName(sFileEntity.getCourseName())
                 .downloadCount(sFileEntity.getDownloadCount())
                 .build();
     }
@@ -32,7 +32,7 @@ public class SFileConvertor {
                 .sfileName(sfile.getSfileName())
                 .sfileUrl(sfile.getSfileUrl())
                 .sfileSize(sfile.getSfileSize())
-                .sfileType(sfile.getSfileType())
+                .courseName(sfile.getCourseName())
                 .downloadCount(sfile.getDownloadCount())
                 .createTime(sfile.getCreateTime())
                 .build();

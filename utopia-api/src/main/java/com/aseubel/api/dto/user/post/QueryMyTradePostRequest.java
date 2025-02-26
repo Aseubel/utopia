@@ -1,4 +1,4 @@
-package com.aseubel.api.dto.user;
+package com.aseubel.api.dto.user.post;
 
 import com.aseubel.types.annotation.FieldDesc;
 import lombok.*;
@@ -10,14 +10,14 @@ import java.io.Serializable;
 
 /**
  * @author Aseubel
- * @date 2025-02-26 12:41
+ * @date 2025-02-26 13:14
  */
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class QueryMyDiscussPostRequest implements Serializable {
+public class QueryMyTradePostRequest implements Serializable {
 
     @FieldDesc(name = "用户id")
     @NotNull(message = "用户id不能为空")
@@ -30,5 +30,11 @@ public class QueryMyDiscussPostRequest implements Serializable {
     @Min(value = 1, message = "每页记录数不能小于1")
     @FieldDesc(name = "每页记录数")
     private Integer limit;
+
+    @FieldDesc(name = "类型,0-出售;1-求购:2-赠送")
+    private Integer type;
+
+    @FieldDesc(name = "状态,0-未完成;1-已完成")
+    private Integer status;
 
 }

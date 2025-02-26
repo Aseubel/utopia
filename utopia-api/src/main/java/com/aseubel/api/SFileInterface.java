@@ -44,6 +44,6 @@ public interface SFileInterface {
      * @param querySFileRequestDTO
      * @return
      */
-    Response<List<QuerySFileResponseDTO>> querySFiles(@Valid QuerySFileRequestDTO querySFileRequestDTO);
+    Response<List<QuerySFileResponseDTO>> querySFiles(QuerySFileRequestDTO querySFileRequestDTO);
 
 }

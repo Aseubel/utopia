@@ -52,10 +52,10 @@ public class SFileRepository implements IFileRepository {
     }
 
     @Override
-    public List<SFileEntity> listSFile(String fileId, Integer limit, String sortField) {
+    public List<SFileEntity> listSFile(String fileId, Integer limit, String sortField, String courseName) {
         return Optional.ofNullable(StringUtils.isEmpty(fileId)
-                        ? sFileMapper.listSFileAhead(limit, sortField)
-                        : sFileMapper.listSFile(fileId, limit, sortField))
+                        ? sFileMapper.listSFileAhead(limit, sortField, courseName)
+                        : sFileMapper.listSFile(fileId, limit, sortField, courseName))
                 .map(p -> p.stream().map(sFileConvertor::convert).collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
     }

@@ -22,6 +22,12 @@ public interface ITradePostRepository {
     List<TradePostEntity> listTradePost(BazaarBO bazaarBO);
 
     /**
+     * 列举用户发布的帖子
+     * @return
+     */
+    List<TradePostEntity> listUserTradePost(BazaarBO bazaarBO);
+
+    /**
      * 保存帖子图片记录
      * @param postImage
      */
