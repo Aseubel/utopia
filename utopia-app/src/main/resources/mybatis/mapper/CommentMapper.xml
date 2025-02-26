@@ -39,7 +39,7 @@
 
     <update id="decreaseLikeCount">
         update `comment`
-        set like_count = like_count + 1
+        set like_count = like_count - 1
         where comment_id = #{commentId} and is_deleted = 0
     </update>
 
