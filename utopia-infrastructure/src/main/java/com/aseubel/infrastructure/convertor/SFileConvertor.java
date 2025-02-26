@@ -1,6 +1,6 @@
 package com.aseubel.infrastructure.convertor;
 
-import com.aseubel.domain.sfile.model.SFileEntity;
+import com.aseubel.domain.sfile.model.entity.SFileEntity;
 import com.aseubel.infrastructure.dao.po.SFile;
 import org.springframework.stereotype.Component;
 

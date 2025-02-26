@@ -3,20 +3,23 @@ package com.aseubel.infrastructure.adapter.repo;
 import cn.hutool.core.collection.CollectionUtil;
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.sfile.adapter.repo.IFileRepository;
-import com.aseubel.domain.sfile.model.SFileEntity;
+import com.aseubel.domain.sfile.model.entity.SFileEntity;
+import com.aseubel.domain.sfile.model.vo.CourseVO;
 import com.aseubel.infrastructure.convertor.SFileConvertor;
-import com.aseubel.infrastructure.dao.SFileDownloadRecordMapper;
-import com.aseubel.infrastructure.dao.SFileMapper;
-import com.aseubel.infrastructure.dao.UserMapper;
+import com.aseubel.infrastructure.dao.*;
+import com.aseubel.infrastructure.dao.po.Course;
 import com.aseubel.infrastructure.dao.po.SFile;
+import com.aseubel.infrastructure.redis.IRedisService;
 import com.aseubel.types.util.AliOSSUtil;
+import com.aseubel.types.util.RedisKeyBuilder;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.aseubel.types.common.Constant.COURSES_EXPIRE_TIME;
 
 /**
  * @author Aseubel
@@ -33,6 +36,12 @@ public class SFileRepository implements IFileRepository {
     private SFileMapper sFileMapper;
 
     @Resource
+    private CourseMapper courseMapper;
+
+    @Resource
+    private MajorMapper majorMapper;
+
+    @Resource
     private SFileDownloadRecordMapper sFileDownloadRecordMapper;
 
     @Resource
@@ -40,6 +49,9 @@ public class SFileRepository implements IFileRepository {
 
     @Resource
     private AliOSSUtil aliOSSUtil;
+
+    @Resource
+    private IRedisService redisService;
 
     @Override
     public void saveSFile(SFileEntity file) {
@@ -105,5 +117,22 @@ public class SFileRepository implements IFileRepository {
         sFileMapper.incrementDownloadCount(fileId);
     }
 
+    @Override
+    public List<CourseVO> queryCourses() {
+        List<CourseVO> courseVOS = redisService.getValue(RedisKeyBuilder.CoursesKey());
+        if (CollectionUtil.isNotEmpty(courseVOS)) {
+            return courseVOS;
+        }
+
+        List<String> majorNames = majorMapper.getAllMajor();
+        courseVOS = new ArrayList<>();
+        for (String majorName : majorNames) {
+            CourseVO course = new CourseVO(majorName, courseMapper.listCourseNamesByMajorName(majorName));
+            courseVOS.add(course);
+        }
+
+        redisService.setValue(RedisKeyBuilder.CoursesKey(), courseVOS, COURSES_EXPIRE_TIME);
+        return courseVOS;
+    }
 
 }

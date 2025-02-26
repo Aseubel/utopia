@@ -1,4 +1,4 @@
-package com.aseubel.domain.sfile.model;
+package com.aseubel.domain.sfile.model.entity;
 
 import com.aseubel.types.annotation.FieldDesc;
 import com.aseubel.types.exception.AppException;

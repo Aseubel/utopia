@@ -81,4 +81,8 @@ public class RedisKeyBuilder {
         return PREFIX + SPLIT + userId + SPLIT + FAVORITE_STATUS;
     }
 
+    public static String CoursesKey() {
+        return PREFIX + SPLIT + "courses";
+    }
+
 }

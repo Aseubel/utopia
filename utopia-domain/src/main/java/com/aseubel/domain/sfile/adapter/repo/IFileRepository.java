@@ -1,8 +1,8 @@
 package com.aseubel.domain.sfile.adapter.repo;
 
 import com.aliyuncs.exceptions.ClientException;
-import com.aseubel.domain.sfile.model.SFileEntity;
-import org.springframework.stereotype.Repository;
+import com.aseubel.domain.sfile.model.entity.SFileEntity;
+import com.aseubel.domain.sfile.model.vo.CourseVO;
 
 import java.util.List;
 
@@ -73,4 +73,9 @@ public interface IFileRepository {
      */
     void incrementDownloadCount(String fileId);
 
+    /**
+     * 查询所有课程信息
+     * @return
+     */
+    List<CourseVO> queryCourses();
 }

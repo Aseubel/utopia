@@ -48,4 +48,6 @@ public class Constant {
 
     public static final AttributeKey<String> WS_TOKEN_KEY = AttributeKey.valueOf("code");
 
+    public static final long COURSES_EXPIRE_TIME = 24 * 3600 * 1000L; // 一天
+
 }

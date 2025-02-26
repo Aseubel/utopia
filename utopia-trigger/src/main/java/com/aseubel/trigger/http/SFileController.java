@@ -3,11 +3,9 @@ package com.aseubel.trigger.http;
 import com.aliyun.oss.OSSException;
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.api.SFileInterface;
-import com.aseubel.api.dto.file.QuerySFileRequestDTO;
-import com.aseubel.api.dto.file.QuerySFileResponseDTO;
-import com.aseubel.api.dto.file.UploadFileRequestDTO;
-import com.aseubel.api.dto.file.UploadFileResponseDTO;
-import com.aseubel.domain.sfile.model.SFileEntity;
+import com.aseubel.api.dto.file.*;
+import com.aseubel.domain.sfile.model.entity.SFileEntity;
+import com.aseubel.domain.sfile.model.vo.CourseVO;
 import com.aseubel.domain.sfile.service.IFileService;
 import com.aseubel.types.Response;
 import com.aseubel.types.exception.AppException;
@@ -131,5 +129,20 @@ public class SFileController implements SFileInterface {
         return Response.SYSTEM_SUCCESS(querySFileResponseDTOS);
     }
 
+    /**
+     * 查询课程列表
+     */
+    @Override
+    @GetMapping("/course")
+    public Response<List<QueryCourseResponse>> queryCourses(QueryCourseRequest queryCourseRequest) {
+        List<CourseVO> courseVOS = fileService.queryCourses();
+        List<QueryCourseResponse> queryCourseResponses = courseVOS.stream()
+               .map(courseVO -> QueryCourseResponse.builder()
+                       .majorName(courseVO.getMajorName())
+                       .courseNames(courseVO.getCourseName())
+                       .build())
+               .collect(Collectors.toList());
+        return Response.SYSTEM_SUCCESS(queryCourseResponses);
+    }
 
 }

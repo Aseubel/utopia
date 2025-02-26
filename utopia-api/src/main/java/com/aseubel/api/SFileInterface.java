@@ -1,9 +1,6 @@
 package com.aseubel.api;
 
-import com.aseubel.api.dto.file.QuerySFileRequestDTO;
-import com.aseubel.api.dto.file.QuerySFileResponseDTO;
-import com.aseubel.api.dto.file.UploadFileRequestDTO;
-import com.aseubel.api.dto.file.UploadFileResponseDTO;
+import com.aseubel.api.dto.file.*;
 import com.aseubel.types.Response;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,5 +42,12 @@ public interface SFileInterface {
      * @return
      */
     Response<List<QuerySFileResponseDTO>> querySFiles(QuerySFileRequestDTO querySFileRequestDTO);
+
+    /**
+     * 获取课程列表
+     * @param queryCourseRequest
+     * @return
+     */
+    Response<List<QueryCourseResponse>> queryCourses(QueryCourseRequest queryCourseRequest);
 
 }

@@ -2,7 +2,8 @@ package com.aseubel.domain.sfile.service;
 
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.sfile.adapter.repo.IFileRepository;
-import com.aseubel.domain.sfile.model.SFileEntity;
+import com.aseubel.domain.sfile.model.entity.SFileEntity;
+import com.aseubel.domain.sfile.model.vo.CourseVO;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.AliOSSUtil;
 import lombok.RequiredArgsConstructor;
@@ -85,6 +86,12 @@ public class FileServiceImpl implements IFileService{
     public List<SFileEntity> listSFileByTypeId(String fileId, Long typeId, Integer limit) {
         log.info("开始获取指定类型文件列表服务");
         return fileRepository.listSFileByTypeId(fileId, typeId, limit);
+    }
+
+    @Override
+    public List<CourseVO> queryCourses() {
+        log.info("开始获取课程列表服务");
+        return fileRepository.queryCourses();
     }
 
 }

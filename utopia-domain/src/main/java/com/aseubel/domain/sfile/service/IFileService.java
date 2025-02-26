@@ -1,8 +1,8 @@
 package com.aseubel.domain.sfile.service;
 
 import com.aliyuncs.exceptions.ClientException;
-import com.aseubel.domain.sfile.model.SFileEntity;
-import org.springframework.web.multipart.MultipartFile;
+import com.aseubel.domain.sfile.model.entity.SFileEntity;
+import com.aseubel.domain.sfile.model.vo.CourseVO;
 
 import java.util.List;
 
@@ -46,4 +46,9 @@ public interface IFileService {
      */
     List<SFileEntity> listSFileByTypeId(String fileId, Long typeId, Integer limit);
 
+    /**
+     * 查询所有课程
+     * @return
+     */
+    List<CourseVO> queryCourses();
 }
