@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.aseubel.types.common.Constant.*;
 
@@ -64,13 +65,13 @@ public class CommunityService implements ICommunityService {
                         .map(DiscussPostEntity::getUserId)
                         .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
-        // 获取发帖人的用户名和头像，repo层已经保证了顺序
-        List<UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyList() : communityUserRepository.queryUserBaseInfo(userIds);
-        if (!CollectionUtil.isEmpty(users)) {
-            for (int i = 0; i < discussPostEntities.size(); i++) {
-                discussPostEntities.get(i).setUserName(users.get(i).getUserName());
-                discussPostEntities.get(i).setUserAvatar(users.get(i).getAvatar());
-            }
+        // 获取发帖人的用户名和头像
+        Map<String, UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyMap() : communityUserRepository.queryUserBaseInfo(userIds);
+        if (CollectionUtil.isNotEmpty(users)) {
+            discussPostEntities.forEach(d -> {
+                d.setUserName(users.get(d.getUserId()).getUserName());
+                d.setUserAvatar(users.get(d.getUserId()).getAvatar());
+            });
         }
 
         discussPostEntities.forEach(d -> {
@@ -155,19 +156,22 @@ public class CommunityService implements ICommunityService {
         checkUserIdValid(userId);
         // 查询帖子列表
         List<DiscussPostEntity> discussPostEntities = discussPostRepository.queryUserFavoritePosts(communityBO);
+        if (CollectionUtil.isEmpty(discussPostEntities)) {
+            return Collections.emptyList();
+        }
         // 提取帖子的用户id
-        List<String> userIds = Optional.ofNullable(discussPostEntities)
+        List<String> userIds = Optional.of(discussPostEntities)
                 .map(d -> d.stream()
                         .map(DiscussPostEntity::getUserId)
                         .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
-        // 获取发帖人的用户名和头像，repo层已经保证了顺序
-        List<UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyList() : communityUserRepository.queryUserBaseInfo(userIds);
-        if (!CollectionUtil.isEmpty(discussPostEntities) && !CollectionUtil.isEmpty(users)) {
-            for (int i = 0; i < discussPostEntities.size(); i++) {
-                discussPostEntities.get(i).setUserName(users.get(i).getUserName());
-                discussPostEntities.get(i).setUserAvatar(users.get(i).getAvatar());
-            }
+        // 获取发帖人的用户名和头像
+        Map<String, UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyMap() : communityUserRepository.queryUserBaseInfo(userIds);
+        if (CollectionUtil.isNotEmpty(users)) {
+            discussPostEntities.forEach(d -> {
+                d.setUserName(users.get(d.getUserId()).getUserName());
+                d.setUserAvatar(users.get(d.getUserId()).getAvatar());
+            });
         }
         log.info("查询用户收藏帖子服务结束执行，userId:{}", userId);
         return discussPostEntities;
@@ -184,19 +188,22 @@ public class CommunityService implements ICommunityService {
         checkUserIdValid(userId);
         // 查询帖子列表
         List<DiscussPostEntity> discussPostEntities = discussPostRepository.queryUserFavoritePosts(communityBO);
+        if (CollectionUtil.isEmpty(discussPostEntities)) {
+            return Collections.emptyList();
+        }
         // 提取帖子的用户id
-        List<String> userIds = Optional.ofNullable(discussPostEntities)
+        List<String> userIds = Optional.of(discussPostEntities)
                 .map(d -> d.stream()
                         .map(DiscussPostEntity::getUserId)
                         .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
-        // 获取发帖人的用户名和头像，repo层已经保证了顺序
-        List<UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyList() : communityUserRepository.queryUserBaseInfo(userIds);
-        if (!CollectionUtil.isEmpty(discussPostEntities) && !CollectionUtil.isEmpty(users)) {
-            for (int i = 0; i < discussPostEntities.size(); i++) {
-                discussPostEntities.get(i).setUserName(users.get(i).getUserName());
-                discussPostEntities.get(i).setUserAvatar(users.get(i).getAvatar());
-            }
+        // 获取发帖人的用户名和头像
+        Map<String, UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyMap() : communityUserRepository.queryUserBaseInfo(userIds);
+        if (CollectionUtil.isNotEmpty(users)) {
+            discussPostEntities.forEach(d -> {
+                d.setUserName(users.get(d.getUserId()).getUserName());
+                d.setUserAvatar(users.get(d.getUserId()).getAvatar());
+            });
         }
         log.info("查询用户发布的讨论帖子服务结束执行，userId:{}", userId);
         return discussPostEntities;
@@ -306,27 +313,36 @@ public class CommunityService implements ICommunityService {
         }
         for (CommentEntity comment : comments) {
             if (CollectionUtil.isNotEmpty(comment.getReplyList())) {
-                Map<String ,String> userNamesMap = communityUserRepository.queryUserNamesByCommentIds(comment.getReplyList().stream()
+                Map<String ,String> cmtIdUserNameMap = communityUserRepository.queryUserNamesByCommentIds(comment.getReplyList().stream()
                         .map(CommentEntity::getReplyTo)
                         .collect(Collectors.toList()));
                 for (CommentEntity reply : comment.getReplyList()) {
-                    reply.setReplyToName(userNamesMap.get(reply.getReplyTo()));
+                    reply.setReplyToName(cmtIdUserNameMap.get(reply.getReplyTo()));
                 }
             }
         }
         // 提取评论的用户id
         List<String> userIds = Optional.of(comments)
                 .map(d -> d.stream()
-                        .map(CommentEntity::getUserId)
+                        .flatMap(comment -> Stream.concat(
+                                Stream.of(comment.getUserId()),
+                                comment.getReplyList().stream().map(CommentEntity::getUserId)
+                        ))
                         .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
-        // 获取评论人的用户名和头像，repo层已经保证了顺序
-        List<UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyList() : communityUserRepository.queryUserBaseInfo(userIds);
-        if (!CollectionUtil.isEmpty(comments) && !CollectionUtil.isEmpty(users)) {
-            for (int i = 0; i < comments.size(); i++) {
-                comments.get(i).setUserName(users.get(i).getUserName());
-                comments.get(i).setUserAvatar(users.get(i).getAvatar());
-            }
+        // 获取评论人的用户名和头像
+        Map<String, UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyMap() : communityUserRepository.queryUserBaseInfo(userIds);
+        if (CollectionUtil.isNotEmpty(users)) {
+            comments.forEach(c -> {
+                c.setUserName(users.get(c.getUserId()).getUserName());
+                c.setUserAvatar(users.get(c.getUserId()).getAvatar());
+                if (CollectionUtil.isNotEmpty(c.getReplyList())) {
+                    c.getReplyList().forEach(reply -> {
+                        reply.setUserName(users.get(reply.getUserId()).getUserName());
+                        reply.setUserAvatar(users.get(reply.getUserId()).getAvatar());
+                    });
+                }
+            });
         }
         // 获取评论的图片
         if (!CollectionUtil.isEmpty(comments)) {
@@ -364,12 +380,12 @@ public class CommunityService implements ICommunityService {
                         .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
         // 获取评论人的用户名和头像，repo层已经保证了顺序
-        List<UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyList() : communityUserRepository.queryUserBaseInfo(userIds);
-        if (!CollectionUtil.isEmpty(comments) && !CollectionUtil.isEmpty(users)) {
-            for (int i = 0; i < comments.size(); i++) {
-                comments.get(i).setUserName(users.get(i).getUserName());
-                comments.get(i).setUserAvatar(users.get(i).getAvatar());
-            }
+        Map<String, UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyMap() : communityUserRepository.queryUserBaseInfo(userIds);
+        if (CollectionUtil.isNotEmpty(users)) {
+            comments.forEach(c -> {
+                c.setUserName(users.get(c.getUserId()).getUserName());
+                c.setUserAvatar(users.get(c.getUserId()).getAvatar());
+            });
         }
         log.info("获取子评论服务结束执行, userId:{}, commentId:{}", userId, commentId);
         return comments;

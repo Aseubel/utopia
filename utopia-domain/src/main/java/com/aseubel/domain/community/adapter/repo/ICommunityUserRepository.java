@@ -18,7 +18,7 @@ public interface ICommunityUserRepository {
      * @param userIds
      * @return
      */
-    List<UserEntity> queryUserBaseInfo(List<String> userIds);
+    Map<String, UserEntity> queryUserBaseInfo(List<String> userIds);
 
     /**
      * 查询用户状态，是否封禁之类的

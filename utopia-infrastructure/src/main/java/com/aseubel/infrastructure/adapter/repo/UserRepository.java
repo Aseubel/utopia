@@ -144,17 +144,12 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
     }
 
     @Override
-    public List<UserEntity> queryUserBaseInfo(List<String> userIds) {
+    public Map<String, UserEntity> queryUserBaseInfo(List<String> userIds) {
         return Optional.ofNullable(userMapper.listUserBaseInfoByUserIds(userIds))
-                .map(l -> {
-                    Map<String, UserEntity> userMap = l.stream()
-                            .map(userConvertor::convert) // 先转换为 UserEntity
-                            .collect(Collectors.toMap(UserEntity::getOpenid, user -> user));
-                    return userIds.stream()
-                            .map(userMap::get)
-                            .collect(Collectors.toList());
-                })
-                .orElse(Collections.emptyList());
+                .map(l -> l.stream()
+                        .map(userConvertor::convert) // 先转换为 UserEntity
+                        .collect(Collectors.toMap(UserEntity::getOpenid, user -> user)))
+                .orElse(Collections.emptyMap());
     }
 
     @Override

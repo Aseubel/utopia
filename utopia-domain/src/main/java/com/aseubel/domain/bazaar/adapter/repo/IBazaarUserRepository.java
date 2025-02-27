@@ -3,6 +3,7 @@ package com.aseubel.domain.bazaar.adapter.repo;
 import com.aseubel.domain.user.model.entity.UserEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Aseubel
@@ -16,7 +17,7 @@ public interface IBazaarUserRepository {
      * @param userIds
      * @return
      */
-    List<UserEntity> queryUserBaseInfo(List<String> userIds);
+    Map<String, UserEntity> queryUserBaseInfo(List<String> userIds);
 
     /**
      * 查询用户状态，是否封禁之类的

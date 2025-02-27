@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -49,19 +50,22 @@ public class BazaarService implements IBazaarService{
         bazaarBO.setLimit(limit == null ? PER_PAGE_TRADE_POST_SIZE : limit);
         // 查询帖子列表
         List<TradePostEntity> tradePostEntities = tradePostRepository.listTradePost(bazaarBO);
+        if (CollectionUtil.isEmpty(tradePostEntities)) {
+            return Collections.emptyList();
+        }
         // 提取帖子的用户id
-        List<String> userIds = Optional.ofNullable(tradePostEntities)
+        List<String> userIds = Optional.of(tradePostEntities)
                 .map(d -> d.stream()
                         .map(TradePostEntity::getUserId)
                         .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
-        // 获取发帖人的用户名和头像，repo层已经保证了顺序
-        List<UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyList() : bazaarUserRepository.queryUserBaseInfo(userIds);
-        if (!CollectionUtil.isEmpty(tradePostEntities) && !CollectionUtil.isEmpty(users)) {
-            for (int i = 0;i < tradePostEntities.size();i++) {
-                tradePostEntities.get(i).setUserName(users.get(i).getUserName());
-                tradePostEntities.get(i).setUserAvatar(users.get(i).getAvatar());
-            }
+        // 获取发帖人的用户名和头像
+        Map<String, UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyMap() : bazaarUserRepository.queryUserBaseInfo(userIds);
+        if (CollectionUtil.isNotEmpty(users)) {
+            tradePostEntities.forEach(d -> {
+                d.setUserName(users.get(d.getUserId()).getUserName());
+                d.setUserAvatar(users.get(d.getUserId()).getAvatar());
+            });
         }
         // 获取帖子的第一张图片
         if (!CollectionUtil.isEmpty(tradePostEntities)) {
@@ -121,19 +125,22 @@ public class BazaarService implements IBazaarService{
         bazaarBO.setLimit(limit == null ? PER_PAGE_TRADE_POST_SIZE : limit);
         // 查询帖子列表
         List<TradePostEntity> tradePostEntities = tradePostRepository.listUserTradePost(bazaarBO);
+        if (CollectionUtil.isEmpty(tradePostEntities)) {
+            return Collections.emptyList();
+        }
         // 提取帖子的用户id
-        List<String> userIds = Optional.ofNullable(tradePostEntities)
+        List<String> userIds = Optional.of(tradePostEntities)
                 .map(d -> d.stream()
                         .map(TradePostEntity::getUserId)
                         .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
-        // 获取发帖人的用户名和头像，repo层已经保证了顺序
-        List<UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyList() : bazaarUserRepository.queryUserBaseInfo(userIds);
-        if (!CollectionUtil.isEmpty(tradePostEntities) && !CollectionUtil.isEmpty(users)) {
-            for (int i = 0;i < tradePostEntities.size();i++) {
-                tradePostEntities.get(i).setUserName(users.get(i).getUserName());
-                tradePostEntities.get(i).setUserAvatar(users.get(i).getAvatar());
-            }
+        // 获取发帖人的用户名和头像
+        Map<String, UserEntity> users = CollectionUtil.isEmpty(userIds) ? Collections.emptyMap() : bazaarUserRepository.queryUserBaseInfo(userIds);
+        if (CollectionUtil.isNotEmpty(users)) {
+            tradePostEntities.forEach(d -> {
+                d.setUserName(users.get(d.getUserId()).getUserName());
+                d.setUserAvatar(users.get(d.getUserId()).getAvatar());
+            });
         }
         // 获取帖子的第一张图片
         if (!CollectionUtil.isEmpty(tradePostEntities)) {
