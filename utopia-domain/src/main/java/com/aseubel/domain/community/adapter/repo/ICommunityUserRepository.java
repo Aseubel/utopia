@@ -4,6 +4,7 @@ import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Aseubel
@@ -27,9 +28,16 @@ public interface ICommunityUserRepository {
     UserEntity queryUserStatus(String userId);
 
     /**
-     * 查询评论的用户昵称
-     * @param comments
+     * 查询用户昵称
+     * @param userIds
      * @return
      */
-    List<String> queryUserNames(List<CommentEntity> comments);
+    Map<String, String> queryUserNames(List<String> userIds);
+
+    /**
+     * 查询评论的用户昵称
+     * @param commentIds
+     * @return 评论id和用户昵称的映射
+     */
+    Map<String, String> queryUserNamesByCommentIds(List<String> commentIds);
 }

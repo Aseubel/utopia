@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -79,11 +80,13 @@ public class CommunityService implements ICommunityService {
                     d.setComments(commentRepository.listPostMainComment(d.getDiscussPostId()));
                     // 获取主评论的用户名
                     if (!CollectionUtil.isEmpty(d.getComments())) {
-                        List<String> userNames = communityUserRepository.queryUserNames(d.getComments());
-                        if (!CollectionUtil.isEmpty(userNames)) {
-                            for (int i = 0; i < d.getComments().size(); i++) {
-                                d.getComments().get(i).setUserName(userNames.get(i));
-                            }
+                        Map<String, String> userNameMap = communityUserRepository.queryUserNames(d.getComments().stream()
+                                .map(CommentEntity::getUserId)
+                                .collect(Collectors.toList()));
+                        if (!CollectionUtil.isEmpty(userNameMap)) {
+                            d.getComments().forEach(comment ->
+                                    comment.setUserName(userNameMap.get(comment.getUserId()))
+                            );
                         }
                     }
                 }
@@ -302,15 +305,17 @@ public class CommunityService implements ICommunityService {
             return Collections.emptyList();
         }
         for (CommentEntity comment : comments) {
-            List<String> userNames = communityUserRepository.queryUserNames(comment.getReplyList());
-            if (!CollectionUtil.isEmpty(userNames)) {
-                for (int i = 0; i < comment.getReplyList().size(); i++) {
-                    comment.getReplyList().get(i).setUserName(userNames.get(i));
+            if (CollectionUtil.isNotEmpty(comment.getReplyList())) {
+                Map<String ,String> userNamesMap = communityUserRepository.queryUserNamesByCommentIds(comment.getReplyList().stream()
+                        .map(CommentEntity::getReplyTo)
+                        .collect(Collectors.toList()));
+                for (CommentEntity reply : comment.getReplyList()) {
+                    reply.setReplyToName(userNamesMap.get(reply.getReplyTo()));
                 }
             }
         }
         // 提取评论的用户id
-        List<String> userIds = Optional.ofNullable(comments)
+        List<String> userIds = Optional.of(comments)
                 .map(d -> d.stream()
                         .map(CommentEntity::getUserId)
                         .collect(Collectors.toList()))
@@ -341,8 +346,19 @@ public class CommunityService implements ICommunityService {
         communityBO.setLimit(limit == null ? PER_PAGE_SUB_COMMENT_SIZE : limit);
         // 查询评论列表
         List<CommentEntity> comments = commentRepository.listSubComment(communityBO);
+        if (CollectionUtil.isEmpty(comments)) {
+            return Collections.emptyList();
+        }
+        Map<String ,String> userNamesMap = communityUserRepository.queryUserNamesByCommentIds(comments.stream()
+                .map(CommentEntity::getReplyTo)
+                .collect(Collectors.toList()));
+        for (CommentEntity comment : comments) {
+            if (!CollectionUtil.isEmpty(userNamesMap)) {
+                comment.setReplyToName(userNamesMap.get(comment.getReplyTo()));
+            }
+        }
         // 提取评论的用户id
-        List<String> userIds = Optional.ofNullable(comments)
+        List<String> userIds = Optional.of(comments)
                 .map(d -> d.stream()
                         .map(CommentEntity::getUserId)
                         .collect(Collectors.toList()))

@@ -53,6 +53,13 @@ public interface CommentMapper {
     String getUserIdByCommentId(String commentId);
 
     /**
+     * 根据评论id列表查询用户id列表
+     * @param commentIds
+     * @return
+     */
+    List<String> listUserIdsByCommentIds(List<String> commentIds);
+
+    /**
      * 根据帖子id查询评论列表
      * @param postId
      * @return
@@ -110,6 +117,13 @@ public interface CommentMapper {
      * @return
      */
     List<Comment> listCommentByCommentIds(List<String> commentIds);
+
+    /**
+     * 根据评论id列表查询评论列表
+     * @param commentIds
+     * @return
+     */
+    List<Comment> listCommentIdAndUserIdByCommentIds(List<String> commentIds);
 
     /**
      * 关联评论图片

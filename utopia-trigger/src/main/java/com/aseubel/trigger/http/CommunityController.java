@@ -12,6 +12,7 @@ import com.aseubel.domain.community.service.ICommunityService;
 import com.aseubel.types.Response;
 import com.aseubel.types.event.CommentPostEvent;
 import com.aseubel.types.event.CustomEvent;
+import com.aseubel.types.event.ReplyCommentEvent;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.CustomMultipartFile;
 import lombok.RequiredArgsConstructor;
@@ -234,9 +235,9 @@ public class CommunityController implements CommunityInterface {
         communityService.replyComment(CommunityBO.builder()
                 .commentEntity(commentEntity)
                 .build());
-        eventPublisher.publishEvent(new CommentPostEvent(CommunityBO.builder()
+        eventPublisher.publishEvent(new ReplyCommentEvent(CommunityBO.builder()
                 .postId(requestDTO.getPostId())
-                .commentId(commentEntity.getRootId())
+                .commentId(requestDTO.getRootId())
                 .build()));
         return Response.SYSTEM_SUCCESS(ReplyCommentResponse.builder()
                 .commentId(commentEntity.getCommentId())
@@ -363,8 +364,9 @@ public class CommunityController implements CommunityInterface {
                     .userName(comment.getUserName())
                     .userAvatar(comment.getUserAvatar())
                     .content(comment.getContent())
+                    .replyTo(comment.getReplyTo())
+                    .replyToName(comment.getReplyToName())
                     .likeCount(comment.getLikeCount())
-                    .replyCount(comment.getReplyCount())
                     .commentTime(comment.getCommentTime())
                     .updateTime(comment.getUpdateTime())
                     .isLike(comment.getIsLike())

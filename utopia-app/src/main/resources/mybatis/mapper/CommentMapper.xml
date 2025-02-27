@@ -102,6 +102,15 @@
         </foreach> and is_deleted = 0
     </select>
 
+    <select id="listCommentIdAndUserIdByCommentIds" resultType="com.aseubel.infrastructure.dao.po.Comment">
+        select comment_id, user_id
+        from `comment`
+        where comment_id in
+        <foreach collection="commentIds" item="commentId" open="(" separator="," close=")">
+            #{commentId}
+        </foreach> and is_deleted = 0
+    </select>
+
     <select id="listCommentByPostId" resultType="com.aseubel.infrastructure.dao.po.Comment">
         select id, root_id, reply_to, comment_id, post_id, user_id, content, like_count, unlike_count, reply_count, comment_time, update_time
         from `comment`
@@ -140,10 +149,12 @@
         select id, root_id, reply_to, comment_id, post_id, user_id, content, like_count, unlike_count, reply_count, comment_time, update_time
         from `comment`
         where
-        id > (select id from `comment` where comment_id = #{commentId} and is_deleted = 0)
-        and root_id = #{rootId}
-        and root_id != comment_id
-        and is_deleted = 0
+        <if test="sortType == 0 or sortType == null">id > (select id from `comment` where comment_id = #{commentId} and is_deleted = 0)</if>
+        <if test="sortType == 1">id &lt; (select id from `comment` where comment_id = #{commentId} and is_deleted = 0)</if>
+        <if test="sortType == 2">like_count &lt;= (select like_count from `comment` where comment_id = #{commentId} and is_deleted = 0)</if>
+            and root_id = #{rootId}
+            and root_id != comment_id
+            and is_deleted = 0
         order by
         <if test="sortType == 0 or sortType == null">id</if>
         <if test="sortType == 1">id DESC</if>
@@ -160,6 +171,15 @@
         <if test="sortType == 1">id DESC</if>
         <if test="sortType == 2">like_count DESC, id</if>
         limit #{limit}
+    </select>
+
+    <select id="listUserIdsByCommentIds" resultType="java.lang.String">
+        select user_id
+        from `comment`
+        where comment_id in
+        <foreach collection="commentIds" item="commentId" open="(" separator="," close=")">
+            #{commentId}
+        </foreach> and is_deleted = 0
     </select>
 
 </mapper>

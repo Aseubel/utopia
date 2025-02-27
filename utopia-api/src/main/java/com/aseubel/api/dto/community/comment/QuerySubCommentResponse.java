@@ -44,8 +44,11 @@ public class QuerySubCommentResponse implements Serializable {
     @FieldDesc(name = "点赞数")
     private Integer likeCount;
 
-    @FieldDesc(name = "回复数")
-    private Integer replyCount;
+    @FieldDesc(name = "回复对象的id")
+    private String replyTo;
+
+    @FieldDesc(name = "回复对象的昵称")
+    private String replyToName;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @JsonSerialize(using = LocalDateTimeSerializer.class)

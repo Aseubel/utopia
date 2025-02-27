@@ -22,6 +22,7 @@ public class ReplyCommentEventListener implements ApplicationListener<ReplyComme
     @Resource
     private IDiscussPostRepository discussPostRepository;
 
+    @Resource
     private ICommentRepository commentRepository;
 
     @Override

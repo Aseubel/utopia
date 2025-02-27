@@ -5,16 +5,19 @@ import com.aseubel.domain.community.adapter.repo.ICommunityUserRepository;
 import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.user.adapter.repo.IUserRepository;
 import com.aseubel.domain.user.model.entity.UserEntity;
-import com.aseubel.domain.user.model.vo.School;
 import com.aseubel.infrastructure.convertor.UserConvertor;
+import com.aseubel.infrastructure.dao.CommentMapper;
 import com.aseubel.infrastructure.dao.SchoolMapper;
 import com.aseubel.infrastructure.dao.UserMapper;
+import com.aseubel.infrastructure.dao.po.Comment;
+import com.aseubel.infrastructure.dao.po.User;
 import com.aseubel.infrastructure.redis.IRedisService;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.JwtUtil;
 import com.aseubel.types.util.RedisKeyBuilder;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
@@ -43,6 +46,8 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
 
     @Resource
     private SchoolMapper schoolMapper;
+    @Autowired
+    private CommentMapper commentMapper;
 
     @Override
     public UserEntity queryUserInfo(String userId) {
@@ -78,7 +83,7 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
 
     @Override
     public String generateUserToken(String userId, String secretKey, Long ttl) {
-        Map<String, Object> claims=new HashMap<>();
+        Map<String, Object> claims = new HashMap<>();
         claims.put(USER_ID_KEY, userId);
         return JwtUtil.createJWT(secretKey, ttl, claims);
     }
@@ -122,7 +127,8 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
                 return true;
             } catch (Exception ex) {
                 // 不通过
-                log.error("用户进行jwt校验失败！id:{}，token:{}", userId, token);;
+                log.error("用户进行jwt校验失败！id:{}，token:{}", userId, token);
+                ;
                 return false;
             }
         }
@@ -159,13 +165,27 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
     }
 
     @Override
-    public List<String> queryUserNames(List<CommentEntity> comments) {
-        List<String> userIds = comments.stream().map(CommentEntity::getUserId).collect(Collectors.toList());
-        List<String> names = new ArrayList<>();
-        for (String userId : userIds) {
-            names.add(userMapper.getUserNameByUserId(userId));
-        }
-        return names;
+    public Map<String, String> queryUserNames(List<String> userIds) {
+        List<User> users = userMapper.listUserBaseInfoByUserIds(userIds);
+        return users.stream()
+                .collect(Collectors.toMap(User::getUserId, User::getUserName));
+
+    }
+
+    @Override
+    public Map<String, String> queryUserNamesByCommentIds(List<String> commentIds) {
+        List<Comment> comments = commentMapper.listCommentIdAndUserIdByCommentIds(commentIds);
+        // 构建commentId-userId映射
+        Map<String, String> commentIdUserIdMap = comments.stream()
+                .collect(Collectors.toMap(Comment::getCommentId, Comment::getUserId));
+        // 批量查询用户名
+        List<User> users = userMapper.listUserBaseInfoByUserIds((comments.stream().map(Comment::getUserId).collect(Collectors.toList())));
+        // 构建userId-userName映射
+        Map<String, String> userIdUserNameMap = users.stream()
+                .collect(Collectors.toMap(User::getUserId, User::getUserName));
+        // 构建commentId-userName映射
+        return commentIdUserIdMap.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> userIdUserNameMap.get(e.getValue())));
     }
 
     @Override
