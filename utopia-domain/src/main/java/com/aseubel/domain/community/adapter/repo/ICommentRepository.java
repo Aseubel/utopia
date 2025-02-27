@@ -101,4 +101,10 @@ public interface ICommentRepository {
      * @throws ClientException
      */
     void deleteMissingImage() throws ClientException;
+
+    /**
+     * 增加评论回复数量
+     * @param commentId
+     */
+    void increaseCommentCount(String commentId);
 }

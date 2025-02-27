@@ -30,6 +30,11 @@ public interface IDiscussPostRepository {
     DiscussPostEntity getDiscussPost(CommunityBO communityBO);
 
     /**
+     * 根据帖子id获取用户id
+     */
+    String getUserIdByPostId(String postId);
+
+    /**
      * 保存帖子图片记录
      * @param postImage
      */

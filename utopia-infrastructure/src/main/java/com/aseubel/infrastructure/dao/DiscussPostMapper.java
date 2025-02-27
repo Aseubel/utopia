@@ -3,6 +3,7 @@ package com.aseubel.infrastructure.dao;
 import com.aseubel.infrastructure.dao.po.DiscussPost;
 import com.aseubel.infrastructure.dao.po.Image;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -127,4 +128,6 @@ public interface DiscussPostMapper {
      */
     void decreaseLikeCount(String postId);
 
+    @Select("SELECT user_id FROM discuss_post WHERE discuss_post_id = #{postId}")
+    String getUserIdByPostId(String postId);
 }

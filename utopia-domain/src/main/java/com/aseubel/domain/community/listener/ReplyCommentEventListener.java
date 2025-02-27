@@ -1,5 +1,6 @@
 package com.aseubel.domain.community.listener;
 
+import com.aseubel.domain.community.adapter.repo.ICommentRepository;
 import com.aseubel.domain.community.adapter.repo.IDiscussPostRepository;
 import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.types.event.ReplyCommentEvent;
@@ -21,10 +22,13 @@ public class ReplyCommentEventListener implements ApplicationListener<ReplyComme
     @Resource
     private IDiscussPostRepository discussPostRepository;
 
+    private ICommentRepository commentRepository;
+
     @Override
     public void onApplicationEvent(ReplyCommentEvent event) {
         log.info("监听到回复评论事件");
         CommunityBO communityBO = (CommunityBO) event.getSource();
         discussPostRepository.increaseCommentCount(communityBO.getPostId());
+        commentRepository.increaseCommentCount(communityBO.getCommentId());
     }
 }

@@ -211,7 +211,7 @@ public class CommunityController implements CommunityInterface {
                 .commentEntity(commentEntity)
                 .build());
         eventPublisher.publishEvent(new CommentPostEvent(CommunityBO.builder()
-                .commentEntity(commentEntity)
+                .postId(requestDTO.getPostId())
                 .build()));
         return Response.SYSTEM_SUCCESS(CommentPostResponse.builder()
                 .commentId(commentEntity.getCommentId())
@@ -235,7 +235,8 @@ public class CommunityController implements CommunityInterface {
                 .commentEntity(commentEntity)
                 .build());
         eventPublisher.publishEvent(new CommentPostEvent(CommunityBO.builder()
-                .commentEntity(commentEntity)
+                .postId(requestDTO.getPostId())
+                .commentId(commentEntity.getRootId())
                 .build()));
         return Response.SYSTEM_SUCCESS(ReplyCommentResponse.builder()
                 .commentId(commentEntity.getCommentId())

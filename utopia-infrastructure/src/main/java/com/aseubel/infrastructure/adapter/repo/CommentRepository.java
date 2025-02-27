@@ -90,7 +90,6 @@ public class CommentRepository implements ICommentRepository {
     @Override
     public void saveReplyComment(CommentEntity commentEntity) {
         commentMapper.addChildComment(commentConvertor.convert(commentEntity));
-        commentMapper.increaseCommentCount(commentConvertor.convert(commentEntity));
     }
 
     @Override
@@ -172,6 +171,11 @@ public class CommentRepository implements ICommentRepository {
         if (!CollectionUtil.isEmpty(missingImageIds)) {
             imageMapper.deleteMissingImage(missingImageIds);
         }
+    }
+
+    @Override
+    public void increaseCommentCount(String commentId) {
+        commentMapper.increaseCommentCount(commentId);
     }
 
 }

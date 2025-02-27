@@ -46,7 +46,7 @@
     <update id="increaseCommentCount">
         update `comment`
         set reply_count = reply_count + 1
-        where comment_id = root_id  and comment_id = #{replyTo} and is_deleted = 0
+        where comment_id = root_id  and comment_id = #{rootId} and is_deleted = 0
     </update>
 
     <select id="getCommentByCommentId" resultType="com.aseubel.infrastructure.dao.po.Comment">
@@ -106,7 +106,9 @@
         select id, root_id, reply_to, comment_id, post_id, user_id, content, like_count, unlike_count, reply_count, comment_time, update_time
         from `comment`
         where
-            id > (select id from `comment` where comment_id = #{commentId} and is_deleted = 0)
+        <if test="sortType == 0 or sortType == null">id > (select id from `comment` where comment_id = #{commentId} and is_deleted = 0)</if>
+        <if test="sortType == 1">id &lt; (select id from `comment` where comment_id = #{commentId} and is_deleted = 0)</if>
+        <if test="sortType == 2">like_count &lt;= (select like_count from `comment` where comment_id = #{commentId} and is_deleted = 0)</if>
             and post_id = #{postId}
             and is_deleted = 0
         order by

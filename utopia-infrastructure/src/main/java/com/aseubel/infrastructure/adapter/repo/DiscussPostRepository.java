@@ -94,6 +94,11 @@ public class DiscussPostRepository implements IDiscussPostRepository {
     }
 
     @Override
+    public String getUserIdByPostId(String postId) {
+        return discussPostMapper.getUserIdByPostId(postId);
+    }
+
+    @Override
     public void savePostImage(CommunityImage postImage) {
         imageMapper.addImage(communityImageConvertor.convert(postImage));
     }

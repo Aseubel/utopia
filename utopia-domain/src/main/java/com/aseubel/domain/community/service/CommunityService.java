@@ -237,6 +237,7 @@ public class CommunityService implements ICommunityService {
         CommentEntity commentEntity = communityBO.getCommentEntity();
         log.info("评论帖子服务开始执行，userId:{}", commentEntity.getUserId());
         checkUserStatus(commentEntity.getUserId());
+        checkPostIdValid(commentEntity.getPostId());
 
         commentEntity.generateCommentId();
         commentRepository.saveRootComment(commentEntity);
@@ -390,6 +391,13 @@ public class CommunityService implements ICommunityService {
         if (StringUtils.isEmpty(userId) || ObjectUtils.isEmpty(communityUserRepository.queryUserStatus(userId))) {
             log.error("用户id无效！, user={}", userId);
             throw new AppException("用户id无效！");
+        }
+    }
+
+    private void checkPostIdValid(String postId) {
+        if (StringUtils.isEmpty(discussPostRepository.getUserIdByPostId(postId))) {
+            log.error("帖子id无效！, post={}", postId);
+            throw new AppException("帖子id无效！");
         }
     }
 }

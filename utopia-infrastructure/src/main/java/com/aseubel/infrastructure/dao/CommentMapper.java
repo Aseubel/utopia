@@ -139,7 +139,7 @@ public interface CommentMapper {
 
     /**
      * 增加评论数
-     * @param comment
+     * @param rootId 被回复的根评论
      */
-    void increaseCommentCount(Comment comment);
+    void increaseCommentCount(String rootId);
 }
