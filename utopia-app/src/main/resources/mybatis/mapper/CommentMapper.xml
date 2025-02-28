@@ -49,6 +49,18 @@
         where comment_id = root_id  and comment_id = #{rootId} and is_deleted = 0
     </update>
 
+    <update id="deleteCommentByPostId">
+        update `comment`
+        set is_deleted = 1
+        where post_id = #{postId} and is_deleted = 0
+    </update>
+
+    <update id="deleteCommentByRootId">
+        update `comment`
+        set is_deleted = 1
+        where root_id = #{commentId} and is_deleted = 0
+    </update>
+
     <select id="getCommentByCommentId" resultType="com.aseubel.infrastructure.dao.po.Comment">
         select id, root_id, reply_to, comment_id, post_id, user_id, content, like_count, unlike_count, reply_count, comment_time, update_time
         from `comment`
@@ -181,6 +193,11 @@
         <foreach collection="commentIds" item="commentId" open="(" separator="," close=")">
             #{commentId}
         </foreach> and is_deleted = 0
+    </select>
+    <select id="listCommentIdsByUserIdAndPostId" resultType="java.lang.String">
+        select comment_id
+        from `comment`
+        where user_id = #{userId} and post_id = #{postId} and is_deleted = 0
     </select>
 
 </mapper>

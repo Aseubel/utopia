@@ -12,6 +12,7 @@ import com.aseubel.domain.community.service.ICommunityService;
 import com.aseubel.types.Response;
 import com.aseubel.types.event.CommentPostEvent;
 import com.aseubel.types.event.CustomEvent;
+import com.aseubel.types.event.DeletePostEvent;
 import com.aseubel.types.event.ReplyCommentEvent;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.CustomMultipartFile;
@@ -392,6 +393,35 @@ public class CommunityController implements CommunityInterface {
 //                .postId(requestDTO.getPostId())
 //                .eventTime(requestDTO.getLikeTime())
 //                .build()));
+        return Response.SYSTEM_SUCCESS();
+    }
+
+    /**
+     * 删除帖子
+     */
+    @Override
+    @DeleteMapping("/post")
+    public Response deletePost(@Valid @RequestBody DeletePostRequest requestDTO) {
+        CommunityBO communityBO = CommunityBO.builder()
+                .userId(requestDTO.getUserId())
+                .postId(requestDTO.getPostId())
+                .build();
+        communityService.deletePost(communityBO);
+        eventPublisher.publishEvent(new DeletePostEvent(communityBO));
+        return Response.SYSTEM_SUCCESS();
+    }
+
+    /**
+     * 删除评论
+     */
+    @Override
+    @DeleteMapping("/comment")
+    public Response deleteComment(@Valid @RequestBody DeleteCommentRequest requestDTO) {
+        CommunityBO communityBO = CommunityBO.builder()
+                .userId(requestDTO.getUserId())
+                .commentId(requestDTO.getCommentId())
+                .build();
+        communityService.deleteComment(communityBO);
         return Response.SYSTEM_SUCCESS();
     }
 

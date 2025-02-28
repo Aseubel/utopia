@@ -99,4 +99,18 @@ public interface CommunityInterface {
      * @return
      */
     Response likeComment(@Valid @RequestBody LikeCommentRequest requestDTO);
+
+    /**
+     * 删除帖子
+     * @param deletePostRequest
+     * @return
+     */
+    Response deletePost(@Valid @RequestBody DeletePostRequest deletePostRequest);
+
+    /**
+     * 删除评论
+     * @param deleteCommentRequest
+     * @return
+     */
+    Response deleteComment(@Valid @RequestBody DeleteCommentRequest deleteCommentRequest);
 }

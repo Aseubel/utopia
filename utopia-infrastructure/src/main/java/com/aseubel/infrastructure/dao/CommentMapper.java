@@ -156,4 +156,25 @@ public interface CommentMapper {
      * @param rootId 被回复的根评论
      */
     void increaseCommentCount(String rootId);
+
+    /**
+     * 根据用户id和帖子id查询评论id列表
+     * @param userId
+     * @param postId
+     * @return
+     */
+    List<String> listCommentIdsByUserIdAndPostId(String userId, String postId);
+
+    /**
+     * 根据用户id和帖子id删除评论
+     * @param userId
+     * @param postId
+     */
+    void deleteCommentByPostId(String userId, String postId);
+
+    /**
+     * 根据根评论id删除所有子评论
+     * @param commentId
+     */
+    void deleteCommentByRootId(String commentId);
 }

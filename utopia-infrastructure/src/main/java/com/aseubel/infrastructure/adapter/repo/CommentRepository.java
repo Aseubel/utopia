@@ -178,4 +178,19 @@ public class CommentRepository implements ICommentRepository {
         commentMapper.increaseCommentCount(commentId);
     }
 
+    @Override
+    public String getUserIdByCommentId(String commentId) {
+        return commentMapper.getUserIdByCommentId(commentId);
+    }
+
+    @Override
+    public void deleteComment(String commentId) {
+        commentMapper.deleteCommentByCommentId(commentId);
+    }
+
+    @Override
+    public void deleteSubComment(String commentId) {
+        commentMapper.deleteCommentByRootId(commentId);
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.aseubel.api.dto.community.post;
+package com.aseubel.api.dto.community.comment;
 
 import com.aseubel.types.annotation.FieldDesc;
 import lombok.*;
@@ -9,24 +9,23 @@ import java.io.Serializable;
 
 /**
  * @author Aseubel
- * @description 删除帖子请求参数
- * @date 2025-02-16 20:26
+ * @date 2025-02-28 12:24
  */
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeletePostRequest implements Serializable {
+public class DeleteCommentRequest implements Serializable {
 
     @FieldDesc(name = "用户id")
     @NotNull(message = "用户id不能为空")
     @NotBlank(message = "用户id不能为空")
     private String userId;
 
-    @FieldDesc(name = "帖子id")
-    @NotNull(message = "帖子id不能为空")
-    @NotBlank(message = "帖子id不能为空")
-    private String postId;
+    @FieldDesc(name = "评论id")
+    @NotNull(message = "评论id不能为空")
+    @NotBlank(message = "评论id不能为空")
+    private String commentId;
 
 }

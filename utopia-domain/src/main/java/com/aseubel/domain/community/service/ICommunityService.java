@@ -114,4 +114,16 @@ public interface ICommunityService {
      * @param communityBO
      */
     void likeComment(CommunityBO communityBO);
+
+    /**
+     * 删除帖子
+     * @param communityBO
+     */
+    void deletePost(CommunityBO communityBO);
+
+    /**
+     * 删除评论
+     * @param communityBO
+     */
+    void deleteComment(CommunityBO communityBO);
 }

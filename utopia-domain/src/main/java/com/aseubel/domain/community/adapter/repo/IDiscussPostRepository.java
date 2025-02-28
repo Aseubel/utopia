@@ -182,4 +182,10 @@ public interface IDiscussPostRepository {
      * 删除已删除的图片记录
      */
     void deleteMissingImage() throws ClientException;
+
+    /**
+     * 删除帖子
+     * @param postId
+     */
+    void deletePost(String postId);
 }

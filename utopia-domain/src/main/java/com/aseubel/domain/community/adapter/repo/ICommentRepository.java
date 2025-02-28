@@ -107,4 +107,23 @@ public interface ICommentRepository {
      * @param commentId
      */
     void increaseCommentCount(String commentId);
+
+    /**
+     * 根据评论id获取用户id
+     * @param commentId
+     * @return
+     */
+    String getUserIdByCommentId(String commentId);
+
+    /**
+     * 删除评论
+     * @param commentId
+     */
+    void deleteComment(String commentId);
+
+    /**
+     * 删除子评论
+     * @param commentId
+     */
+    void deleteSubComment(String commentId);
 }

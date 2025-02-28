@@ -68,4 +68,11 @@ public interface LikeMapper {
     @Update("UPDATE `like` SET status = #{status}, update_time = #{updateTime} WHERE user_id = #{userId} AND to_id = #{toId} AND update_time <= #{updateTime} AND is_deleted = 0")
     void updateLikeStatus(String userId, String toId, LocalDateTime updateTime, Integer status);
 
+    /**
+     * 删除用户的点赞记录
+     * @param userId
+     * @param toIds
+     */
+    @Update("UPDATE `like` SET is_deleted = 1 WHERE user_id = #{userId} AND to_id IN (#{toIds})")
+    void deleteLikeByUserIdAndToIds(String userId, List<String> toIds);
 }

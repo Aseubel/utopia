@@ -405,6 +405,32 @@ public class CommunityService implements ICommunityService {
         log.info("用户点赞评论服务结束，userId: {}, commentId: {}", userId, commentId);
     }
 
+    @Override
+    public void deletePost(CommunityBO communityBO) {
+        verifyPostAuth(communityBO.getUserId(), communityBO.getPostId());
+        discussPostRepository.deletePost(communityBO.getPostId());
+    }
+
+    @Override
+    public void deleteComment(CommunityBO communityBO) {
+         verifyCommentAuth(communityBO.getUserId(), communityBO.getCommentId());
+         commentRepository.deleteComment(communityBO.getCommentId());
+    }
+
+    private void verifyPostAuth(String userId, String postId) {
+        if (!userId.equals(discussPostRepository.getUserIdByPostId(postId))) {
+            log.error("用户无权删除帖子！, user={}, post={}", userId, postId);
+            throw new AppException("用户无权删除帖子！");
+        }
+    }
+
+    private void verifyCommentAuth(String userId, String commentId) {
+        if (!userId.equals(commentRepository.getUserIdByCommentId(commentId))) {
+            log.error("用户无权删除评论！, user={}, comment={}", userId, commentId);
+            throw new AppException("用户无权删除评论！");
+        }
+    }
+
     private void checkSchoolCodeValid(String schoolCode) {
         if (StringUtils.isEmpty(schoolCode) || !discussPostRepository.isSchoolCodeValid(schoolCode)) {
             log.error("学校代号无效！, user={}", schoolCode);

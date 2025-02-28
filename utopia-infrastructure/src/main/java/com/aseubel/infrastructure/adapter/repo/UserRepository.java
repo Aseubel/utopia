@@ -2,11 +2,11 @@ package com.aseubel.infrastructure.adapter.repo;
 
 import com.aseubel.domain.bazaar.adapter.repo.IBazaarUserRepository;
 import com.aseubel.domain.community.adapter.repo.ICommunityUserRepository;
-import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.user.adapter.repo.IUserRepository;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.infrastructure.convertor.UserConvertor;
 import com.aseubel.infrastructure.dao.CommentMapper;
+import com.aseubel.infrastructure.dao.LikeMapper;
 import com.aseubel.infrastructure.dao.SchoolMapper;
 import com.aseubel.infrastructure.dao.UserMapper;
 import com.aseubel.infrastructure.dao.po.Comment;
@@ -48,6 +48,8 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
     private SchoolMapper schoolMapper;
     @Autowired
     private CommentMapper commentMapper;
+    @Autowired
+    private LikeMapper likeMapper;
 
     @Override
     public UserEntity queryUserInfo(String userId) {
@@ -196,6 +198,15 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
     @Override
     public void deleteUser(String openid) {
         userMapper.deleteUserByUserId(openid);
+    }
+
+    @Override
+    public void deleteUserToPost(String userId, String postId) {
+        List<String> toIds = new ArrayList<>();
+        toIds.add(postId);
+        toIds.addAll(commentMapper.listCommentIdsByUserIdAndPostId(userId, postId));
+        likeMapper.deleteLikeByUserIdAndToIds(userId, toIds);
+        commentMapper.deleteCommentByPostId(userId, postId);
     }
 
 }

@@ -87,4 +87,11 @@ public interface IUserRepository {
      * @param openid
      */
     void deleteUser(String openid);
+
+    /**
+     * 删除用户对帖子的收藏、点赞、评论关系
+     * @param userId
+     * @param postId
+     */
+    void deleteUserToPost(String userId, String postId);
 }
