@@ -8,51 +8,50 @@ use utopia;
 DROP TABLE IF EXISTS `avatar`;
 CREATE TABLE IF NOT EXISTS `avatar` (
     -- 主键
-                                        `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
     -- 对应用户id
-                                        `user_id` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '对应用户id',
-    -- 头像唯一id
-                                        `avatar_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '头像id',
+    `user_id` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '对应用户id',
+	-- 头像唯一id
+    `avatar_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '头像id',
     -- 头像url
-                                        `avatar_url` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '头像url',
+    `avatar_url` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '头像url',
     -- 创建者
-                                        `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     -- 软删除标识 0-未删除 1-已删除
-                                        `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
+    `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
 ) ENGINE = InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '头像表';
 
 -- 评论表
 DROP TABLE IF EXISTS `comment`;
 CREATE TABLE IF NOT EXISTS `comment` (
     -- 主键
-                                         `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
-    -- 根评论id
-                                         `root_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '根/最顶评论id',
-    -- 回复的评论id
-                                         `reply_to` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '回复的评论id',
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+	-- 根评论id
+	`root_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '根/最顶评论id',
+	-- 回复的评论id
+	`reply_to` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '回复的评论id',
     -- 评论id
-                                         `comment_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '评论id',
-    -- 帖子id
-                                         `post_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '帖子id',
+    `comment_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '评论id',
+	-- 帖子id
+	`post_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '帖子id',
     -- 用户id
-                                         `user_id` VARCHAR(36) NOT NULL DEFAULT '' COMMENT '用户id',
+    `user_id` VARCHAR(36) NOT NULL DEFAULT '' COMMENT '用户id',
     -- 内容
-                                         `content` TEXT COMMENT '内容',
+    `content` TEXT COMMENT '内容',
     -- 点赞数
-                                         `like_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '点赞数',
+    `like_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '点赞数',
     -- 踩数
-                                         `unlike_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '踩数',
-    -- 回复评论数量
-                                         `reply_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '回复评论数量',
+    `unlike_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '踩数',
+	-- 回复评论数量
+	`reply_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '回复评论数量',
     -- 评论时间
-                                         `comment_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '评论时间',
+    `comment_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '评论时间',
     -- 更新时间
-                                         `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     -- 软删除标识 0-未删除 1-已删除
-                                         `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
+    `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
 ) ENGINE = InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '评论表';
 CREATE UNIQUE INDEX uk_comment_id ON `comment` (comment_id);
-CREATE INDEX idx_user_id ON `comment` (user_id);
 CREATE INDEX idx_post_id ON `comment` (post_id);
 CREATE INDEX idx_root_id ON `comment` (root_id);
 
@@ -60,55 +59,73 @@ CREATE INDEX idx_root_id ON `comment` (root_id);
 DROP TABLE IF EXISTS `comment_image`;
 CREATE TABLE IF NOT EXISTS `comment_image` (
     -- 主键
-                                               `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
     -- 评论id
-                                               `comment_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '评论id',
+    `comment_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '评论id',
     -- 图片id
-                                               `image_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '图片id',
+    `image_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '图片id',
     -- 创建时间
-                                               `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     -- 更新时间
-                                               `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     -- 软删除标识 0-未删除 1-已删除
-                                               `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
+    `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
 ) ENGINE = InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '评论-图片中间表';
 CREATE INDEX idx_comment_id ON `comment_image` (comment_id);
+
+-- 课程表
+DROP TABLE IF EXISTS `course`;
+CREATE TABLE IF NOT EXISTS `course` (
+    -- 主键
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+	-- 学科种类(工学、理学...)
+    `course_name` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '学科种类(工学、理学...)',
+    -- major的名称
+    `major_name` VARCHAR(36) NOT NULL DEFAULT '' COMMENT 'major的名称',
+    -- 创建者
+    `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    -- 更新时间
+    `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    -- 软删除标识 0-未删除 1-已删除
+    `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
+) ENGINE = InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '课程表';
 
 -- 帖子表
 DROP TABLE IF EXISTS `discuss_post`;
 CREATE TABLE IF NOT EXISTS `discuss_post` (
     -- 主键
-                                              `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
     -- 帖子id
-                                              `discuss_post_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '帖子id',
+    `discuss_post_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '帖子id',
     -- 用户id
-                                              `user_id` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '微信用户唯一标识',
-    -- 所属院校代号
-                                              `school_code` VARCHAR(5) NOT NULL DEFAULT '' COMMENT '所属院校代号',
+    `user_id` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '微信用户唯一标识',
+	-- 所属院校代号
+	`school_code` VARCHAR(5) NOT NULL DEFAULT '' COMMENT '所属院校代号',
     -- 标题
-                                              `title` VARCHAR(36) NOT NULL DEFAULT '' COMMENT '帖子标题',
+    `title` VARCHAR(36) NOT NULL DEFAULT '' COMMENT '帖子标题',
     -- 内容
-                                              `content` text COMMENT '帖子内容',
-    -- 标签/分类
-                                              `tag` VARCHAR(36) NOT NULL DEFAULT '' COMMENT '标签/分类',
+    `content` text COMMENT '帖子内容',
+	-- 标签/分类
+	`tag` VARCHAR(36) NOT NULL DEFAULT '' COMMENT '标签/分类',
     -- 点赞数
-                                              `like_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '点赞数',
+    `like_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '点赞数',
     -- 收藏数
-                                              `favorite_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '收藏数',
+    `favorite_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '收藏数',
     -- 评论数
-                                              `comment_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '评论数',
+    `comment_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '评论数',
     -- 0-普通；1-置顶
-                                              `type` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-普通；1-置顶',
+    `type` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-普通；1-置顶',
     -- 0-普通；1-封禁
-                                              `status` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-普通；1-封禁',
+    `status` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-普通；1-封禁',
     -- 创建时间
-                                              `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     -- 更新时间
-                                              `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     -- 软删除标识 0-未删除 1-已删除
-                                              `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
+    `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
 ) ENGINE = InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '帖子表';
 CREATE UNIQUE INDEX uk_discuss_post_id_school_code ON `discuss_post` (discuss_post_id, school_code);
+CREATE INDEX idx_user_id ON `discuss_post` (user_id);
 CREATE INDEX idx_update_time ON `discuss_post` (update_time DESC);
 CREATE INDEX idx_tag ON `discuss_post` (tag);
 
@@ -116,15 +133,15 @@ CREATE INDEX idx_tag ON `discuss_post` (tag);
 DROP TABLE IF EXISTS `download_record`;
 CREATE TABLE IF NOT EXISTS `download_record` (
     -- 主键
-                                                 `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
     -- 用户id
-                                                 `user_id` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '用户id',
+    `user_id` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '用户id',
     -- 文件id
-                                                 `sfile_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '文件id',
+    `sfile_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '文件id',
     -- 创建时间
-                                                 `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     -- 软删除标识 0-未删除 1-已删除
-                                                 `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
+    `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
 ) ENGINE = InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '共享文件下载记录表';
 CREATE INDEX idx_user_id ON `download_record` (user_id);
 
@@ -132,19 +149,19 @@ CREATE INDEX idx_user_id ON `download_record` (user_id);
 DROP TABLE IF EXISTS `favorite`;
 CREATE TABLE IF NOT EXISTS `favorite` (
     -- 主键
-                                          `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
     -- 用户id
-                                          `user_id` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '用户id',
+    `user_id` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '用户id',
     -- 帖子id
-                                          `post_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '帖子id',
-    -- 收藏状态
-                                          `status` TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT '收藏状态，0-未收藏;1-已收藏',
+    `post_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '帖子id',
+	-- 收藏状态
+	`status` TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT '收藏状态，0-未收藏;1-已收藏',
     -- 创建时间
-                                          `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     -- 更新时间
-                                          `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     -- 软删除标识 0-未删除 1-已删除
-                                          `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
+    `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
 ) ENGINE = InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '收藏表';
 CREATE INDEX idx_user_id_post_id ON `favorite` (user_id, post_id);
 
@@ -152,17 +169,17 @@ CREATE INDEX idx_user_id_post_id ON `favorite` (user_id, post_id);
 DROP TABLE IF EXISTS `image`;
 CREATE TABLE IF NOT EXISTS `image` (
     -- 主键
-                                       `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
     -- 对应用户id
-                                       `user_id` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '对应用户id',
-    -- 图片唯一id
-                                       `image_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '图片id',
+    `user_id` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '对应用户id',
+	-- 图片唯一id
+    `image_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '图片id',
     -- 图片url
-                                       `image_url` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '图片url',
+    `image_url` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '图片url',
     -- 创建者
-                                       `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     -- 软删除标识 0-未删除 1-已删除
-                                       `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
+    `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
 ) ENGINE = InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '评论帖子图片表';
 CREATE UNIQUE INDEX uk_image_id ON `image` (image_id);
 
@@ -170,37 +187,54 @@ CREATE UNIQUE INDEX uk_image_id ON `image` (image_id);
 DROP TABLE IF EXISTS `like`;
 CREATE TABLE IF NOT EXISTS `like` (
     -- 主键
-                                      `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
     -- 用户id
-                                      `user_id` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '用户id',
+    `user_id` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '用户id',
     -- 被点赞帖子/评论id
-                                      `to_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '被点赞帖子/评论id',
-    -- 点赞状态，0-未点赞;1-已点赞
-                                      `status` TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT '点赞状态，0-未点赞;1-已点赞',
+    `to_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '被点赞帖子/评论id',
+	-- 点赞状态，0-未点赞;1-已点赞
+	`status` TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT '点赞状态，0-未点赞;1-已点赞',
     -- 创建时间
-                                      `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     -- 更新时间
-                                      `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     -- 软删除标识 0-未删除 1-已删除
-                                      `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
+    `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
 ) ENGINE = InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '点赞表';
 CREATE UNIQUE INDEX uk_user_id_to_id ON `like` (user_id, to_id);
+
+-- 学科门类表
+DROP TABLE IF EXISTS `major`;
+CREATE TABLE IF NOT EXISTS `major` (
+    -- 主键
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+	-- 学科门类(工学、理学...)
+    `major_name` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '学科门类(工学、理学...)',
+    -- 创建者
+    `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    -- 更新时间
+    `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    -- 软删除标识 0-未删除 1-已删除
+    `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
+) ENGINE = InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '学科门类表';
+
+insert into `major` (major_name) values ('哲学'),('经济学'),('法学'),('教育学'),('文学'),('历史学'),('理学'),('工学'),('农学'),('医学'),('军事学'),('管理学'),('艺术学'),('交叉学科');
 
 -- 帖子-图片中间表
 DROP TABLE IF EXISTS `post_image`;
 CREATE TABLE IF NOT EXISTS `post_image` (
     -- 主键
-                                            `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
     -- 帖子id，交易或讨论
-                                            `post_id` VARCHAR(36) NOT NULL DEFAULT '' COMMENT '帖子id',
+    `post_id` VARCHAR(36) NOT NULL DEFAULT '' COMMENT '帖子id',
     -- 图片id
-                                            `image_id` VARCHAR(36) NOT NULL DEFAULT '' COMMENT '图片id',
+    `image_id` VARCHAR(36) NOT NULL DEFAULT '' COMMENT '图片id',
     -- 创建时间
-                                            `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     -- 更新时间
-                                            `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     -- 软删除标识 0-未删除 1-已删除
-                                            `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
+    `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
 ) ENGINE = InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '帖子-图片中间表';
 CREATE INDEX idx_post_id ON `post_image` (post_id);
 
@@ -208,19 +242,19 @@ CREATE INDEX idx_post_id ON `post_image` (post_id);
 DROP TABLE IF EXISTS `school`;
 CREATE TABLE IF NOT EXISTS `school` (
     -- 主键
-                                        `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
     -- 院校代号
-                                        `school_code` VARCHAR(5) NOT NULL DEFAULT '' COMMENT '院校代号',
+	`school_code` VARCHAR(5) NOT NULL DEFAULT '' COMMENT '院校代号',
     -- 学校名称
-                                        `school_name` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '学校名称',
+    `school_name` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '学校名称',
     -- 讨论帖数目
-                                        `discuss_post_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '讨论帖数目',
+    `discuss_post_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '讨论帖数目',
     -- 交易帖数目
-                                        `trade_post_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '交易帖数目',
+    `trade_post_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '交易帖数目',
     -- 学生(用户)人数
-                                        `student_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '学生(用户)人数',
+    `student_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '学生(用户)人数',
     -- 软删除标识 0-未删除 1-已删除
-                                        `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
+    `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
 ) ENGINE = InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '用户表';
 CREATE UNIQUE INDEX uk_school_code ON `school` (school_code);
 CREATE UNIQUE INDEX uk_school_name ON `school` (school_name);
@@ -229,29 +263,29 @@ CREATE UNIQUE INDEX uk_school_name ON `school` (school_name);
 DROP TABLE IF EXISTS `sfile`;
 CREATE TABLE IF NOT EXISTS `sfile` (
     -- 主键
-                                       `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
-    -- 文件唯一id
-                                       `sfile_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '文件id',
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+	-- 文件唯一id
+    `sfile_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '文件id',
     -- 文件名
-                                       `sfile_name` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '文件名',
+    `sfile_name` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '文件名',
     -- 文件url
-                                       `sfile_url` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '文件url',
-    -- 文件大小
-                                       `sfile_size` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '文件大小',
+    `sfile_url` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '文件url',
+	-- 文件大小
+	`sfile_size` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '文件大小',
     -- 下载次数
-                                       `download_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '下载次数',
-    -- 类型
-                                       `sfile_type` VARCHAR(32) NOT NULL DEFAULT '' COMMENT '文件所属类型',
+    `download_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '下载次数',
+	-- 类型
+	`sfile_type` VARCHAR(32) NOT NULL DEFAULT '' COMMENT '文件所属类型',
     -- 创建者
-                                       `create_by` VARCHAR(36) NOT NULL DEFAULT '' COMMENT '创建者',
+	`create_by` VARCHAR(36) NOT NULL DEFAULT '' COMMENT '创建者',
     -- 更新者
-                                       `update_by` VARCHAR(36) NOT NULL DEFAULT '' COMMENT '更新者',
+    `update_by` VARCHAR(36) NOT NULL DEFAULT '' COMMENT '更新者',
     -- 创建时间
-                                       `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     -- 更新时间
-                                       `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     -- 软删除标识 0-未删除 1-已删除
-                                       `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
+    `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
 ) ENGINE = InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '文件表';
 CREATE UNIQUE INDEX uk_sfile_id ON `sfile` (sfile_id);
 
@@ -259,27 +293,27 @@ CREATE UNIQUE INDEX uk_sfile_id ON `sfile` (sfile_id);
 DROP TABLE IF EXISTS `trade_post`;
 CREATE TABLE IF NOT EXISTS `trade_post` (
     -- 主键
-                                            `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
     -- 帖子id
-                                            `trade_post_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '帖子id',
+    `trade_post_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '帖子id',
     -- 用户id
-                                            `user_id` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '用户id',
+    `user_id` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '用户id',
     -- 标题
-                                            `title` VARCHAR(36) NOT NULL DEFAULT '' COMMENT '帖子标题',
+    `title` VARCHAR(36) NOT NULL DEFAULT '' COMMENT '帖子标题',
     -- 内容
-                                            `content` text COMMENT '帖子内容',
+    `content` text COMMENT '帖子内容',
     -- 定价
-                                            `price` FLOAT NOT NULL DEFAULT 0 COMMENT '定价',
+    `price` FLOAT NOT NULL DEFAULT 0 COMMENT '定价',
     -- 0-出售;1-求购;2-赠送
-                                            `type` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-出售;1-求购:2-赠送',
+    `type` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-出售;1-求购:2-赠送',
     -- 0-未完成;1-已完成
-                                            `status` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未完成;1-已完成',
+    `status` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未完成;1-已完成',
     -- 创建时间
-                                            `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     -- 更新时间
-                                            `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     -- 软删除标识 0-未删除 1-已删除
-                                            `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
+    `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
 ) ENGINE = InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '交易帖子表';
 CREATE UNIQUE INDEX uk_trade_post_id ON `trade_post` (trade_post_id);
 CREATE INDEX idx_user_id ON `trade_post` (user_id);
@@ -290,29 +324,29 @@ CREATE INDEX idx_status_type ON `trade_post` (status, type);
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
     -- 主键
-                                      `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
     -- 微信用户唯一标识
-                                      `user_id` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '微信用户唯一标识',
+    `user_id` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '微信用户唯一标识',
     -- 用户名
-                                      `user_name` VARCHAR(32) NOT NULL DEFAULT '' COMMENT '姓名',
-    -- 院校代号
-                                      `school_code` VARCHAR(5) NOT NULL DEFAULT '' COMMENT '院校代号',
-    -- 真实姓名
-                                      `real_name` VARCHAR(12) NOT NULL DEFAULT '' COMMENT '真实姓名',
+    `user_name` VARCHAR(32) NOT NULL DEFAULT '' COMMENT '姓名',
+	-- 院校代号
+	`school_code` VARCHAR(5) NOT NULL DEFAULT '' COMMENT '院校代号',
+	-- 真实姓名
+	`real_name` VARCHAR(12) NOT NULL DEFAULT '' COMMENT '真实姓名',
     -- 手机号
-                                      `phone` VARCHAR(11) NOT NULL DEFAULT '' COMMENT '手机号',
+    `phone` VARCHAR(11) NOT NULL DEFAULT '' COMMENT '手机号',
     -- 性别为0-隐藏；1-男；2-女
-                                      `gender` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '性别，0-隐藏；1-男；2-女',
+	  `gender` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '性别，0-隐藏；1-男；2-女',
     -- 头像
-                                      `avatar` VARCHAR(500) NOT NULL DEFAULT '' COMMENT '头像',
-    -- 个性签名
-                                      `signature` VARCHAR(128) NOT NULL DEFAULT '' COMMENT '个性签名',
+    `avatar` VARCHAR(500) NOT NULL DEFAULT '' COMMENT '头像',
+	-- 个性签名
+	`signature` VARCHAR(128) NOT NULL DEFAULT '' COMMENT '个性签名',
     -- 创建时间
-                                      `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     -- 更新时间
-                                      `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     -- 软删除标识 0-未删除 1-已删除
-                                      `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
+    `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
 ) ENGINE = InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '用户表';
 CREATE INDEX ind_user_id ON `user` (user_id);
 
@@ -354,7 +388,7 @@ INSERT INTO `comment` (`id`, `root_id`, `reply_to`, `comment_id`, `post_id`, `us
 INSERT INTO `comment` (`id`, `root_id`, `reply_to`, `comment_id`, `post_id`, `user_id`, `content`, `like_count`, `unlike_count`, `reply_count`, `comment_time`, `update_time`, `is_deleted`) VALUES (4, 'pl-4', '', 'pl-4', 'dp_071993559c7a4537b54d3374fe5b5a93', '0001', '33', 0, 0, 0, '2025-02-14 20:12:59', '2025-02-14 20:12:59', 0);
 INSERT INTO `comment` (`id`, `root_id`, `reply_to`, `comment_id`, `post_id`, `user_id`, `content`, `like_count`, `unlike_count`, `reply_count`, `comment_time`, `update_time`, `is_deleted`) VALUES (5, 'pl-5', '', 'pl-5', 'dp_071993559c7a4537b54d3374fe5b5a93', '0001', '333', 0, 0, 0, '2025-02-14 20:12:59', '2025-02-14 20:12:59', 0);
 INSERT INTO `comment` (`id`, `root_id`, `reply_to`, `comment_id`, `post_id`, `user_id`, `content`, `like_count`, `unlike_count`, `reply_count`, `comment_time`, `update_time`, `is_deleted`) VALUES (6, 'cmt_78d2cc9c919c49a9af74a68151a452ce', '', 'cmt_78d2cc9c919c49a9af74a68151a452ce', 'dp_d2db2d3e7ee84f729bf7de3220c28510', '0001', 'Ciallo～(∠・ω< )⌒★', 0, 0, 0, '2025-02-16 14:35:22', '2025-02-16 14:35:22', 0);
-INSERT INTO `comment` (`id`, `root_id`, `reply_to`, `comment_id`, `post_id`, `user_id`, `content`, `like_count`, `unlike_count`, `reply_count`, `comment_time`, `update_time`, `is_deleted`) VALUES (7, 'cmt_0a02a9e0110c47618cc41cb054dd84ac', '', 'cmt_0a02a9e0110c47618cc41cb054dd84ac', 'dp_d2db2d3e7ee84f729bf7de3220c28510', 'ozK7z69qmE2hIRR5txLNz9jBgR0g', 'Ciallo～(∠・ω< )⌒★', 0, 0, 0, '2025-02-16 15:00:28', '2025-02-16 15:00:28', 0);
+INSERT INTO `comment` (`id`, `root_id`, `reply_to`, `comment_id`, `post_id`, `user_id`, `content`, `like_count`, `unlike_count`, `reply_count`, `comment_time`, `update_time`, `is_deleted`) VALUES (7, 'cmt_0a02a9e0110c47618cc41cb054dd84ac', '', 'cmt_0a02a9e0110c47618cc41cb054dd84ac', 'dp_d2db2d3e7ee84f729bf7de3220c28510', 'ozK7z69qmE2hIRR5txLNz9jBgR0g', 'Ciallo～(∠・ω< )⌒★', 0, 0, 1, '2025-02-16 15:00:28', '2025-02-16 15:00:28', 0);
 INSERT INTO `comment` (`id`, `root_id`, `reply_to`, `comment_id`, `post_id`, `user_id`, `content`, `like_count`, `unlike_count`, `reply_count`, `comment_time`, `update_time`, `is_deleted`) VALUES (8, 'cmt_0a02a9e0110c47618cc41cb054dd84ac', 'cmt_0a02a9e0110c47618cc41cb054dd84ac', 'cmt_6c118e4cbaec42f3a1cd1736cce4fce2', 'dp_d2db2d3e7ee84f729bf7de3220c28510', '0001', 'Ciallo～(∠・ω< )⌒★', 0, 0, 0, '2025-02-16 15:11:13', '2025-02-16 15:11:13', 0);
 INSERT INTO `comment` (`id`, `root_id`, `reply_to`, `comment_id`, `post_id`, `user_id`, `content`, `like_count`, `unlike_count`, `reply_count`, `comment_time`, `update_time`, `is_deleted`) VALUES (9, 'cmt_cf467bcb46d84cd7b2587066f70ede7a', '', 'cmt_cf467bcb46d84cd7b2587066f70ede7a', 'dp_d2db2d3e7ee84f729bf7de3220c28510', 'ozK7z69qmE2hIRR5txLNz9jBgR0g', '333', 0, 0, 0, '2025-02-16 15:11:34', '2025-02-16 15:11:34', 0);
 INSERT INTO `discuss_post` (`id`, `discuss_post_id`, `user_id`, `school_code`, `title`, `content`, `tag`, `like_count`, `favorite_count`, `comment_count`, `type`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (1, 'abcd1', '0001', '11819', '要改大了吗1.0？', 'rt，xdx今天看见公众号文章，有没有ldx说说情况', '其他', 0, 0, 0, 0, 0, '2025-01-25 16:53:10', '2025-01-25 16:53:10', 0);
@@ -375,12 +409,14 @@ INSERT INTO `discuss_post` (`id`, `discuss_post_id`, `user_id`, `school_code`, `
 INSERT INTO `discuss_post` (`id`, `discuss_post_id`, `user_id`, `school_code`, `title`, `content`, `tag`, `like_count`, `favorite_count`, `comment_count`, `type`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (16, 'abcd16', '0001', '11819', '要改大了吗16.0？', 'rt，xdx今天看见公众号文章，有没有ldx说说情况', '其他', 0, 0, 0, 0, 0, '2025-01-25 16:54:03', '2025-01-25 16:54:03', 0);
 INSERT INTO `discuss_post` (`id`, `discuss_post_id`, `user_id`, `school_code`, `title`, `content`, `tag`, `like_count`, `favorite_count`, `comment_count`, `type`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (17, 'dp_0781bf5a34d6484b87a7d8805a48b72a', '0001', '11819', '333', '3333', '其他', 0, 0, 0, 0, 0, '2025-01-27 19:16:21', '2025-02-16 14:38:07', 0);
 INSERT INTO `discuss_post` (`id`, `discuss_post_id`, `user_id`, `school_code`, `title`, `content`, `tag`, `like_count`, `favorite_count`, `comment_count`, `type`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (18, 'dp_0bc7d404c74e4e7bbf6bc60be452849e', '0001', '11819', '333', '3333', '其他', 0, 0, 0, 0, 0, '2025-01-27 19:17:43', '2025-02-16 14:38:07', 0);
-INSERT INTO `discuss_post` (`id`, `discuss_post_id`, `user_id`, `school_code`, `title`, `content`, `tag`, `like_count`, `favorite_count`, `comment_count`, `type`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (20, 'dp_071993559c7a4537b54d3374fe5b5a93', '0001', '11819', '我是炮姐的狗！', '你指尖跃动的电光，是我此生不变的信仰🐱‍🏍', '其他', 0, 1, 5, 0, 0, '2025-01-27 19:31:59', '2025-01-27 19:31:59', 0);
-INSERT INTO `discuss_post` (`id`, `discuss_post_id`, `user_id`, `school_code`, `title`, `content`, `tag`, `like_count`, `favorite_count`, `comment_count`, `type`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (21, 'dp_d2db2d3e7ee84f729bf7de3220c28510', '0001', '11819', '我永远喜欢幼刀！', 'Ciallo～(∠・ω< )⌒★Ciallo～(∠・ω< )⌒★Ciallo～(∠・ω< )⌒★Ciallo～(∠・ω< )⌒★Ciallo～(∠・ω< )⌒★', '其他', 0, 1, 0, 0, 0, '2025-01-27 19:43:30', '2025-01-27 19:43:30', 0);
+INSERT INTO `discuss_post` (`id`, `discuss_post_id`, `user_id`, `school_code`, `title`, `content`, `tag`, `like_count`, `favorite_count`, `comment_count`, `type`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (20, 'dp_071993559c7a4537b54d3374fe5b5a93', '0001', '11819', '我是炮姐的狗！', '你指尖跃动的电光，是我此生不变的信仰', '其他', 0, 2, 5, 0, 0, '2025-01-27 19:31:59', '2025-01-27 19:31:59', 0);
+INSERT INTO `discuss_post` (`id`, `discuss_post_id`, `user_id`, `school_code`, `title`, `content`, `tag`, `like_count`, `favorite_count`, `comment_count`, `type`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (21, 'dp_d2db2d3e7ee84f729bf7de3220c28510', '0001', '11819', '我永远喜欢幼刀！', 'Ciallo～(∠・ω< )⌒★Ciallo～(∠・ω< )⌒★Ciallo～(∠・ω< )⌒★Ciallo～(∠・ω< )⌒★Ciallo～(∠・ω< )⌒★', '其他', 0, 1, 4, 0, 0, '2025-01-27 19:43:30', '2025-01-27 19:43:30', 0);
 INSERT INTO `discuss_post` (`id`, `discuss_post_id`, `user_id`, `school_code`, `title`, `content`, `tag`, `like_count`, `favorite_count`, `comment_count`, `type`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (22, 'dp_5b22f1825775405d807b72d28f9785b7', '0001', '11819', '找学习搭子', '松山湖校区找英语四六级学习搭子', '学习', 0, 0, 0, 0, 0, '2025-02-16 19:12:12', '2025-02-16 19:12:12', 0);
 INSERT INTO `discuss_post` (`id`, `discuss_post_id`, `user_id`, `school_code`, `title`, `content`, `tag`, `like_count`, `favorite_count`, `comment_count`, `type`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (23, 'dp_a9ca7c3004fe413a9ca213516a4f5e7d', 'ozK7z69qmE2hIRR5txLNz9jBgR0g', '11819', '找乒乓球搭子', '松山湖校区找乒乓球搭子', '运动', 0, 0, 0, 0, 0, '2025-02-16 20:17:21', '2025-02-16 20:17:21', 0);
-INSERT INTO `discuss_post` (`id`, `discuss_post_id`, `user_id`, `school_code`, `title`, `content`, `tag`, `like_count`, `favorite_count`, `comment_count`, `type`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (24, 'dp_300ea871b24248ff80f1cc0b5d9f851f', 'ozK7z64u8OqUe0FtJyt0x4G9-y4M', '11819', '怎么追到小美', '😭小美，我的小美', '休闲', 0, 0, 0, 0, 0, '2025-02-16 20:37:53', '2025-02-16 20:37:53', 0);
+INSERT INTO `discuss_post` (`id`, `discuss_post_id`, `user_id`, `school_code`, `title`, `content`, `tag`, `like_count`, `favorite_count`, `comment_count`, `type`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (24, 'dp_300ea871b24248ff80f1cc0b5d9f851f', 'ozK7z64u8OqUe0FtJyt0x4G9-y4M', '11819', '怎么追到小美', '小美，我的小美', '休闲', 0, 0, 0, 0, 0, '2025-02-16 20:37:53', '2025-02-16 20:37:53', 0);
 INSERT INTO `discuss_post` (`id`, `discuss_post_id`, `user_id`, `school_code`, `title`, `content`, `tag`, `like_count`, `favorite_count`, `comment_count`, `type`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (25, 'dp_8c83ea096bb5467cb6b6c7ed490ab19b', 'ozK7z69qmE2hIRR5txLNz9jBgR0g', '11819', '测试话题1', '2333', '其他', 0, 0, 0, 0, 0, '2025-02-17 10:34:56', '2025-02-17 10:34:56', 0);
+INSERT INTO `discuss_post` (`id`, `discuss_post_id`, `user_id`, `school_code`, `title`, `content`, `tag`, `like_count`, `favorite_count`, `comment_count`, `type`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (26, 'dp_cd455aad65a24a40aa8288800847e797', 'ozK7z64u8OqUe0FtJyt0x4G9-y4M', '11819', '梦蝶庄生！', '新买的书终于到了！好多赠品', '休闲', 0, 0, 0, 0, 0, '2025-02-23 01:07:41', '2025-02-23 01:07:41', 0);
+
 INSERT INTO `favorite` (`id`, `user_id`, `post_id`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (1, '0001', 'dp_071993559c7a4537b54d3374fe5b5a93', 1, '2025-02-07 20:27:39', '2025-02-14 20:46:08', 0);
 INSERT INTO `favorite` (`id`, `user_id`, `post_id`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (2, '0001', 'dp_6ae2f9fecefb49279b7be391dce565be', 1, '2025-02-07 20:27:55', '2025-02-16 14:51:53', 1);
 INSERT INTO `favorite` (`id`, `user_id`, `post_id`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (3, '0001', 'dp_d2db2d3e7ee84f729bf7de3220c28510', 1, '2025-02-07 20:28:05', '2025-02-16 14:55:38', 0);
@@ -391,16 +427,16 @@ INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `i
 INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (3, '0001', 'img_a107fe06add7488eb0213bd02ceb9d20', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/trade_post_image/img_a107fe06add7488eb0213bd02ceb9d20.jpg', '2025-01-31 01:21:36', 0);
 INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (4, '0001', 'img_9dfdf6e1d26a413eb3c1b3fcc46c58e1', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/trade_post_image/img_9dfdf6e1d26a413eb3c1b3fcc46c58e1.jpg', '2025-01-31 01:34:37', 0);
 INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (5, '0001', 'img_384f09b3e6aa4c0f87dd479b41959beb', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/trade_post_image/img_384f09b3e6aa4c0f87dd479b41959beb.jpg', '2025-01-31 01:35:14', 0);
-INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (6, '0001', 'img_dc1f7a7a1c2f44cdbec23d14bd46788c', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/trade_post_image/img_dc1f7a7a1c2f44cdbec23d14bd46788c.jpg', '2025-01-31 01:35:23', 1);
-INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (7, '0001', 'img_a1ccdb62cacb4c4dbb5fa391562dacea', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/trade_post_image/img_a1ccdb62cacb4c4dbb5fa391562dacea.jpg', '2025-01-31 01:37:47', 1);
+INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (6, '0001', 'img_dc1f7a7a1c2f44cdbec23d14bd46788c', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/trade_post_image/img_dc1f7a7a1c2f44cdbec23d14bd46788c.jpg', '2025-01-31 01:35:23', 0);
+INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (7, '0001', 'img_a1ccdb62cacb4c4dbb5fa391562dacea', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/trade_post_image/img_a1ccdb62cacb4c4dbb5fa391562dacea.jpg', '2025-01-31 01:37:47', 0);
 INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (8, '0001', 'img_27da7a227bc44094bb0c8d4937cceb2d', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/trade_post_image/img_27da7a227bc44094bb0c8d4937cceb2d.jpg', '2025-01-31 01:44:20', 0);
-INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (9, '0001', 'img_e7916dcaef16447d87300356d5e8eb5f', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/trade_post_image/img_e7916dcaef16447d87300356d5e8eb5f.jpg', '2025-01-31 01:44:28', 1);
+INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (9, '0001', 'img_e7916dcaef16447d87300356d5e8eb5f', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/trade_post_image/img_e7916dcaef16447d87300356d5e8eb5f.jpg', '2025-01-31 01:44:28', 0);
 INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (10, '0001', 'img_45976c908e964ccdb13c1733b94ba799', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/trade_post_image/img_45976c908e964ccdb13c1733b94ba799.jpg', '2025-01-31 01:51:43', 0);
 INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (11, '0001', 'img_32b00fdd0f634d2a96defdcbe89aa873', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/trade_post_image/img_32b00fdd0f634d2a96defdcbe89aa873.png', '2025-01-31 01:54:12', 0);
 INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (12, '0001', 'img_64145d82b19b4c6eb83ee4e18b38e431', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/trade_post_image/img_64145d82b19b4c6eb83ee4e18b38e431.png', '2025-01-31 01:57:47', 0);
 INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (13, '0001', 'img_5b0f5cab48d9432784683bf128984766', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/trade_post_image/img_5b0f5cab48d9432784683bf128984766.png', '2025-01-31 01:59:52', 0);
 INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (14, '0001', 'img_2068f9cc299a4cb68de4b24c8ded35fb', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/trade_post_image/img_2068f9cc299a4cb68de4b24c8ded35fb.png', '2025-01-31 02:00:20', 0);
-INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (15, 'ozK7z69qmE2hIRR5txLNz9jBgR0g', 'img_e4be7ef575f1458baaffc31ff82f93e6', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/discuss_post_image/img_e4be7ef575f1458baaffc31ff82f93e6.png', '2025-02-16 15:29:29', 1);
+INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (15, 'ozK7z69qmE2hIRR5txLNz9jBgR0g', 'img_e4be7ef575f1458baaffc31ff82f93e6', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/discuss_post_image/img_e4be7ef575f1458baaffc31ff82f93e6.png', '2025-02-16 15:29:29', 0);
 INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (16, 'ozK7z69qmE2hIRR5txLNz9jBgR0g', 'img_1f6c353f7fcc4adeaacd1c3a8b87ae38', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/discuss_post_image/img_1f6c353f7fcc4adeaacd1c3a8b87ae38.png', '2025-02-16 15:30:50', 0);
 INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (17, 'ozK7z69qmE2hIRR5txLNz9jBgR0g', 'img_1314cf1a54aa4e4ca49a03afb7752c9b', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/discuss_post_image/img_1314cf1a54aa4e4ca49a03afb7752c9b.png', '2025-02-16 15:31:33', 0);
 INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (18, 'ozK7z69qmE2hIRR5txLNz9jBgR0g', 'img_04adc46911614d738857db27ad53af0e', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/discuss_post_image/img_04adc46911614d738857db27ad53af0e.png', '2025-02-16 15:34:42', 0);
@@ -456,7 +492,7 @@ INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `i
 INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (68, 'ozK7z69qmE2hIRR5txLNz9jBgR0g', 'img_7c103725b6eb4a1094a8b94890261848', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/discuss_post_image/img_7c103725b6eb4a1094a8b94890261848.png', '2025-02-16 20:13:39', 0);
 INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (69, 'ozK7z69qmE2hIRR5txLNz9jBgR0g', 'img_12882682b74a4b9cb9067595fc429fcf', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/discuss_post_image/img_12882682b74a4b9cb9067595fc429fcf.png', '2025-02-16 20:17:14', 0);
 INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (70, 'ozK7z64u8OqUe0FtJyt0x4G9-y4M', 'img_3d02de3800354c489d7482f99829215c', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/discuss_post_image/img_3d02de3800354c489d7482f99829215c.jpg', '2025-02-16 20:37:46', 0);
-INSERT INTO `like` (`id`, `user_id`, `to_id`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (1, '0001', 'dp_071993559c7a4537b54d3374fe5b5a93', 1, '2025-02-14 21:29:54', '2025-02-15 13:14:20', 0);
+INSERT INTO `image` (`id`, `user_id`, `image_id`, `image_url`, `create_time`, `is_deleted`) VALUES (71, 'ozK7z64u8OqUe0FtJyt0x4G9-y4M', 'img_4bf7807aca8e47c289efd69dfb9a8dd5', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/discuss_post_image/img_4bf7807aca8e47c289efd69dfb9a8dd5.jpg', '2025-02-23 00:48:42', '0'), (72, 'ozK7z64u8OqUe0FtJyt0x4G9-y4M', 'img_d2f292aed9ef4505b68b83a5f4901c2e', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/discuss_post_image/img_d2f292aed9ef4505b68b83a5f4901c2e.jpg', '2025-02-23 00:49:29', '0'), (73, 'ozK7z64u8OqUe0FtJyt0x4G9-y4M', 'img_839ee14b377b4ea48afb38426d006d73', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/discuss_post_image/img_839ee14b377b4ea48afb38426d006d73.jpg', '2025-02-23 00:49:47', '0'), (74, 'ozK7z64u8OqUe0FtJyt0x4G9-y4M', 'img_0bcf6c1e45d24760a69a5161f0686b25', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/discuss_post_image/img_0bcf6c1e45d24760a69a5161f0686b25.jpg', '2025-02-23 00:50:24', '0'), (75, 'ozK7z64u8OqUe0FtJyt0x4G9-y4M', 'img_db213c630e594a79b3d06ab7003484de', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/discuss_post_image/img_db213c630e594a79b3d06ab7003484de.jpg', '2025-02-23 00:51:50', '0');
 INSERT INTO `post_image` (`id`, `post_id`, `image_id`, `create_time`, `update_time`, `is_deleted`) VALUES (1, 'dp_071993559c7a4537b54d3374fe5b5a93', '20250127T192511757_0001', '2025-01-27 19:31:59', '2025-01-27 19:31:59', 0);
 INSERT INTO `post_image` (`id`, `post_id`, `image_id`, `create_time`, `update_time`, `is_deleted`) VALUES (2, 'dp_d2db2d3e7ee84f729bf7de3220c28510', '20250127T194155146_0001', '2025-01-27 19:43:30', '2025-01-27 19:43:30', 0);
 INSERT INTO `post_image` (`id`, `post_id`, `image_id`, `create_time`, `update_time`, `is_deleted`) VALUES (3, 'tp_8c4cbcea62d0452eb25471522a47ade0', 'img_a107fe06add7488eb0213bd02ceb9d20', '2025-01-31 01:27:54', '2025-01-31 01:27:54', 0);
@@ -471,6 +507,12 @@ INSERT INTO `post_image` (`id`, `post_id`, `image_id`, `create_time`, `update_ti
 INSERT INTO `post_image` (`id`, `post_id`, `image_id`, `create_time`, `update_time`, `is_deleted`) VALUES (12, 'dp_5b22f1825775405d807b72d28f9785b7', '20250127T194155146_0001', '2025-02-16 19:12:12', '2025-02-16 19:12:12', 0);
 INSERT INTO `post_image` (`id`, `post_id`, `image_id`, `create_time`, `update_time`, `is_deleted`) VALUES (13, 'dp_a9ca7c3004fe413a9ca213516a4f5e7d', 'img_12882682b74a4b9cb9067595fc429fcf', '2025-02-16 20:17:21', '2025-02-16 20:17:21', 0);
 INSERT INTO `post_image` (`id`, `post_id`, `image_id`, `create_time`, `update_time`, `is_deleted`) VALUES (14, 'dp_300ea871b24248ff80f1cc0b5d9f851f', 'img_3d02de3800354c489d7482f99829215c', '2025-02-16 20:37:53', '2025-02-16 20:37:53', 0);
+INSERT INTO `post_image` (`id`, `post_id`, `image_id`, `create_time`, `update_time`, `is_deleted`) VALUES (15, 'dp_cd455aad65a24a40aa8288800847e797', 'img_0bcf6c1e45d24760a69a5161f0686b25', '2025-02-23 01:07:41', '2025-02-23 01:07:41', 0);
+INSERT INTO `post_image` (`id`, `post_id`, `image_id`, `create_time`, `update_time`, `is_deleted`) VALUES (16, 'dp_cd455aad65a24a40aa8288800847e797', 'img_4bf7807aca8e47c289efd69dfb9a8dd5', '2025-02-23 01:07:41', '2025-02-23 01:07:41', 0);
+INSERT INTO `post_image` (`id`, `post_id`, `image_id`, `create_time`, `update_time`, `is_deleted`) VALUES (17, 'dp_cd455aad65a24a40aa8288800847e797', 'img_839ee14b377b4ea48afb38426d006d73', '2025-02-23 01:07:41', '2025-02-23 01:07:41', 0);
+INSERT INTO `post_image` (`id`, `post_id`, `image_id`, `create_time`, `update_time`, `is_deleted`) VALUES (18, 'dp_cd455aad65a24a40aa8288800847e797', 'img_d2f292aed9ef4505b68b83a5f4901c2e', '2025-02-23 01:07:41', '2025-02-23 01:07:41', 0);
+INSERT INTO `post_image` (`id`, `post_id`, `image_id`, `create_time`, `update_time`, `is_deleted`) VALUES (19, 'dp_cd455aad65a24a40aa8288800847e797', 'img_db213c630e594a79b3d06ab7003484de', '2025-02-23 01:07:41', '2025-02-23 01:07:41', 0);
+
 INSERT INTO `school` (`id`, `school_code`, `school_name`, `discuss_post_count`, `trade_post_count`, `student_count`, `is_deleted`) VALUES (1, '11819', '东莞理工学院', 0, 0, 2, 0);
 INSERT INTO `sfile` (`id`, `sfile_id`, `sfile_name`, `sfile_url`, `sfile_size`, `download_count`, `sfile_type`, `create_by`, `update_by`, `create_time`, `update_time`, `is_deleted`) VALUES (1, 'cc137389-2801-4b7b-a41d-98409d81f3be', '3-2023年《数据库系统原理》期末考试卷(1).pdf', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/数据库/3-2023年《数据库系统原理》期末考试卷(1).pdf', 159460, 0, '数据库', '0001', '0001', '2025-01-26 11:20:10', '2025-01-26 18:19:01', 1);
 INSERT INTO `trade_post` (`id`, `trade_post_id`, `user_id`, `title`, `content`, `price`, `type`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (1, 'tp_8c4cbcea62d0452eb25471522a47ade0', '0001', '菲比图', '湖出菲比等身立牌', 15.5, 0, 0, '2025-01-31 01:27:54', '2025-01-31 01:27:54', 0);
