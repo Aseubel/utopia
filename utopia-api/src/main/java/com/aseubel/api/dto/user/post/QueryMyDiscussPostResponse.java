@@ -37,6 +37,9 @@ public class QueryMyDiscussPostResponse implements Serializable {
     @FieldDesc(name = "内容")
     private String content;
 
+    @FieldDesc(name = "标签")
+    private String tag;
+
     @FieldDesc(name = "点赞数")
     private Integer likeCount;
 

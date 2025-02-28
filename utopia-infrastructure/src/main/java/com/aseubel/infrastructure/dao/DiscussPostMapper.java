@@ -65,6 +65,21 @@ public interface DiscussPostMapper {
     List<DiscussPost> listDiscussPostAhead(Integer limit, String schoolCode, String tag);
 
     /**
+     * 获取用户发布的帖子
+     * @param userId
+     * @return
+     */
+    List<String> listUserDiscussPostId(String userId, String postId, Integer limit);
+
+    /**
+     * 获取用户发布的帖子
+     * @param userId
+     * @param limit
+     * @return
+     */
+    List<String> listUserDiscussPostIdAhead(String userId, Integer limit);
+
+    /**
      * 关联帖子图片
      * @param postId
      * @param images

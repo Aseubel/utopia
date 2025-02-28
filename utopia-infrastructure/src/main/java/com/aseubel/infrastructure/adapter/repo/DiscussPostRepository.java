@@ -152,8 +152,8 @@ public class DiscussPostRepository implements IDiscussPostRepository {
     @Override
     public List<DiscussPostEntity> queryUserDiscussPosts(CommunityBO bo) {
         List<String> postIds = Optional.ofNullable(StringUtils.isEmpty(bo.getPostId())
-                        ? favoriteMapper.listUserDiscussPostIdAhead(bo.getUserId(), bo.getLimit())
-                        : favoriteMapper.listUserDiscussPostId(bo.getUserId(), bo.getPostId(), bo.getLimit()))
+                        ? discussPostMapper.listUserDiscussPostIdAhead(bo.getUserId(), bo.getLimit())
+                        : discussPostMapper.listUserDiscussPostId(bo.getUserId(), bo.getPostId(), bo.getLimit()))
                 .orElse(Collections.emptyList());
         return listSimpleDiscussPost(postIds);
     }

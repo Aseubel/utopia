@@ -19,21 +19,4 @@
         limit #{limit}
     </select>
 
-    <select id="listUserDiscussPostId" resultType="java.lang.String">
-        select discuss_post_id
-        from `discuss_post`
-        where id &lt; (select id from `discuss_post` where discuss_post_id = #{postId} and is_deleted = 0)
-          and user_id = #{userId} and discuss_post_id != #{postId} and status = 1 and is_deleted = 0
-        order by id DESC
-        limit #{limit}
-    </select>
-
-    <select id="listUserDiscussPostIdAhead" resultType="java.lang.String">
-        select discuss_post_id
-        from `discuss_post`
-        where user_id = #{userId} and status = 1 and is_deleted = 0
-        order by id DESC
-        limit #{limit}
-    </select>
-
 </mapper>

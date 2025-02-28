@@ -187,7 +187,7 @@ public class CommunityService implements ICommunityService {
         log.info("查询用户发布的讨论帖子服务开始执行，userId:{}", userId);
         checkUserIdValid(userId);
         // 查询帖子列表
-        List<DiscussPostEntity> discussPostEntities = discussPostRepository.queryUserFavoritePosts(communityBO);
+        List<DiscussPostEntity> discussPostEntities = discussPostRepository.queryUserDiscussPosts(communityBO);
         if (CollectionUtil.isEmpty(discussPostEntities)) {
             return Collections.emptyList();
         }

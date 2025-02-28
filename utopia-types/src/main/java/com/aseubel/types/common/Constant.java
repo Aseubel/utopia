@@ -26,7 +26,7 @@ public class Constant {
 
     public static final String ENDPOINT = "oss-cn-guangzhou.aliyuncs.com";
 
-    public static final String INTERNAL_ENDPOINT = "oss-cn-guangzhou.aliyuncs.com";
+    public static final String INTERNAL_ENDPOINT = "oss-cn-guangzhou-internal.aliyuncs.com";
 
     public static final String BUCKET_NAME = "yangaseubel";  // 填写Bucket名称，例如examplebucket。
 

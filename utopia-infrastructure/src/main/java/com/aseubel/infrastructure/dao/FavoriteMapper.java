@@ -50,21 +50,6 @@ public interface FavoriteMapper {
     List<String> listUserFavoritePostIdAhead(String userId, Integer limit);
 
     /**
-     * 获取用户发布的帖子id列表
-     * @param userId
-     * @return
-     */
-    List<String> listUserDiscussPostId(String userId, String postId, Integer limit);
-
-    /**
-     * 获取用户发布的帖子id列表
-     * @param userId
-     * @param limit
-     * @return
-     */
-    List<String> listUserDiscussPostIdAhead(String userId, Integer limit);
-
-    /**
      * 保存收藏记录
      * @param userId
      * @param postId
