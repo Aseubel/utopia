@@ -274,8 +274,8 @@ CREATE TABLE IF NOT EXISTS `sfile` (
 	`sfile_size` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '文件大小',
     -- 下载次数
     `download_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '下载次数',
-	-- 类型
-	`sfile_type` VARCHAR(32) NOT NULL DEFAULT '' COMMENT '文件所属类型',
+	-- 所属课程
+	`course_name` VARCHAR(32) NOT NULL DEFAULT '' COMMENT '所属课程',
     -- 创建者
 	`create_by` VARCHAR(36) NOT NULL DEFAULT '' COMMENT '创建者',
     -- 更新者
@@ -514,7 +514,7 @@ INSERT INTO `post_image` (`id`, `post_id`, `image_id`, `create_time`, `update_ti
 INSERT INTO `post_image` (`id`, `post_id`, `image_id`, `create_time`, `update_time`, `is_deleted`) VALUES (19, 'dp_cd455aad65a24a40aa8288800847e797', 'img_db213c630e594a79b3d06ab7003484de', '2025-02-23 01:07:41', '2025-02-23 01:07:41', 0);
 
 INSERT INTO `school` (`id`, `school_code`, `school_name`, `discuss_post_count`, `trade_post_count`, `student_count`, `is_deleted`) VALUES (1, '11819', '东莞理工学院', 0, 0, 2, 0);
-INSERT INTO `sfile` (`id`, `sfile_id`, `sfile_name`, `sfile_url`, `sfile_size`, `download_count`, `sfile_type`, `create_by`, `update_by`, `create_time`, `update_time`, `is_deleted`) VALUES (1, 'cc137389-2801-4b7b-a41d-98409d81f3be', '3-2023年《数据库系统原理》期末考试卷(1).pdf', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/数据库/3-2023年《数据库系统原理》期末考试卷(1).pdf', 159460, 0, '数据库', '0001', '0001', '2025-01-26 11:20:10', '2025-01-26 18:19:01', 1);
+INSERT INTO `sfile` (`id`, `sfile_id`, `sfile_name`, `sfile_url`, `sfile_size`, `download_count`, `course_name`, `create_by`, `update_by`, `create_time`, `update_time`, `is_deleted`) VALUES (1, 'cc137389-2801-4b7b-a41d-98409d81f3be', '3-2023年《数据库系统原理》期末考试卷(1).pdf', 'https://yangaseubel.oss-cn-guangzhou.aliyuncs.com/utopia/数据库/3-2023年《数据库系统原理》期末考试卷(1).pdf', 159460, 0, '数据库', '0001', '0001', '2025-01-26 11:20:10', '2025-01-26 18:19:01', 1);
 INSERT INTO `trade_post` (`id`, `trade_post_id`, `user_id`, `title`, `content`, `price`, `type`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (1, 'tp_8c4cbcea62d0452eb25471522a47ade0', '0001', '菲比图', '湖出菲比等身立牌', 15.5, 0, 0, '2025-01-31 01:27:54', '2025-01-31 01:27:54', 0);
 INSERT INTO `trade_post` (`id`, `trade_post_id`, `user_id`, `title`, `content`, `price`, `type`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (2, 'tp_3c63fe45ba0e4b3f9c8e20dd2627c713', '0001', '小鸟游六花', '湖出小鸟游六花镭射票', 12, 0, 0, '2025-01-31 01:51:16', '2025-01-31 01:51:16', 0);
 INSERT INTO `trade_post` (`id`, `trade_post_id`, `user_id`, `title`, `content`, `price`, `type`, `status`, `create_time`, `update_time`, `is_deleted`) VALUES (3, 'tp_a56526c1563c49719360734f7f73d1b6', '0001', '孤独摇滚', '湖出孤独摇滚主角团抱枕', 56, 0, 0, '2025-01-31 01:52:26', '2025-01-31 01:52:26', 0);

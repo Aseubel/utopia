@@ -72,9 +72,12 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
                     Thread.currentThread().interrupt();
                 }
             }).start();
-        } else if (req instanceof TextWebSocketFrame) {
+        } else if (req instanceof TextWebSocketFrame ) {
             this.channelRead0(ctx, (TextWebSocketFrame) req);
-        } else {
+        } else if (req instanceof BinaryWebSocketFrame) {
+            this.channelRead0(ctx, (BinaryWebSocketFrame) req);
+        }
+        else {
             ctx.fireChannelRead(req);
         }
     }

@@ -26,6 +26,7 @@ services:
       - OSS_ACCESS_KEY_SECRET=YOUR_ACCESS_KEY_SECRET
     volumes:
       - ./log:/data/log
+      - ./etc/ssl/certs/mystore.p12:/etc/ssl/certs/mystore.p12
     logging:
       driver: "json-file"
       options:

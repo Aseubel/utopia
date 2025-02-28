@@ -53,7 +53,7 @@ public class NettyServerConfig {
                                 ChannelPipeline pipeline = ch.pipeline();
 
                                 SSLContext sslContext = SslUtil.createSSLContext("PKCS12",
-                                        "/etc/ssl/certs/mystore.p12", "wobushiyaoshen");
+                                        "D:\\develop\\mystore.p12", "wobushiyaoshen");
                                 // SSLEngine 此类允许使用ssl安全套接层协议进行安全通信
                                 SSLEngine engine = sslContext.createSSLEngine();
                                 engine.setUseClientMode(false);
@@ -65,7 +65,7 @@ public class NettyServerConfig {
                                 pipeline.addLast(new HttpHandler());
                                 pipeline.addLast(new IdleStateHandler(READ_TIMEOUT, 0, 0, TimeUnit.SECONDS));
                                 pipeline.addLast(new HeartbeatHandler());
-                                pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
+                                pipeline.addLast(new WebSocketServerProtocolHandler("/ws", null, true, 10 * 1024 * 1024));
                                 pipeline.addLast(new MessageHandler());
                             }
                         });
