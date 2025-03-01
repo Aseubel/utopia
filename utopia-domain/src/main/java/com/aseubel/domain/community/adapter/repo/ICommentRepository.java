@@ -126,4 +126,10 @@ public interface ICommentRepository {
      * @param commentId
      */
     void deleteSubComment(String commentId);
+
+    /**
+     * 减少评论回复数量
+     * @param commentId
+     */
+    void decreaseRootCommentReplyCount(String commentId);
 }

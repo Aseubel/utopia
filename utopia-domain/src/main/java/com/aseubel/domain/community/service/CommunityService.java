@@ -412,9 +412,11 @@ public class CommunityService implements ICommunityService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteComment(CommunityBO communityBO) {
-         verifyCommentAuth(communityBO.getUserId(), communityBO.getCommentId());
-         commentRepository.deleteComment(communityBO.getCommentId());
+        verifyCommentAuth(communityBO.getUserId(), communityBO.getCommentId());
+        commentRepository.deleteComment(communityBO.getCommentId());
+        commentRepository.decreaseRootCommentReplyCount(communityBO.getCommentId());
     }
 
     private void verifyPostAuth(String userId, String postId) {

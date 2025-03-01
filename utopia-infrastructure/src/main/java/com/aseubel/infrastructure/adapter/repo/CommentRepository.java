@@ -193,4 +193,9 @@ public class CommentRepository implements ICommentRepository {
         commentMapper.deleteCommentByRootId(commentId);
     }
 
+    @Override
+    public void decreaseRootCommentReplyCount(String commentId) {
+        commentMapper.decreaseReplyCount(commentId);
+    }
+
 }

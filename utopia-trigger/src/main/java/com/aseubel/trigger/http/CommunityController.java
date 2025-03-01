@@ -10,10 +10,7 @@ import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.community.service.ICommunityService;
 import com.aseubel.types.Response;
-import com.aseubel.types.event.CommentPostEvent;
-import com.aseubel.types.event.CustomEvent;
-import com.aseubel.types.event.DeletePostEvent;
-import com.aseubel.types.event.ReplyCommentEvent;
+import com.aseubel.types.event.*;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.CustomMultipartFile;
 import lombok.RequiredArgsConstructor;
@@ -422,6 +419,7 @@ public class CommunityController implements CommunityInterface {
                 .commentId(requestDTO.getCommentId())
                 .build();
         communityService.deleteComment(communityBO);
+        eventPublisher.publishEvent(new DeleteCommentEvent(communityBO));
         return Response.SYSTEM_SUCCESS();
     }
 

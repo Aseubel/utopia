@@ -61,6 +61,20 @@
         where root_id = #{commentId} and is_deleted = 0
     </update>
 
+    <update id="decreaseReplyCount">
+        UPDATE comment
+        SET reply_count = reply_count - 1
+        WHERE root_id = (
+            SELECT tmp.root_id FROM (
+                                        SELECT root_id FROM comment
+                                        WHERE comment_id = #{commentId}
+                                    ) AS tmp
+        )
+          AND root_id = comment_id
+          AND is_deleted = 0;
+
+    </update>
+
     <select id="getCommentByCommentId" resultType="com.aseubel.infrastructure.dao.po.Comment">
         select id, root_id, reply_to, comment_id, post_id, user_id, content, like_count, unlike_count, reply_count, comment_time, update_time
         from `comment`
