@@ -81,4 +81,10 @@ public interface FavoriteMapper {
      */
     @Update("UPDATE `favorite` SET status = 0 WHERE user_id = #{userId} AND post_id = #{postId} AND is_delete = 0")
     void disFavoritePost(String userId, String postId);
+
+    /**
+     * 删除所用用户对一个帖子的收藏记录
+     * @param postId
+     */
+    void deletePostFavorite(String postId);
 }

@@ -5,10 +5,7 @@ import com.aseubel.domain.community.adapter.repo.ICommunityUserRepository;
 import com.aseubel.domain.user.adapter.repo.IUserRepository;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.infrastructure.convertor.UserConvertor;
-import com.aseubel.infrastructure.dao.CommentMapper;
-import com.aseubel.infrastructure.dao.LikeMapper;
-import com.aseubel.infrastructure.dao.SchoolMapper;
-import com.aseubel.infrastructure.dao.UserMapper;
+import com.aseubel.infrastructure.dao.*;
 import com.aseubel.infrastructure.dao.po.Comment;
 import com.aseubel.infrastructure.dao.po.User;
 import com.aseubel.infrastructure.redis.IRedisService;
@@ -17,7 +14,6 @@ import com.aseubel.types.util.JwtUtil;
 import com.aseubel.types.util.RedisKeyBuilder;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
@@ -46,10 +42,15 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
 
     @Resource
     private SchoolMapper schoolMapper;
-    @Autowired
+
+    @Resource
     private CommentMapper commentMapper;
-    @Autowired
+
+    @Resource
     private LikeMapper likeMapper;
+
+    @Resource
+    private FavoriteMapper favoriteMapper;
 
     @Override
     public UserEntity queryUserInfo(String userId) {
@@ -205,7 +206,7 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
         List<String> toIds = new ArrayList<>();
         toIds.add(postId);
         toIds.addAll(commentMapper.listCommentIdsByUserIdAndPostId(userId, postId));
-        likeMapper.deleteLikeByUserIdAndToIds(userId, toIds);
+        likeMapper.deleteLikeByToIds(toIds);
         commentMapper.deleteCommentByPostId(userId, postId);
     }
 

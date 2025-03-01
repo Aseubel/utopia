@@ -406,6 +406,7 @@ public class CommunityService implements ICommunityService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deletePost(CommunityBO communityBO) {
         verifyPostAuth(communityBO.getUserId(), communityBO.getPostId());
         discussPostRepository.deletePost(communityBO.getPostId());
