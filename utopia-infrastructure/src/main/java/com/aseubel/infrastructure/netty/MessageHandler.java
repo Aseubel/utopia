@@ -74,10 +74,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
             }).start();
         } else if (req instanceof TextWebSocketFrame ) {
             this.channelRead0(ctx, (TextWebSocketFrame) req);
-        } else if (req instanceof BinaryWebSocketFrame) {
-            this.channelRead0(ctx, (BinaryWebSocketFrame) req);
-        }
-        else {
+        } else {
             ctx.fireChannelRead(req);
         }
     }
@@ -86,8 +83,6 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
         if (frame instanceof TextWebSocketFrame) {
             handleTextFrame(ctx, (TextWebSocketFrame) frame);
-        } else if (frame instanceof BinaryWebSocketFrame) {
-            handleBinaryFrame(ctx, (BinaryWebSocketFrame) frame);
         } else {
             ctx.close();
         }
@@ -112,8 +107,14 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
             JsonObject json = JsonParser.parseString(message).getAsJsonObject();
             String toUserId = json.get("toUserId").getAsString();
             String content = json.get("content").getAsString();
+            String type = json.get("type").getAsString();
 
-            sendOrStoreMessage(toUserId, new TextWebSocketFrame(content));
+            if (type.equals("text") || type.equals("image")) {
+                sendOrStoreMessage(toUserId, new TextWebSocketFrame(message));
+            } else {
+                throw new AppException("Invalid message type");
+            }
+
         } catch (Exception e) {
             throw new AppException("Invalid text message format");
         }
@@ -121,6 +122,11 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
 
     private void handleBinaryFrame(ChannelHandlerContext ctx, BinaryWebSocketFrame binaryFrame) {
         ByteBuf contentBuf = binaryFrame.content();
+        //读取所有可读的字节
+        while (contentBuf.isReadable()) {
+            System.out.println(contentBuf.readByte());
+        }
+
         // 解析消息格式：前4字节为用户ID长度，后接用户ID，剩余为图片数据
         if (contentBuf.readableBytes() < 4) {
             throw new AppException("Invalid binary message format");

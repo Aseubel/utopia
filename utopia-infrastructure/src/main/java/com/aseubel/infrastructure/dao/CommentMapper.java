@@ -177,4 +177,10 @@ public interface CommentMapper {
      * @param commentId
      */
     void deleteCommentByRootId(String commentId);
+
+    /**
+     * 减少评论回复数
+     * @param commentId
+     */
+    void decreaseReplyCount(String commentId);
 }
