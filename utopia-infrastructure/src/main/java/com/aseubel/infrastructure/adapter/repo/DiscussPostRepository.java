@@ -288,6 +288,7 @@ public class DiscussPostRepository implements IDiscussPostRepository {
     @Override
     public void deletePost(String postId) {
         discussPostMapper.deleteDiscussPostByPostId(postId);
+        favoriteMapper.deletePostFavorite(postId);
     }
 
 }

@@ -70,9 +70,8 @@ public interface LikeMapper {
 
     /**
      * 删除用户的点赞记录
-     * @param userId
      * @param toIds
      */
-    @Update("UPDATE `like` SET is_deleted = 1 WHERE user_id = #{userId} AND to_id IN (#{toIds})")
-    void deleteLikeByUserIdAndToIds(String userId, List<String> toIds);
+    @Update("UPDATE `like` SET is_deleted = 1 WHERE to_id IN (#{toIds})")
+    void deleteLikeByToIds(List<String> toIds);
 }
