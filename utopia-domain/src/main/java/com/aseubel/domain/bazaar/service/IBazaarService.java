@@ -32,7 +32,7 @@ public interface IBazaarService {
      * 发布帖子
      * @param tradePostEntity
      */
-    void publishTradePost(TradePostEntity tradePostEntity);
+    String publishTradePost(TradePostEntity tradePostEntity);
 
     /**
      * 查询我帖子
@@ -40,4 +40,11 @@ public interface IBazaarService {
      * @return
      */
     List<TradePostEntity> queryMyTradePosts(BazaarBO bazaarBO);
+
+    /**
+     * 查询帖子详情
+     * @param postId
+     * @return
+     */
+    TradePostEntity queryPostDetail(String postId);
 }

@@ -97,7 +97,7 @@ public class BazaarService implements IBazaarService{
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void publishTradePost(TradePostEntity tradePostEntity) {
+    public String publishTradePost(TradePostEntity tradePostEntity) {
         log.info("发布集市帖子服务开始执行，userId:{}", tradePostEntity.getUserId());
         if (ObjectUtils.isEmpty(bazaarUserRepository.queryUserStatus(tradePostEntity.getUserId()))) {
             throw new AppException("用户状态异常，请联系管理员");
@@ -114,6 +114,7 @@ public class BazaarService implements IBazaarService{
         }
 
         log.info("发布集市帖子服务结束执行，userId:{}", tradePostEntity.getUserId());
+        return tradePostEntity.getTradePostId();
     }
 
     @Override
@@ -152,6 +153,15 @@ public class BazaarService implements IBazaarService{
         }
         log.info("获取我的交易帖子列表服务结束执行");
         return tradePostEntities;
+    }
+
+    @Override
+    public TradePostEntity queryPostDetail(String postId) {
+        log.info("获取集市帖子详情服务开始执行，postId:{}", postId);
+        TradePostEntity tradePost = tradePostRepository.queryPostDetail(postId);
+        tradePost.setImages(tradePostRepository.listPostImages(postId));
+        log.info("获取集市帖子详情服务结束执行，postId:{}", postId);
+        return tradePost;
     }
 
 }

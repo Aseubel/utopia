@@ -96,4 +96,11 @@ public interface TradePostMapper {
      * @return
      */
     List<TradePost> listDiscussPostByPostIds(List<String> postIds);
+
+    /**
+     * 根据帖子id获取帖子图片id列表
+     * @param postId
+     * @return
+     */
+    List<String> listPostImageUrlsByPostId(String postId);
 }

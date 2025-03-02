@@ -66,4 +66,17 @@ public interface ITradePostRepository {
      */
     void deleteUncompletedTradePosts(String userId);
 
+    /**
+     * 根据帖子id查询帖子详情
+     * @param postId
+     * @return
+     */
+    TradePostEntity queryPostDetail(String postId);
+
+    /**
+     * 根据帖子id列举帖子图片url
+     * @param postId
+     * @return
+     */
+    List<String> listPostImages(String postId);
 }

@@ -111,4 +111,14 @@ public class TradePostRepository implements ITradePostRepository {
         tradePostMapper.deleteUncompletedTradePost(userId);
     }
 
+    @Override
+    public TradePostEntity queryPostDetail(String postId) {
+        return tradePostConvertor.convert(tradePostMapper.getTradePostByPostId(postId));
+    }
+
+    @Override
+    public List<String> listPostImages(String postId) {
+        return Optional.ofNullable(tradePostMapper.listPostImageUrlsByPostId(postId)).orElse(Collections.emptyList());
+    }
+
 }

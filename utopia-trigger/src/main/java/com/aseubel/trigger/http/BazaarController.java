@@ -125,7 +125,7 @@ public class BazaarController implements BazaarInterface {
      */
     @Override
     @PostMapping("/post")
-    public Response publishTradePost(@Valid @RequestBody PublishTradePostRequest publishTradePostRequest) {
+    public Response<PublishPostResponse> publishTradePost(@Valid @RequestBody PublishTradePostRequest publishTradePostRequest) {
         TradePostEntity tradePostEntity = TradePostEntity.builder()
                 .userId(publishTradePostRequest.getUserId())
                 .title(publishTradePostRequest.getTitle())
@@ -136,8 +136,34 @@ public class BazaarController implements BazaarInterface {
                 .contact(publishTradePostRequest.getContact())
                 .images(publishTradePostRequest.getImages())
                 .build();
-        bazaarService.publishTradePost(tradePostEntity);
-        return Response.SYSTEM_SUCCESS();
+        return Response.SYSTEM_SUCCESS(new PublishPostResponse(
+                bazaarService.publishTradePost(tradePostEntity)));
+    }
+
+    /**
+     * 查询帖子详情
+     * @param requestDTO
+     * @return
+     */
+    @Override
+    @GetMapping("/post/detail")
+    public Response<QueryPostDetailResponse> queryPostDetail(QueryPostDetailRequest requestDTO) {
+        TradePostEntity tradePost = bazaarService.queryPostDetail(requestDTO.getPostId());
+        return Response.SYSTEM_SUCCESS(QueryPostDetailResponse.builder()
+                    .tradePostId(tradePost.getTradePostId())
+                    .userId(tradePost.getUserId())
+                    .userName(tradePost.getUserName())
+                    .userAvatar(tradePost.getUserAvatar())
+                    .title(tradePost.getTitle())
+                    .content(tradePost.getContent())
+                    .price(tradePost.getPrice())
+                    .contact(tradePost.getContact())
+                    .type(tradePost.getType())
+                    .status(tradePost.getStatus())
+                    .createTime(tradePost.getCreateTime())
+                    .updateTime(tradePost.getUpdateTime())
+                    .images(tradePost.getImages())
+                    .build());
     }
 
     private boolean imageOrUserIdIsBlank(UploadTradePostImageRequest requestDTO) {

@@ -38,7 +38,7 @@
     </update>
 
     <select id="getTradePostByPostId" resultType="com.aseubel.infrastructure.dao.po.TradePost">
-        select id, trade_post_id, user_id, title, content, price, type, status, create_time, update_time
+        select id, trade_post_id, user_id, title, content, price, contact, type, status, create_time, update_time
         from `trade_post`
         where trade_post_id = #{postId} and is_deleted = 0
     </select>
@@ -113,6 +113,13 @@
             and is_deleted = 0
         </where>
         order by id DESC
+    </select>
+
+    <select id="listPostImageUrlsByPostId" resultType="java.lang.String">
+        select image_url
+        from `image` a, `post_image` b
+        where a.image_id = b.image_id and b.post_id = #{postId}
+          and a.is_deleted = 0 and b.is_deleted = 0
     </select>
 
 </mapper>

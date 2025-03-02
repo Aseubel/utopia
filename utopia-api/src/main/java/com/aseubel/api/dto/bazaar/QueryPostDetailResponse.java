@@ -10,18 +10,19 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Aseubel
- * @description 查询集市首页帖子列表返回DTO
- * @date 2025-01-30 23:52
+ * @description QueryPostDetailResponse
+ * @date 2025-03-02 22:32
  */
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class QueryIndexTradePostResponse implements Serializable {
+public class QueryPostDetailResponse implements Serializable {
 
     @FieldDesc(name = "帖子id")
     private String tradePostId;
@@ -65,7 +66,7 @@ public class QueryIndexTradePostResponse implements Serializable {
     @FieldDesc(name = "更新时间")
     private LocalDateTime updateTime;
 
-    @FieldDesc(name = "图片url，因为展示在首页，所以只展示第一张图片")
-    private String image;
+    @FieldDesc(name = "图片url")
+    private List<String> images;
 
 }

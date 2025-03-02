@@ -38,4 +38,10 @@ public interface BazaarInterface {
      */
     Response publishTradePost(@Valid @RequestBody PublishTradePostRequest publishTradePostRequest);
 
+    /**
+     * 查询帖子详情
+     * @param queryPostDetailRequest
+     * @return
+     */
+    Response<QueryPostDetailResponse> queryPostDetail(QueryPostDetailRequest queryPostDetailRequest);
 }
