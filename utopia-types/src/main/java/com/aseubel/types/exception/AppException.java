@@ -1,6 +1,5 @@
 package com.aseubel.types.exception;
 
-import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.types.enums.GlobalServiceStatusCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

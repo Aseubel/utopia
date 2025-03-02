@@ -63,6 +63,12 @@ spring:
       max-file-size: 15MB  #上传文件单个大小限制
       max-request-size: 60MB  #上传文件总大小限制
       enabled: true  #是否开启文件上传功能，默认false
+  cloud:
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:22611
+      web-context-unify: false
+      block-page: /blocked
 
 # Redis【如需使用请打开】
 redis:

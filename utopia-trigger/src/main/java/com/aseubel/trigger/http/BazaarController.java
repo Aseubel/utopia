@@ -56,20 +56,21 @@ public class BazaarController implements BazaarInterface {
                 .build());
         List<QueryIndexTradePostResponse> responseDTOs = new ArrayList<>();
         for (TradePostEntity tradePost : tradePosts) {
-           responseDTOs.add(QueryIndexTradePostResponse.builder()
-                   .tradePostId(tradePost.getTradePostId())
-                   .userId(tradePost.getUserId())
-                   .userName(tradePost.getUserName())
-                   .userAvatar(tradePost.getUserAvatar())
-                   .title(tradePost.getTitle())
-                   .content(tradePost.getContent())
-                   .price(tradePost.getPrice())
-                   .type(tradePost.getType())
-                   .status(tradePost.getStatus())
-                   .createTime(tradePost.getCreateTime())
-                   .updateTime(tradePost.getUpdateTime())
-                   .image(tradePost.getImage())
-                   .build());
+            responseDTOs.add(QueryIndexTradePostResponse.builder()
+                    .tradePostId(tradePost.getTradePostId())
+                    .userId(tradePost.getUserId())
+                    .userName(tradePost.getUserName())
+                    .userAvatar(tradePost.getUserAvatar())
+                    .title(tradePost.getTitle())
+                    .content(tradePost.getContent())
+                    .price(tradePost.getPrice())
+                    .contact(tradePost.getContact())
+                    .type(tradePost.getType())
+                    .status(tradePost.getStatus())
+                    .createTime(tradePost.getCreateTime())
+                    .updateTime(tradePost.getUpdateTime())
+                    .image(tradePost.getImage())
+                    .build());
         }
         return Response.SYSTEM_SUCCESS(responseDTOs);
     }
@@ -126,14 +127,15 @@ public class BazaarController implements BazaarInterface {
     @PostMapping("/post")
     public Response publishTradePost(@Valid @RequestBody PublishTradePostRequest publishTradePostRequest) {
         TradePostEntity tradePostEntity = TradePostEntity.builder()
-               .userId(publishTradePostRequest.getUserId())
-               .title(publishTradePostRequest.getTitle())
-               .content(publishTradePostRequest.getContent())
-               .tags(publishTradePostRequest.getTags())
+                .userId(publishTradePostRequest.getUserId())
+                .title(publishTradePostRequest.getTitle())
+                .content(publishTradePostRequest.getContent())
+                .tags(publishTradePostRequest.getTags())
                 .type(publishTradePostRequest.getType())
                 .price(publishTradePostRequest.getPrice())
-               .images(publishTradePostRequest.getImages())
-               .build();
+                .contact(publishTradePostRequest.getContact())
+                .images(publishTradePostRequest.getImages())
+                .build();
         bazaarService.publishTradePost(tradePostEntity);
         return Response.SYSTEM_SUCCESS();
     }

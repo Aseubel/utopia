@@ -3,6 +3,7 @@ package com.aseubel.api.dto.bazaar;
 import com.aseubel.types.annotation.FieldDesc;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
@@ -38,6 +39,11 @@ public class PublishTradePostRequest implements Serializable {
     @NotNull(message = "交易类型不能为空")
     @FieldDesc(name = "交易类型, 0-出售;1-求购:2-赠送")
     private Integer type;
+
+    @NotNull(message = "联系方式不能为空")
+    @NotBlank(message = "联系方式不能为空")
+    @FieldDesc(name = "联系方式")
+    private String contact;
 
     @FieldDesc(name = "标签")
     private List<String> tags;

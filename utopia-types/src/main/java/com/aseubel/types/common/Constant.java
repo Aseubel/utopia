@@ -47,6 +47,7 @@ public class Constant {
     public static final int NETTY_PORT = 21611;
 
     public static final AttributeKey<String> WS_TOKEN_KEY = AttributeKey.valueOf("code");
+    public static final AttributeKey<String> WS_USER_ID_KEY = AttributeKey.valueOf("userId");
 
     public static final long COURSES_EXPIRE_TIME = 24 * 3600 * 1000L; // 一天
 

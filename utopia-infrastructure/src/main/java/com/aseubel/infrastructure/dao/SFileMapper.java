@@ -40,19 +40,19 @@ public interface SFileMapper {
     /**
      * 根据文件类型查询文件
      * @param fileId
-     * @param typeId
+     * @param courseName
      * @param limit
      * @return
      */
-    List<SFile> listSFileByTypeId(String fileId, Long typeId, Integer limit);
+    List<SFile> listSFileByTypeId(String fileId, String courseName, Integer limit);
 
     /**
      * 根据文件类型查询文件
-     * @param typeId
+     * @param courseName
      * @param limit
      * @return
      */
-    List<SFile> listSFileByTypeIdAhead(Long typeId, Integer limit);
+    List<SFile> listSFileByTypeIdAhead(String courseName, Integer limit);
 
     /**
      * 获取所有共享文件

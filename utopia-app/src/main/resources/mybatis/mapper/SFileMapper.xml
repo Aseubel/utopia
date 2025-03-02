@@ -39,9 +39,11 @@
     <select id="listSFile" resultType="com.aseubel.infrastructure.dao.po.SFile">
         select id, sfile_id, sfile_name, sfile_url, sfile_size, download_count, course_name, create_by, update_by, create_time, update_time
         from `sfile`
-        where id > (select id from `sfile` where sfile_id = #{fileId} and is_deleted = 0)
-          and course_name = #{courseName}
-          and is_deleted = 0
+        <where>
+            id > (select id from `sfile` where sfile_id = #{fileId} and is_deleted = 0)
+            <if test="courseName!= null and courseName != ''">and course_name=#{courseName}</if>
+            and is_deleted = 0
+        </where>
         order by #{sortField}
         limit #{limit}
     </select>
@@ -49,7 +51,10 @@
     <select id="listSFileAhead" resultType="com.aseubel.infrastructure.dao.po.SFile">
         select id, sfile_id, sfile_name, sfile_url, sfile_size, download_count, course_name, create_by, update_by, create_time, update_time
         from `sfile`
-        where course_name = #{courseName} and is_deleted = 0
+        <where>
+            <if test="courseName!= null and courseName != ''">and course_name=#{courseName}</if>
+            and is_deleted = 0
+        </where>
         order by #{sortField}
         limit #{limit}
     </select>
@@ -57,8 +62,11 @@
     <select id="listSFileByTypeId" resultType="com.aseubel.infrastructure.dao.po.SFile">
         select id, sfile_id, sfile_name, sfile_url, sfile_size, download_count, course_name, create_by, update_by, create_time, update_time
         from `sfile`
-        where id > (select id from `sfile` where sfile_id = #{fileId} and is_deleted = 0)
-          and course_name=#{typeId} and is_deleted = 0
+        <where>
+            id > (select id from `sfile` where sfile_id = #{fileId} and is_deleted = 0)
+            <if test="courseName!= null and courseName != ''">and course_name=#{courseName}</if>
+            and is_deleted = 0
+        </where>
         order by id DESC
         limit #{limit}
     </select>
@@ -66,7 +74,10 @@
     <select id="listSFileByTypeIdAhead" resultType="com.aseubel.infrastructure.dao.po.SFile">
         select id, sfile_id, sfile_name, sfile_url, sfile_size, download_count, course_name, create_by, update_by, create_time, update_time
         from `sfile`
-        where course_name=#{typeId} and is_deleted = 0
+        <where>
+            <if test="courseName!= null and courseName != ''">and course_name=#{courseName}</if>
+            and is_deleted = 0
+        </where>
         order by id DESC
         limit #{limit}
     </select>

@@ -3,8 +3,8 @@
 <mapper namespace="com.aseubel.infrastructure.dao.TradePostMapper">
 
     <insert id="addTradePost">
-        insert into `trade_post` (trade_post_id, user_id, title, content, price, type)
-        values (#{tradePostId}, #{userId}, #{title}, #{content}, #{price}, #{type})
+        insert into `trade_post` (trade_post_id, user_id, title, content, price, contact, type)
+        values (#{tradePostId}, #{userId}, #{title}, #{content}, #{price}, #{contact}, #{type})
     </insert>
 
     <update id="updateTradePost">
@@ -12,7 +12,7 @@
         <set>
             <if test="title != null">title = #{title},</if>
             <if test="content != null">content = #{content},</if>
-            <if test="price != null">price  = #{price},</if>
+            <if test="price != null">price = #{price},</if>
             <if test="type != null">type = #{type},</if>
             <if test="status != null">status = #{status},</if>
         </set>
@@ -44,7 +44,7 @@
     </select>
 
     <select id="listTradePost" resultType="com.aseubel.infrastructure.dao.po.TradePost">
-        select id, trade_post_id, user_id, title, content, price, type, status, create_time, update_time
+        select id, trade_post_id, user_id, title, content, price, contact, type, status, create_time, update_time
         from `trade_post`
         <where>
             update_time &lt;= (select update_time from `trade_post` where trade_post_id = #{postId} and is_deleted = 0)
@@ -57,7 +57,7 @@
     </select>
 
     <select id="listTradePostAhead" resultType="com.aseubel.infrastructure.dao.po.TradePost">
-        select id, trade_post_id, user_id, title, content, price, type, status, create_time, update_time
+        select id, trade_post_id, user_id, title, content, price, contact, type, status, create_time, update_time
         from `trade_post`
         <where>
             <if test="status != null and status != ''">and status = #{status}</if>
@@ -103,7 +103,7 @@
     </select>
 
     <select id="listDiscussPostByPostIds" resultType="com.aseubel.infrastructure.dao.po.TradePost">
-        select id, trade_post_id, user_id, title, content, price, type, status, create_time, update_time
+        select id, trade_post_id, user_id, title, content, price, contact, type, status, create_time, update_time
         from `trade_post`
         <where>
             trade_post_id in

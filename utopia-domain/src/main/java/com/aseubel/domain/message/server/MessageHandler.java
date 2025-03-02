@@ -1,0 +1,196 @@
+package com.aseubel.domain.message.server;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.aseubel.domain.message.adapter.repo.IMessageRepository;
+import com.aseubel.domain.message.model.MessageEntity;
+import com.aseubel.types.exception.AppException;
+import com.aseubel.types.exception.WxException;
+import com.aseubel.types.util.HttpClientUtil;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static com.aseubel.types.common.Constant.*;
+
+/**
+ * @author Aseubel
+ * @description 处理 WebSocket 消息
+ * @date 2025-02-21 15:33
+ */
+@Component
+@Slf4j
+public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
+
+    private static final Map<String, Queue<WebSocketFrame>> OFFLINE_MSGS = new ConcurrentHashMap<>();
+
+    private static final Map<String, Channel> userChannels = new ConcurrentHashMap<>();
+
+    @Autowired
+    private ThreadPoolTaskExecutor threadPoolExecutor;
+    @Resource
+    private IMessageRepository messageRepository;
+
+    // 提供受控的访问方法
+    public static void removeUserChannel(Channel channel) {
+        userChannels.values().remove(channel);
+    }
+
+    public static boolean containsUser(String userId) {
+        return userChannels.containsKey(userId);
+    }
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("客户端连接：" + ctx.channel());
+        super.channelActive(ctx);
+    }
+
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object req) throws Exception {
+        if (req instanceof FullHttpRequest) {
+            String code = getCodeFromRequest(ctx); // 从请求中提取 code
+            String userId = code;// validateCode(code);    // 验证 code 获取 openid
+
+            userChannels.put(userId, ctx.channel());
+            ctx.channel().attr(WS_USER_ID_KEY).set(userId);
+            // 由于这里还在处理握手请求也就是建立连接，所以需要延迟发送离线消息
+            new Thread(() -> {
+                try {
+                    Thread.sleep(50);
+                    OFFLINE_MSGS.getOrDefault(userId, new LinkedList<>())
+                            .forEach(ctx::writeAndFlush);
+                    OFFLINE_MSGS.remove(userId);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }).start();
+        } else if (req instanceof TextWebSocketFrame ) {
+            this.channelRead0(ctx, (TextWebSocketFrame) req);
+        } else {
+            ctx.fireChannelRead(req);
+        }
+    }
+
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
+        if (frame instanceof TextWebSocketFrame) {
+            MessageEntity message = validateMessage(ctx.channel().attr(WS_USER_ID_KEY).get(), (TextWebSocketFrame) frame);
+            saveMessage(message);
+            sendOrStoreMessage(message.getToUserId(), frame);
+        } else {
+            ctx.close();
+        }
+    }
+
+    // 处理连接断开
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) {
+        System.out.println("客户端断开连接：" + ctx.channel());
+        Channel channel = ctx.channel();
+        for (Map.Entry<String, Channel> entry : userChannels.entrySet()) {
+            if (entry.getValue() == channel) {
+                userChannels.remove(entry.getKey());
+                break;
+            }
+        }
+    }
+
+    private MessageEntity validateMessage(String userId, TextWebSocketFrame textFrame) {
+        String message = textFrame.text();
+        try {
+            JsonObject json = JsonParser.parseString(message).getAsJsonObject();
+            String toUserId = json.get("toUserId").getAsString();
+            String content = json.get("content").getAsString();
+            String type = json.get("type").getAsString();
+
+            if (type.equals("text") || type.equals("image")) {
+                return new MessageEntity(userId, toUserId, content, type);
+            } else {
+                throw new AppException("非法的消息类型！");
+            }
+
+        } catch (Exception e) {
+            throw new AppException("非法的消息格式！");
+        }
+    }
+
+    private void sendOrStoreMessage(String toUserId, WebSocketFrame message) {
+        if (isUserOnline(toUserId)) {
+            Channel targetChannel = userChannels.get(toUserId);
+            if (targetChannel != null && targetChannel.isActive()) {
+                targetChannel.writeAndFlush(message.retain());
+            }
+        } else {
+            // 存储原始WebSocketFrame（需保留引用）
+            OFFLINE_MSGS.computeIfAbsent(toUserId, k -> new LinkedList<>())
+                    .add(message.retain());
+        }
+    }
+
+    private void saveMessage(MessageEntity message) {
+        threadPoolExecutor.execute(() -> {
+            messageRepository.saveMessage(message);
+        });
+    }
+
+    private boolean isUserOnline(String userId) {
+        return userChannels.containsKey(userId);
+    }
+
+    private String getCodeFromRequest(ChannelHandlerContext ctx) {
+        String code = ctx.channel().attr(WS_TOKEN_KEY).get();
+        // 检查 code 参数是否存在且非空
+        if (code == null || code.isEmpty()) {
+            throw new IllegalArgumentException("WebSocket token  is missing or empty");
+        }
+        return code;
+    }
+
+    private String getOpenid(String appid, String secret, String code) {
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("appid", appid);
+        paramMap.put("secret", secret);
+        paramMap.put("js_code", code);
+        paramMap.put("grant_type", "authorization_code");
+        String result = HttpClientUtil.doGet(WX_LOGIN, paramMap);
+
+        //获取请求结果
+        JSONObject jsonObject = JSON.parseObject(result);
+        String openid = jsonObject.getString("openid");
+        //判断openid是否存在
+        if (StringUtils.isEmpty(openid)) {
+            throw new WxException(jsonObject.getString("errcode"), jsonObject.getString("errmsg"));
+        }
+
+        return openid;
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        if (cause instanceof AppException) {
+            log.error("AppException caught: {}", ((AppException) cause).getInfo());
+        } else if (cause instanceof WxException) {
+            log.error("WxException caught: {}", ((WxException) cause).getMessage());
+        }
+        ctx.close(); // 建议关闭发生异常的连接
+    }
+
+}

@@ -35,11 +35,11 @@ public interface IFileRepository {
     /**
      * 根据文件类型查询文件
      * @param fileId
-     * @param typeId
+     * @param courseName
      * @param limit
      * @return
      */
-    List<SFileEntity> listSFileByTypeId(String fileId, Long typeId, Integer limit);
+    List<SFileEntity> listSFileByTypeId(String fileId, String courseName, Integer limit);
 
     /**
      * 保存文件下载记录
