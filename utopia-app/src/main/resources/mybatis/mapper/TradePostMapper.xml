@@ -61,7 +61,7 @@
         from `trade_post`
         <where>
             <if test="status != null and status != ''">and status = #{status}</if>
-            <if test="type != null and type != ''">type = #{type}</if>
+            <if test="type != null and type != ''">and type = #{type}</if>
             and is_deleted = 0
         </where>
         order by update_time DESC
