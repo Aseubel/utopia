@@ -73,10 +73,10 @@ public class SFileRepository implements IFileRepository {
     }
 
     @Override
-    public List<SFileEntity> listSFileByTypeId(String fileId, Long typeId, Integer limit) {
+    public List<SFileEntity> listSFileByTypeId(String fileId, String courseName, Integer limit) {
         return Optional.ofNullable(StringUtils.isEmpty(fileId)
-                        ? sFileMapper.listSFileByTypeIdAhead(typeId, limit)
-                        : sFileMapper.listSFileByTypeId(fileId, typeId, limit))
+                        ? sFileMapper.listSFileByTypeIdAhead(courseName, limit)
+                        : sFileMapper.listSFileByTypeId(fileId, courseName, limit))
                 .map(p -> p.stream().map(sFileConvertor::convert).collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
     }

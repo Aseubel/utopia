@@ -15,6 +15,7 @@
         <module>utopia-api</module>
         <module>utopia-infrastructure</module>
         <module>utopia-trigger</module>
+        <module>sentinel</module>
     </modules>
     <properties>
         <java.version>1.8</java.version>
@@ -31,6 +32,22 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- 这里引入最新的SpringCloud依赖 -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>2021.0.1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- 这里引入最新的SpringCloudAlibaba依赖，2021.0.1.0版本支持SpringBoot2.6.X -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>2021.0.1.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>

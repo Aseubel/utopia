@@ -1,8 +1,8 @@
 package com.aseubel.config;
 
-import com.aseubel.infrastructure.netty.HeartbeatHandler;
-import com.aseubel.infrastructure.netty.HttpHandler;
-import com.aseubel.infrastructure.netty.MessageHandler;
+import com.aseubel.domain.message.server.HeartbeatHandler;
+import com.aseubel.domain.message.server.HttpHandler;
+import com.aseubel.domain.message.server.MessageHandler;
 import com.aseubel.types.util.SslUtil;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -14,6 +14,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.handler.timeout.IdleStateHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -26,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import static com.aseubel.types.common.Constant.NETTY_PORT;
 
 @Component
+@Slf4j
 public class NettyServerConfig {
 
     private ChannelFuture serverChannelFuture;
@@ -67,11 +69,18 @@ public class NettyServerConfig {
                                 pipeline.addLast(new HeartbeatHandler());
                                 pipeline.addLast(new WebSocketServerProtocolHandler("/ws", null, true, 10 * 1024 * 1024));
                                 pipeline.addLast(new MessageHandler());
+                                pipeline.addLast(new ChannelInboundHandlerAdapter() {
+                                    @Override
+                                    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+                                        // 统一处理所有未被前面handler捕获的异常
+                                        log.error("全局异常捕获: {}", cause.getMessage());
+                                        ctx.channel().close();
+                                    }
+                                });
                             }
                         });
 
                 serverChannelFuture = bootstrap.bind(NETTY_PORT).sync();
-                System.out.println("WebSocket server started on port " + NETTY_PORT);
 
                 // 保持通道开放
                 serverChannelFuture.channel().closeFuture().sync();

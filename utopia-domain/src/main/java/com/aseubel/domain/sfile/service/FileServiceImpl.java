@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collections;
 import java.util.List;
 
 import static com.aseubel.types.common.Constant.APP;
@@ -83,9 +82,9 @@ public class FileServiceImpl implements IFileService{
     }
 
     @Override
-    public List<SFileEntity> listSFileByTypeId(String fileId, Long typeId, Integer limit) {
+    public List<SFileEntity> listSFileByTypeId(String fileId, String courseName, Integer limit) {
         log.info("开始获取指定类型文件列表服务");
-        return fileRepository.listSFileByTypeId(fileId, typeId, limit);
+        return fileRepository.listSFileByTypeId(fileId, courseName, limit);
     }
 
     @Override

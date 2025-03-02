@@ -4,6 +4,50 @@ SET character_set_connection = utf8;
 CREATE database if NOT EXISTS `utopia` default character set utf8mb4;
 use utopia;
 
+-- 申请表
+DROP TABLE IF EXISTS `application`;
+CREATE TABLE IF NOT EXISTS `application` (
+    -- 主键
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+    -- 用户id
+    `user_id` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '发出消息的用户id',
+		-- 申请的项目
+    `type` TINYINT NOT NULL DEFAULT 0 COMMENT '0-二级认证;1-上传文件',
+    -- 申请描述
+    `content` TEXT COMMENT '申请描述',
+    -- 申请状态
+    `status` TINYINT NOT NULL DEFAULT 0 COMMENT '0-待审核;1-已通过;2-不通过',
+    -- 审批管理员ID
+    `admin_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '审批管理员ID',
+    -- 拒绝原因
+    `reject_reason` VARCHAR (255) NOT NULL DEFAULT '' COMMENT '拒绝原因',
+    -- 创建者
+    `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    -- 更新时间
+    `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    -- 软删除标识 0-未删除 1-已删除
+    `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
+) ENGINE = InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '申请表';
+
+-- 消息表
+DROP TABLE IF EXISTS `message`;
+CREATE TABLE IF NOT EXISTS `message` (
+    -- 主键
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+    -- 发出消息的用户id
+    `user_id` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '发出消息的用户id',
+	-- 接收消息的用户id
+    `to_user_id` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '接收消息的用户id',
+    -- 内容
+    `content` TEXT COMMENT '内容',
+    -- 类型
+    `type` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '类型',
+    -- 创建者
+    `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    -- 软删除标识 0-未删除 1-已删除
+    `is_deleted` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-未删除;1-已删除'
+) ENGINE = InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '消息表';
+
 -- 头像表
 DROP TABLE IF EXISTS `avatar`;
 CREATE TABLE IF NOT EXISTS `avatar` (
@@ -304,6 +348,8 @@ CREATE TABLE IF NOT EXISTS `trade_post` (
     `content` text COMMENT '帖子内容',
     -- 定价
     `price` FLOAT NOT NULL DEFAULT 0 COMMENT '定价',
+    -- 联系方式
+    `contact` VARCHAR(32) NOT NULL DEFAULT '' COMMENT '联系方式',
     -- 0-出售;1-求购;2-赠送
     `type` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0-出售;1-求购:2-赠送',
     -- 0-未完成;1-已完成
