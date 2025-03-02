@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.aseubel.types.common.Constant.PER_PAGE_DISCUSS_POST_SIZE;
 import static com.aseubel.types.common.Constant.PER_PAGE_TRADE_POST_SIZE;
 
 /**
@@ -162,6 +161,27 @@ public class BazaarService implements IBazaarService{
         tradePost.setImages(tradePostRepository.listPostImages(postId));
         log.info("获取集市帖子详情服务结束执行，postId:{}", postId);
         return tradePost;
+    }
+
+    @Override
+    public void deletePost(BazaarBO bazaarBO) {
+        verifyPostAuth(bazaarBO.getUserId(), bazaarBO.getPostId());
+        tradePostRepository.deletePost(bazaarBO.getPostId());
+        log.info("用户删除集市帖子，userId:{}, postId:{}", bazaarBO.getUserId(), bazaarBO.getPostId());
+    }
+
+    @Override
+    public void completeTrade(BazaarBO bazaarBO) {
+        verifyPostAuth(bazaarBO.getUserId(), bazaarBO.getPostId());
+        tradePostRepository.completeTrade(bazaarBO.getPostId());
+        log.info("用户完成交易，userId:{}, postId:{}", bazaarBO.getUserId(), bazaarBO.getPostId());
+    }
+
+    private void verifyPostAuth(String userId, String postId) {
+        if (!userId.equals(tradePostRepository.getUserIdByPostId(postId))) {
+            log.error("用户无权限操作帖子！, user={}, post={}", userId, postId);
+            throw new AppException("用户无权操作帖子！");
+        }
     }
 
 }

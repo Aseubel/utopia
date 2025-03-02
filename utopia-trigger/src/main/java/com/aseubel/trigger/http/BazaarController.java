@@ -7,7 +7,9 @@ import com.aseubel.domain.bazaar.model.bo.BazaarBO;
 import com.aseubel.domain.bazaar.model.entity.TradeImage;
 import com.aseubel.domain.bazaar.model.entity.TradePostEntity;
 import com.aseubel.domain.bazaar.service.IBazaarService;
+import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.types.Response;
+import com.aseubel.types.event.DeletePostEvent;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.CustomMultipartFile;
 import lombok.RequiredArgsConstructor;
@@ -164,6 +166,34 @@ public class BazaarController implements BazaarInterface {
                     .updateTime(tradePost.getUpdateTime())
                     .images(tradePost.getImages())
                     .build());
+    }
+
+    /**
+     * 删除帖子
+     */
+    @Override
+    @DeleteMapping("/post")
+    public Response deleteTradePost(DeletePostRequest requestDTO) {
+        BazaarBO bazaarBO = BazaarBO.builder()
+                .userId(requestDTO.getUserId())
+                .postId(requestDTO.getPostId())
+                .build();
+        bazaarService.deletePost(bazaarBO);
+        return Response.SYSTEM_SUCCESS();
+    }
+
+    /**
+     * 完成交易(修改帖子状态已完成)
+     */
+    @Override
+    @PutMapping("/post/complete")
+    public Response CompleteTrade(CompleteTradeRequest requestDTO) {
+        BazaarBO bazaarBO = BazaarBO.builder()
+                .userId(requestDTO.getUserId())
+                .postId(requestDTO.getPostId())
+                .build();
+        bazaarService.completeTrade(bazaarBO);
+        return Response.SYSTEM_SUCCESS();
     }
 
     private boolean imageOrUserIdIsBlank(UploadTradePostImageRequest requestDTO) {

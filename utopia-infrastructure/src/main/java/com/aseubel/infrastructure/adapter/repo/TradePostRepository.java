@@ -4,8 +4,6 @@ import com.aseubel.domain.bazaar.adapter.repo.ITradePostRepository;
 import com.aseubel.domain.bazaar.model.bo.BazaarBO;
 import com.aseubel.domain.bazaar.model.entity.TradeImage;
 import com.aseubel.domain.bazaar.model.entity.TradePostEntity;
-import com.aseubel.domain.community.model.entity.DiscussPostEntity;
-import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.infrastructure.convertor.TradeImageConvertor;
 import com.aseubel.infrastructure.convertor.TradePostConvertor;
 import com.aseubel.infrastructure.dao.ImageMapper;
@@ -119,6 +117,21 @@ public class TradePostRepository implements ITradePostRepository {
     @Override
     public List<String> listPostImages(String postId) {
         return Optional.ofNullable(tradePostMapper.listPostImageUrlsByPostId(postId)).orElse(Collections.emptyList());
+    }
+
+    @Override
+    public String getUserIdByPostId(String postId) {
+        return Optional.ofNullable(tradePostMapper.getUserIdByPostId(postId)).orElse("");
+    }
+
+    @Override
+    public void deletePost(String postId) {
+        tradePostMapper.deleteTradePostByPostId(postId);
+    }
+
+    @Override
+    public void completeTrade(String postId) {
+        tradePostMapper.updateTradePostStatusToCompleted(postId);
     }
 
 }

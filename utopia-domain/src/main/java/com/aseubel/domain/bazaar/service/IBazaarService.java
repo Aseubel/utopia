@@ -4,7 +4,6 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.bazaar.model.bo.BazaarBO;
 import com.aseubel.domain.bazaar.model.entity.TradeImage;
 import com.aseubel.domain.bazaar.model.entity.TradePostEntity;
-import com.aseubel.domain.community.model.bo.CommunityBO;
 
 import java.util.List;
 
@@ -47,4 +46,16 @@ public interface IBazaarService {
      * @return
      */
     TradePostEntity queryPostDetail(String postId);
+
+    /**
+     * 删除帖子
+     * @param bazaarBO
+     */
+    void deletePost(BazaarBO bazaarBO);
+
+    /**
+     * 完成帖子交易
+     * @param bazaarBO
+     */
+    void completeTrade(BazaarBO bazaarBO);
 }

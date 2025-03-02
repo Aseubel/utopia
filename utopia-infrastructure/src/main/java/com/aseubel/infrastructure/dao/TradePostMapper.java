@@ -4,6 +4,8 @@ import com.aseubel.infrastructure.dao.po.Image;
 import com.aseubel.infrastructure.dao.po.TradePost;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -103,4 +105,19 @@ public interface TradePostMapper {
      * @return
      */
     List<String> listPostImageUrlsByPostId(String postId);
+
+    /**
+     * 根据帖子id获取用户id
+     * @param postId
+     * @return
+     */
+    @Select("SELECT user_id FROM trade_post WHERE trade_post_id = #{postId}")
+    String getUserIdByPostId(String postId);
+
+    /**
+     * 修改交易帖子状态为已完成
+     * @param postId
+     */
+    @Update("UPDATE trade_post SET status = 1 WHERE trade_post_id = #{postId}")
+    void updateTradePostStatusToCompleted(String postId);
 }

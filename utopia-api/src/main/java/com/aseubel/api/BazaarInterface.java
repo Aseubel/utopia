@@ -44,4 +44,18 @@ public interface BazaarInterface {
      * @return
      */
     Response<QueryPostDetailResponse> queryPostDetail(QueryPostDetailRequest queryPostDetailRequest);
+
+    /**
+     * 删除帖子
+     * @param deletePostRequest
+     * @return
+     */
+    Response deleteTradePost(@Valid @RequestBody DeletePostRequest deletePostRequest);
+
+    /**
+     * 完成交易
+     * @param completeTradeRequest
+     * @return
+     */
+    Response CompleteTrade(@Valid @RequestBody CompleteTradeRequest completeTradeRequest);
 }

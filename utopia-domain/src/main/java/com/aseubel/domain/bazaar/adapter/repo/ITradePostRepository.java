@@ -79,4 +79,23 @@ public interface ITradePostRepository {
      * @return
      */
     List<String> listPostImages(String postId);
+
+    /**
+     * 根据帖子id获取用户id
+     * @param postId
+     * @return
+     */
+    String getUserIdByPostId(String postId);
+
+    /**
+     * 根据帖子id删除帖子
+     * @param postId
+     */
+    void deletePost(String postId);
+
+    /**
+     * 根据帖子id完成交易
+     * @param postId
+     */
+    void completeTrade(String postId);
 }
