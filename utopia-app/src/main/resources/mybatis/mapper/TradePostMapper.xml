@@ -48,7 +48,7 @@
         from `trade_post`
         <where>
             update_time &lt;= (select update_time from `trade_post` where trade_post_id = #{postId} and is_deleted = 0)
-            <if test="status != null'">and status = #{status}</if>
+            <if test="status != null">and status = #{status}</if>
             <if test="type != null">and type = #{type}</if>
             and is_deleted = 0 and trade_post_id != #{postId}
         </where>

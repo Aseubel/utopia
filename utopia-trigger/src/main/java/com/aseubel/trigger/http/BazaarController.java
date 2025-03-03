@@ -171,7 +171,7 @@ public class BazaarController implements BazaarInterface {
      */
     @Override
     @DeleteMapping("/post")
-    public Response deleteTradePost(DeletePostRequest requestDTO) {
+    public Response deleteTradePost(@Valid @RequestBody DeletePostRequest requestDTO) {
         BazaarBO bazaarBO = BazaarBO.builder()
                 .userId(requestDTO.getUserId())
                 .postId(requestDTO.getPostId())
@@ -185,7 +185,7 @@ public class BazaarController implements BazaarInterface {
      */
     @Override
     @PutMapping("/post/complete")
-    public Response CompleteTrade(CompleteTradeRequest requestDTO) {
+    public Response CompleteTrade(@Valid @RequestBody CompleteTradeRequest requestDTO) {
         BazaarBO bazaarBO = BazaarBO.builder()
                 .userId(requestDTO.getUserId())
                 .postId(requestDTO.getPostId())
