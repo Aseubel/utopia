@@ -1,6 +1,5 @@
 package com.aseubel.domain.community.adapter.repo;
 
-import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
 
 import java.util.List;

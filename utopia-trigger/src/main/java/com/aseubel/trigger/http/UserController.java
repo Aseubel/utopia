@@ -2,8 +2,6 @@ package com.aseubel.trigger.http;
 
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.api.UserInterface;
-import com.aseubel.api.dto.user.UploadAvatarRequestDTO;
-import com.aseubel.api.dto.user.UploadAvatarResponseDTO;
 import com.aseubel.api.dto.user.*;
 import com.aseubel.api.dto.user.post.*;
 import com.aseubel.domain.bazaar.model.bo.BazaarBO;
@@ -19,6 +17,7 @@ import com.aseubel.domain.user.service.IUserService;
 import com.aseubel.types.Response;
 import com.aseubel.types.event.CancelAccountEvent;
 import com.aseubel.types.exception.AppException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -26,8 +25,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.Valid;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,7 +6,7 @@ import com.aseubel.infrastructure.convertor.MessageConvertor;
 import com.aseubel.infrastructure.dao.MessageMapper;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * @author Aseubel

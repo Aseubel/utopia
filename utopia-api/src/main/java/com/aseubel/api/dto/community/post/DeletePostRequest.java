@@ -3,8 +3,8 @@ package com.aseubel.api.dto.community.post;
 import com.aseubel.types.annotation.FieldDesc;
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**

@@ -3,7 +3,7 @@ package com.aseubel.infrastructure.redis;
 import org.redisson.api.*;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Set;

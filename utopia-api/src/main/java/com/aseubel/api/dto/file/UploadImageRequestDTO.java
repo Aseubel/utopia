@@ -1,10 +1,11 @@
 package com.aseubel.api.dto.file;
 
 import com.aseubel.types.annotation.FieldDesc;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -20,6 +21,7 @@ import java.io.Serializable;
 public class UploadImageRequestDTO implements Serializable {
 
     @NotNull(message = "用户id不能为空")
+    @NotBlank(message = "用户id不能为空")
     @FieldDesc(name = "用户id")
     private String userId;
 

@@ -1,9 +1,10 @@
 package com.aseubel.api.dto.user;
 
 import com.aseubel.types.annotation.FieldDesc;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -19,10 +20,12 @@ import java.io.Serializable;
 public class RefreshTokenRequestDTO implements Serializable {
 
     @NotNull(message = "refreshToken cannot be null")
+    @NotBlank(message = "refreshToken cannot be empty")
     @FieldDesc(name = "refreshToken")
     private String refreshToken;
 
     @NotNull(message = "userId cannot be null")
+    @NotBlank(message = "userId cannot be empty")
     @FieldDesc(name = "userId")
     private String userId;
 

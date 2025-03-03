@@ -7,7 +7,7 @@ import com.aseubel.infrastructure.dao.AvatarMapper;
 import com.aseubel.infrastructure.dao.po.Avatar;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * @author Aseubel

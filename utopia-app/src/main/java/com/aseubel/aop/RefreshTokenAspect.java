@@ -3,12 +3,12 @@ package com.aseubel.aop;
 import com.aseubel.domain.user.adapter.repo.IUserRepository;
 import com.aseubel.infrastructure.redis.IRedisService;
 import com.aseubel.properties.JwtProperties;
-import com.aseubel.types.Response;
-import com.aseubel.types.enums.GlobalServiceStatusCode;
-import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.JwtUtil;
 import com.aseubel.types.util.RedisKeyBuilder;
 import io.jsonwebtoken.Claims;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -17,14 +17,10 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
@@ -41,7 +37,7 @@ import static com.aseubel.types.common.Constant.USER_ID_KEY;
 @Slf4j
 public class RefreshTokenAspect {
 
-    @Autowired
+    @Resource
     private JwtProperties jwtProperties;
 
     @Resource
@@ -93,7 +89,7 @@ public class RefreshTokenAspect {
                 log.info("RefreshTokenAspect：用户进行jwt校验通过，id:{}，token:{}", userId, token);
             } catch (Exception ex) {
                 // 不通过，响应 401 状态码
-                log.warn("RefreshTokenAspect：用户进行jwt校验失败！id:{}，token:{}", userId, token);;
+                log.warn("RefreshTokenAspect：用户进行jwt校验失败！id:{}，token:{}", userId, token);
                 return point.proceed();
             }
         }

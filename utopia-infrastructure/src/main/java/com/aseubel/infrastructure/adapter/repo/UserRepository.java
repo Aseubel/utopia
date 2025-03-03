@@ -14,9 +14,10 @@ import com.aseubel.types.util.JwtUtil;
 import com.aseubel.types.util.RedisKeyBuilder;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,7 @@ import static com.aseubel.types.common.Constant.*;
 @Slf4j
 public class UserRepository implements IUserRepository, ICommunityUserRepository, IBazaarUserRepository {
 
-    @Resource
+    @Autowired
     private UserMapper userMapper;
 
     @Resource

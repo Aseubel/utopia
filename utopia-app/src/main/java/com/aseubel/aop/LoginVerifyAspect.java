@@ -2,13 +2,16 @@ package com.aseubel.aop;
 
 import com.aseubel.domain.user.adapter.repo.IUserRepository;
 import com.aseubel.infrastructure.redis.IRedisService;
-import com.aseubel.types.util.JwtUtil;
 import com.aseubel.properties.JwtProperties;
 import com.aseubel.types.Response;
 import com.aseubel.types.enums.GlobalServiceStatusCode;
 import com.aseubel.types.exception.AppException;
+import com.aseubel.types.util.JwtUtil;
 import com.aseubel.types.util.RedisKeyBuilder;
 import io.jsonwebtoken.Claims;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -20,9 +23,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
@@ -39,7 +39,7 @@ import static com.aseubel.types.common.Constant.USER_ID_KEY;
 @Slf4j
 public class LoginVerifyAspect {
 
-    @Autowired
+    @Resource
     private JwtProperties jwtProperties;
 
     @Resource
