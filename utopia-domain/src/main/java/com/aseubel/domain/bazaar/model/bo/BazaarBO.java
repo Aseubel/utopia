@@ -34,4 +34,7 @@ public class BazaarBO {
     @FieldDesc(name = "帖子实体")
     private TradePostEntity tradePostEntity;
 
+    @FieldDesc(name = "学校代码")
+    private String schoolCode;
+
 }

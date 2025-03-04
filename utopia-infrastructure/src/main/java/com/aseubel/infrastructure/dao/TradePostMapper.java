@@ -48,14 +48,14 @@ public interface TradePostMapper {
      * @param limit 每页显示的数量
      * @return
      */
-    List<TradePost> listTradePost(String postId, Integer limit, Integer type, Integer status);
+    List<TradePost> listTradePost(String postId, Integer limit, Integer type, Integer status, String schoolCode);
 
     /**
      * 获取所有帖子信息，分页查询
      * @param limit 每页显示的数量
      * @return
      */
-    List<TradePost> listTradePostAhead(Integer limit, Integer type, Integer status);
+    List<TradePost> listTradePostAhead(Integer limit, Integer type, Integer status, String schoolCode);
 
     /**
      * 获取用户所有帖子信息，分页查询

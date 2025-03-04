@@ -53,6 +53,7 @@ public class BazaarController implements BazaarInterface {
                 .limit(requestDTO.getLimit())
                 .type(requestDTO.getType())
                 .status(requestDTO.getStatus())
+                .schoolCode(requestDTO.getSchoolCode())
                 .build());
         List<QueryIndexTradePostResponse> responseDTOs = new ArrayList<>();
         for (TradePostEntity tradePost : tradePosts) {
@@ -65,6 +66,7 @@ public class BazaarController implements BazaarInterface {
                     .content(tradePost.getContent())
                     .price(tradePost.getPrice())
                     .contact(tradePost.getContact())
+                    .schoolCode(tradePost.getSchoolCode())
                     .type(tradePost.getType())
                     .status(tradePost.getStatus())
                     .createTime(tradePost.getCreateTime())
@@ -134,6 +136,7 @@ public class BazaarController implements BazaarInterface {
                 .type(publishTradePostRequest.getType())
                 .price(publishTradePostRequest.getPrice())
                 .contact(publishTradePostRequest.getContact())
+                .schoolCode(publishTradePostRequest.getSchoolCode())
                 .images(publishTradePostRequest.getImages())
                 .build();
         return Response.SYSTEM_SUCCESS(new PublishPostResponse(
@@ -158,6 +161,7 @@ public class BazaarController implements BazaarInterface {
                     .content(tradePost.getContent())
                     .price(tradePost.getPrice())
                     .contact(tradePost.getContact())
+                    .schoolCode(tradePost.getSchoolCode())
                     .type(tradePost.getType())
                     .status(tradePost.getStatus())
                     .createTime(tradePost.getCreateTime())

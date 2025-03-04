@@ -47,6 +47,9 @@ public class QueryIndexTradePostResponse implements Serializable {
     @FieldDesc(name = "联系方式")
     private String contact;
 
+    @FieldDesc(name = "学校代码")
+    private String schoolCode;
+
     @FieldDesc(name = "0-出售;1-求购:2-赠送")
     private Integer type;
 

@@ -276,6 +276,7 @@ public class UserController implements UserInterface {
         for (TradePostEntity post : discussPosts) {
             responseDTOs.add(QueryMyTradePostResponse.builder()
                     .tradePostId(post.getTradePostId())
+                    .userId(post.getUserId())
                     .userName(post.getUserName())
                     .userAvatar(post.getUserAvatar())
                     .title(post.getTitle())
@@ -283,6 +284,7 @@ public class UserController implements UserInterface {
                     .type(post.getType())
                     .price(post.getPrice())
                     .image(post.getImage())
+                    .status(post.getStatus())
                     .createTime(post.getCreateTime())
                     .updateTime(post.getUpdateTime())
                     .build());

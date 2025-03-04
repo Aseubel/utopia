@@ -46,8 +46,8 @@ public class TradePostRepository implements ITradePostRepository {
         Integer limit = bazaarBO.getLimit();
 
         return Optional.ofNullable(StringUtils.isEmpty(postId)
-                        ? tradePostMapper.listTradePostAhead(limit, bazaarBO.getType(), bazaarBO.getStatus())
-                        : tradePostMapper.listTradePost(postId, limit, bazaarBO.getType(), bazaarBO.getStatus()))
+                        ? tradePostMapper.listTradePostAhead(limit, bazaarBO.getType(), bazaarBO.getStatus(), bazaarBO.getSchoolCode())
+                        : tradePostMapper.listTradePost(postId, limit, bazaarBO.getType(), bazaarBO.getStatus(), bazaarBO.getSchoolCode()))
                 .map(p -> p.stream().map(tradePostConvertor::convert).collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
     }

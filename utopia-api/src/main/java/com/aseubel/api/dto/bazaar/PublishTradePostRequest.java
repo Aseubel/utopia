@@ -45,6 +45,11 @@ public class PublishTradePostRequest implements Serializable {
     @FieldDesc(name = "联系方式")
     private String contact;
 
+    @NotNull(message = "学校代码不能为空")
+    @NotBlank(message = "学校代码不能为空")
+    @FieldDesc(name = "学校代码")
+    private String schoolCode;
+
     @FieldDesc(name = "标签")
     private List<String> tags;
 

@@ -37,5 +37,8 @@ public class QueryIndexTradePostRequest implements Serializable {
 
     @FieldDesc(name = "状态")
     private Integer status;
+
+    @FieldDesc(name = "学校代码")
+    private String schoolCode;
     
 }
