@@ -157,7 +157,12 @@ public class BazaarService implements IBazaarService{
     @Override
     public TradePostEntity queryPostDetail(String postId) {
         log.info("获取集市帖子详情服务开始执行，postId:{}", postId);
-        TradePostEntity tradePost = tradePostRepository.queryPostDetail(postId);
+        TradePostEntity tradePost = null;
+        try {
+            tradePost = tradePostRepository.queryPostDetail(postId);
+        } catch (NullPointerException e) {
+            throw new AppException("帖子不存在！");
+        }
         tradePost.setImages(tradePostRepository.listPostImages(postId));
         log.info("获取集市帖子详情服务结束执行，postId:{}", postId);
         return tradePost;

@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.aseubel.types.enums.GlobalServiceStatusCode.OSS_UPLOAD_ERROR;
 import static com.aseubel.types.enums.GlobalServiceStatusCode.PARAM_NOT_COMPLETE;
@@ -140,7 +141,7 @@ public class UserController implements UserInterface {
                         .gender(user.getGender())
                         .avatarUrl(user.getAvatar())
                         .signature(user.getSignature())
-                        .schoolCode(user.getSchool().getSchoolCode())
+                        .school(user.getSchool())
                         .build());
     }
 

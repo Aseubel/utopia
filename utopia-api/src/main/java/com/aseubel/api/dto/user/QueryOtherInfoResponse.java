@@ -26,8 +26,8 @@ public class QueryOtherInfoResponse implements Serializable {
     @FieldDesc(name = "头像url")
     private String avatarUrl;
 
-    @FieldDesc(name = "学校代码")
-    private String schoolCode;
+    @FieldDesc(name = "学校")
+    private Object school;
 
     @FieldDesc(name = "性别，0-隐藏，1-男，2-女")
     private Integer gender;
