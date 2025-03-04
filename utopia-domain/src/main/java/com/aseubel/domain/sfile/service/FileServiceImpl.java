@@ -56,7 +56,7 @@ public class FileServiceImpl implements IFileService{
             log.error("文件不存在, fileUrl: {}", fileUrl);
             throw new AppException(OSS_OBJECT_NOT_EXIST.getCode(), "文件不存在或已被删除");
         }
-        fileRepository.incrementDownloadCount(sFileEntity.getSfileId());
+        fileRepository.incrementDownloadCount("", sFileEntity.getSfileId());
         return aliOSSUtil.download(fileUrl.substring(fileUrl.indexOf(APP)));
     }
 
@@ -91,6 +91,11 @@ public class FileServiceImpl implements IFileService{
     public List<CourseVO> queryCourses() {
         log.info("开始获取课程列表服务");
         return fileRepository.queryCourses();
+    }
+
+    @Override
+    public void browseFile(String userId, String fileId) {
+        fileRepository.incrementDownloadCount(userId, fileId);
     }
 
 }

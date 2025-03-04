@@ -85,4 +85,7 @@ public class RedisKeyBuilder {
         return PREFIX + SPLIT + "courses";
     }
 
+    public static String FileRepeatDownloadKey(String userId) {
+        return PREFIX + SPLIT + "file_repeat_download" + SPLIT + userId;
+    }
 }

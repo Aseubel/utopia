@@ -145,4 +145,16 @@ public class SFileController implements SFileInterface {
         return Response.SYSTEM_SUCCESS(queryCourseResponses);
     }
 
+    /**
+     * 浏览文件，增加下载次数
+     * @param browseFileRequest
+     * @return
+     */
+    @Override
+    @PutMapping("/browse")
+    public Response BrowseFile(@Valid @RequestBody BrowseFileRequest browseFileRequest) {
+        fileService.browseFile(browseFileRequest.getUserId(), browseFileRequest.getFileId());
+        return Response.SYSTEM_SUCCESS();
+    }
+
 }

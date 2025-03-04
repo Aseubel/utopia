@@ -41,7 +41,7 @@ public class NettyServerConfig {
     private final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
     private final EventLoopGroup workerGroup = new NioEventLoopGroup();
 
-    @PostConstruct
+//    @PostConstruct
     public void startNettyServer() {
         // 使用独立线程启动Netty服务
         new Thread(() -> {

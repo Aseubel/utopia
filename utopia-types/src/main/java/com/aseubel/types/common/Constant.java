@@ -51,4 +51,6 @@ public class Constant {
 
     public static final long COURSES_EXPIRE_TIME = 24 * 3600 * 1000L; // 一天
 
+    public static final long REPEAT_DOWNLOAD_EXPIRE_TIME = 2 * 3600 * 1000L; // 两小时
+
 }

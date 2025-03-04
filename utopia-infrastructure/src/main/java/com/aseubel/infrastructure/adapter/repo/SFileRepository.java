@@ -7,19 +7,19 @@ import com.aseubel.domain.sfile.model.entity.SFileEntity;
 import com.aseubel.domain.sfile.model.vo.CourseVO;
 import com.aseubel.infrastructure.convertor.SFileConvertor;
 import com.aseubel.infrastructure.dao.*;
-import com.aseubel.infrastructure.dao.po.Course;
 import com.aseubel.infrastructure.dao.po.SFile;
 import com.aseubel.infrastructure.redis.IRedisService;
 import com.aseubel.types.util.AliOSSUtil;
 import com.aseubel.types.util.RedisKeyBuilder;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
-import jakarta.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.aseubel.types.common.Constant.COURSES_EXPIRE_TIME;
+import static com.aseubel.types.common.Constant.REPEAT_DOWNLOAD_EXPIRE_TIME;
 
 /**
  * @author Aseubel
@@ -113,8 +113,11 @@ public class SFileRepository implements IFileRepository {
     }
 
     @Override
-    public void incrementDownloadCount(String fileId) {
-        sFileMapper.incrementDownloadCount(fileId);
+    public void incrementDownloadCount(String userId, String fileId) {
+        if (redisService.getValue(RedisKeyBuilder.FileRepeatDownloadKey(userId)) == null) {
+            sFileMapper.incrementDownloadCount(fileId);
+            redisService.setValue(RedisKeyBuilder.FileRepeatDownloadKey(userId), fileId, REPEAT_DOWNLOAD_EXPIRE_TIME);
+        }
     }
 
     @Override

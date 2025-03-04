@@ -69,9 +69,10 @@ public interface IFileRepository {
 
     /**
      * 增加下载次数
+     * @param userId
      * @param fileId
      */
-    void incrementDownloadCount(String fileId);
+    void incrementDownloadCount(String userId, String fileId);
 
     /**
      * 查询所有课程信息

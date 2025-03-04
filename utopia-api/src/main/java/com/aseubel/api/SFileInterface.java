@@ -50,4 +50,10 @@ public interface SFileInterface {
      */
     Response<List<QueryCourseResponse>> queryCourses(QueryCourseRequest queryCourseRequest);
 
+    /**
+     * 浏览文件
+     * @param browseFileRequest
+     * @return
+     */
+    Response BrowseFile(@Valid @RequestBody BrowseFileRequest browseFileRequest);
 }

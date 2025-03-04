@@ -3,6 +3,7 @@ package com.aseubel.domain.sfile.service;
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.sfile.model.entity.SFileEntity;
 import com.aseubel.domain.sfile.model.vo.CourseVO;
+import com.aseubel.types.Response;
 
 import java.util.List;
 
@@ -52,4 +53,10 @@ public interface IFileService {
      * @return
      */
     List<CourseVO> queryCourses();
+
+    /**
+     * 浏览文件
+     * @param fileId
+     */
+    void browseFile(String userId, String fileId);
 }
