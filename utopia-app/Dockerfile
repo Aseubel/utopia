@@ -1,5 +1,5 @@
 # 基础镜像
-FROM openjdk:8
+FROM openjdk:17
 
 # 作者
 LABEL maintainer="Aseubel"
