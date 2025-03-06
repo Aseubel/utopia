@@ -139,4 +139,12 @@ public class RedisKeyBuilder {
     public static String commentKey(String commentId) {
         return PREFIX + SPLIT + DISCUSS_COMMENT + SPLIT + commentId;
     }
+
+    public static String fileScoreKey() {
+        return PREFIX + SPLIT + "file_score";
+    }
+
+    public static String fileKey(String fileId) {
+        return PREFIX + SPLIT + "file" + SPLIT + fileId;
+    }
 }

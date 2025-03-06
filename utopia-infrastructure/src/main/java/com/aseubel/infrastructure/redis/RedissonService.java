@@ -170,7 +170,6 @@ public class RedissonService implements IRedisService {
         RSortedSet<String> sortedSet = redissonClient.getSortedSet(key);
         if (sortedSet != null) {
             sortedSet.add(value);
-            this.setAtomicLong(key, Duration.ofDays(1).toMillis());
         }
     }
 
@@ -179,7 +178,6 @@ public class RedissonService implements IRedisService {
         RScoredSortedSet<V> sortedSet = redissonClient.getScoredSortedSet(key);
         if (sortedSet != null) {
             sortedSet.add(score, value);
-            this.setAtomicLong(key, Duration.ofDays(1).toMillis());
         }
     }
 
@@ -189,7 +187,6 @@ public class RedissonService implements IRedisService {
         if (CollectionUtil.isEmpty(sortedSet)) {
             return null;
         }
-        this.setAtomicLong(key, Duration.ofDays(1).toMillis());
         int index = (value == null || value.toString().isEmpty() ? -1 : sortedSet.rank(value));
         return sortedSet.valueRange(index + 1, index + limit);
     }
@@ -200,9 +197,8 @@ public class RedissonService implements IRedisService {
         if (CollectionUtil.isEmpty(sortedSet)) {
             return null;
         }
-        this.setAtomicLong(key, Duration.ofDays(1).toMillis());
-        int index = (value == null || value.toString().isEmpty() ? sortedSet.size() : sortedSet.rank(value));
-        return sortedSet.valueRangeReversed(index - limit, index - 1);
+        int index = (value == null || value.toString().isEmpty() ? -1 :sortedSet.size() - sortedSet.rank(value) - 1);
+        return sortedSet.valueRangeReversed(index + 1, index + limit);
     }
 
     @Override
@@ -210,7 +206,6 @@ public class RedissonService implements IRedisService {
         RScoredSortedSet<T> sortedSet = redissonClient.getScoredSortedSet(key);
         if (sortedSet != null) {
             sortedSet.addScore(value, delta);
-            this.setAtomicLong(key, Duration.ofDays(1).toMillis());
         }
     }
 
@@ -219,13 +214,11 @@ public class RedissonService implements IRedisService {
         RScoredSortedSet<T> sortedSet = redissonClient.getScoredSortedSet(key);
         if (sortedSet != null) {
             sortedSet.addScore(value, -delta);
-            this.setAtomicLong(key, Duration.ofDays(1).toMillis());
         }
     }
 
     @Override
     public <T> Double getScoreFromSortedSet(String key, T value) {
-        this.setAtomicLong(key, Duration.ofDays(1).toMillis());
         return redissonClient.getScoredSortedSet(key).getScore(value);
     }
 
@@ -234,7 +227,6 @@ public class RedissonService implements IRedisService {
         RScoredSortedSet<T> sortedSet = redissonClient.getScoredSortedSet(key);
         if (sortedSet != null) {
             sortedSet.remove(value);
-            this.setAtomicLong(key, Duration.ofDays(1).toMillis());
         }
     }
 

@@ -44,7 +44,10 @@
             <if test="courseName!= null and courseName != ''">and course_name=#{courseName}</if>
             and is_deleted = 0
         </where>
-        order by #{sortField}
+        order by
+        <if test="sortType == 0 or sortType == null">id</if>
+        <if test="sortType == 1">download_count DESC</if>
+        <if test="sortType == 2">download_count</if>
         limit #{limit}
     </select>
 
@@ -55,7 +58,10 @@
             <if test="courseName!= null and courseName != ''">and course_name=#{courseName}</if>
             and is_deleted = 0
         </where>
-        order by #{sortField}
+        order by
+        <if test="sortType == 0 or sortType == null">id</if>
+        <if test="sortType == 1">download_count DESC</if>
+        <if test="sortType == 2">download_count</if>
         limit #{limit}
     </select>
 

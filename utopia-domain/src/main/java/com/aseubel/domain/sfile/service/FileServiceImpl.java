@@ -64,21 +64,7 @@ public class FileServiceImpl implements IFileService{
     public List<SFileEntity> listSFile(String fileId, Integer limit, Integer sortType, String courseName) {
         log.info("开始获取文件列表服务");
         limit = limit == null ? PER_PAGE_FILE_SIZE : limit;
-        String sortField = "id DESC";
-        if (sortType != null) {
-            switch (sortType) {
-                case 1:
-                    sortField = "download_count DESC";
-                    break;
-                case 2:
-                    sortField = "download_count ASC";
-                    break;
-                default:
-                    sortField = "id DESC";
-                    break;
-            }
-        }
-        return fileRepository.listSFile(fileId, limit, sortField, courseName);
+        return fileRepository.listSFile(fileId, limit, sortType, courseName);
     }
 
     @Override

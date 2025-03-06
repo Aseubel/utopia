@@ -2,6 +2,7 @@ package com.aseubel.infrastructure.adapter.repo;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.aliyuncs.exceptions.ClientException;
+import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.sfile.adapter.repo.IFileRepository;
 import com.aseubel.domain.sfile.model.entity.SFileEntity;
 import com.aseubel.domain.sfile.model.vo.CourseVO;
@@ -15,6 +16,8 @@ import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
+import java.time.Duration;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -64,12 +67,38 @@ public class SFileRepository implements IFileRepository {
     }
 
     @Override
-    public List<SFileEntity> listSFile(String fileId, Integer limit, String sortField, String courseName) {
-        return Optional.ofNullable(StringUtils.isEmpty(fileId)
-                        ? sFileMapper.listSFileAhead(limit, sortField, courseName)
-                        : sFileMapper.listSFile(fileId, limit, sortField, courseName))
-                .map(p -> p.stream().map(sFileConvertor::convert).collect(Collectors.toList()))
-                .orElse(Collections.emptyList());
+    public List<SFileEntity> listSFile(String fileId, Integer limit, Integer sortType, String courseName) {
+        sortType = sortType == null ? 0 : sortType;
+        List<String> fileIds = null;
+        List<SFileEntity> files = new ArrayList<>();
+
+        fileIds = switch (sortType) {
+            case 1 ->
+                    (List<String>) redisService.getReverseFromSortedSet(RedisKeyBuilder.fileScoreKey(), fileId, limit);
+            case 2 ->
+                    (List<String>) redisService.getFromSortedSet(RedisKeyBuilder.fileScoreKey(), fileId, limit);
+            default -> fileIds;
+        };
+        if (fileIds != null) {
+            for (String id : fileIds) {
+                files.add(redisService.getValue(RedisKeyBuilder.fileKey(id)));
+            }
+        }
+        if (CollectionUtil.isNotEmpty(files)) {
+            return files;
+        }
+        // 文件本体
+        files = CollectionUtil.isNotEmpty(files) ? files :
+                Optional.ofNullable(StringUtils.isEmpty(fileId)
+                                ? sFileMapper.listSFileByTypeIdAhead(courseName, limit)
+                                : sFileMapper.listSFileByTypeId(fileId, courseName, limit))
+                        .map(p -> p.stream().map(sFileConvertor::convert).collect(Collectors.toList()))
+                        .orElse(Collections.emptyList());
+        for (SFileEntity file : files) {
+            redisService.setValue(RedisKeyBuilder.fileKey(file.getSfileId()), file, Duration.ofDays(1).toMillis());
+            redisService.addToSortedSet(RedisKeyBuilder.fileScoreKey(), file.getSfileId(), file.getDownloadCount());
+        }
+        return files;
     }
 
     @Override
@@ -114,9 +143,12 @@ public class SFileRepository implements IFileRepository {
 
     @Override
     public void incrementDownloadCount(String userId, String fileId) {
-        if (redisService.getValue(RedisKeyBuilder.FileRepeatDownloadKey(userId, fileId)) != null) {
+        if (redisService.getValue(RedisKeyBuilder.FileRepeatDownloadKey(userId, fileId)) == null) {
             sFileMapper.incrementDownloadCount(fileId);
+
             redisService.setValue(RedisKeyBuilder.FileRepeatDownloadKey(userId, fileId), "repeat", REPEAT_DOWNLOAD_EXPIRE_TIME);
+            redisService.incrSortedSetScore(RedisKeyBuilder.fileScoreKey(), fileId, 1);
+            redisService.remove(RedisKeyBuilder.fileKey(fileId));
         }
     }
 

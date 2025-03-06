@@ -30,7 +30,7 @@ public interface IFileRepository {
      * @param limit
      * @return
      */
-    List<SFileEntity> listSFile(String fileId, Integer limit, String sortField, String courseName);
+    List<SFileEntity> listSFile(String fileId, Integer limit, Integer sortType, String courseName);
 
     /**
      * 根据文件类型查询文件

@@ -24,18 +24,18 @@ public interface SFileMapper {
      * 分页查询文件
      * @param fileId
      * @param limit
-     * @param sortField
+     * @param sortType
      * @return
      */
-    List<SFile> listSFile(@Param("fileId") String fileId, @Param("limit") Integer limit, @Param("sortField") String sortField, @Param("courseName") String courseName);
+    List<SFile> listSFile(@Param("fileId") String fileId, @Param("limit") Integer limit, @Param("sortType") Integer sortType, @Param("courseName") String courseName);
 
     /**
      * 分页查询文件
      * @param limit
-     * @param sortField
+     * @param sortType
      * @return
      */
-    List<SFile> listSFileAhead(@Param("limit") Integer limit, @Param("sortField") String sortField, @Param("courseName") String courseName);
+    List<SFile> listSFileAhead(@Param("limit") Integer limit, @Param("sortType") Integer sortType, @Param("courseName") String courseName);
 
     /**
      * 根据文件类型查询文件
