@@ -53,4 +53,7 @@ public class Constant {
 
     public static final long REPEAT_DOWNLOAD_EXPIRE_TIME = 2 * 3600 * 1000L; // 两小时
 
+    public static final long COMMENT_CACHE_EXPIRE_TIME = 7 * 24 * 3600 * 1000L; // 七天
+
+    public static final long POST_CACHE_EXPIRE_TIME = 7 * 24 * 3600 * 1000L; // 七天
 }

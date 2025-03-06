@@ -2,6 +2,8 @@ package com.aseubel.infrastructure.redis;
 
 import org.redisson.api.*;
 
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -255,6 +257,63 @@ public interface IRedisService {
      * @param value 值
      */
     void addToSortedSet(String key, String value);
+
+    /**
+     * 将指定的值添加到有序集合中
+     * @param key   键
+     * @param value 值
+     * @param score 分数
+     */
+    <V> void addToSortedSet(String key, V value, double score);
+
+    /**
+     * 获取有序集合中指定索引的值
+     * @param key   键
+     * @param value 上一页最后的值
+     * @param limit 限制数量
+     * @return 值
+     */
+    <T> Collection<T> getFromSortedSet(String key, T value, int limit);
+
+    /**
+     * 获取有序集合中指定索引的值
+     * @param key   键
+     * @param value 上一页最后的值
+     * @param limit 限制数量
+     * @return 值
+     */
+    <T> Collection<T> getReverseFromSortedSet(String key, T value, int limit);
+
+    /**
+     * 增加有序集合中指定值的分数
+     * @param key   键
+     * @param value 值
+     * @param delta 分数增量
+     */
+    <T> void incrSortedSetScore(String key, T value, double delta);
+
+    /**
+     * 减少有序集合中指定值的分数
+     * @param key   键
+     * @param value 值
+     * @param delta 分数减量
+     */
+    <T> void decrSortedSetScore(String key, T value, double delta);
+
+    /**
+     * 获取有序集合中指定值的分数
+     * @param key   键
+     * @param value 值
+     * @return      分数
+     */
+    <T> Double getScoreFromSortedSet(String key, T value);
+
+    /**
+     * 移除有序集合中指定的值
+     * @param key   键
+     * @param value 值
+     */
+    <T> void RemoveFromSortedSet(String key, T value);
 
     /**
      * 获取 Redis 锁（可重入锁）

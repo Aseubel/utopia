@@ -24,7 +24,7 @@ public class EsTest {
     @Resource
     private ElasticsearchClient elasticsearchClient;
 
-//    @Test
+    @Test
     public void testElasticsearchClient() throws IOException {
         // 1. 创建一个索引
         String indexName = "test-index";

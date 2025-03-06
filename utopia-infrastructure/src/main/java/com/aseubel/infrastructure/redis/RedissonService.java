@@ -1,10 +1,12 @@
 package com.aseubel.infrastructure.redis;
 
+import cn.hutool.core.collection.CollectionUtil;
+import jakarta.annotation.Resource;
 import org.redisson.api.*;
 import org.springframework.stereotype.Service;
 
-import jakarta.annotation.Resource;
 import java.time.Duration;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +30,7 @@ public class RedissonService implements IRedisService {
         bucket.set(value, Duration.ofMillis(expired));
     }
 
+    @Override
     public <T> T getValue(String key) {
         return redissonClient.<T>getBucket(key).get();
     }
@@ -165,7 +168,74 @@ public class RedissonService implements IRedisService {
 
     public void addToSortedSet(String key, String value) {
         RSortedSet<String> sortedSet = redissonClient.getSortedSet(key);
-        sortedSet.add(value);
+        if (sortedSet != null) {
+            sortedSet.add(value);
+            this.setAtomicLong(key, Duration.ofDays(1).toMillis());
+        }
+    }
+
+    @Override
+    public <V> void addToSortedSet(String key, V value, double score) {
+        RScoredSortedSet<V> sortedSet = redissonClient.getScoredSortedSet(key);
+        if (sortedSet != null) {
+            sortedSet.add(score, value);
+            this.setAtomicLong(key, Duration.ofDays(1).toMillis());
+        }
+    }
+
+    @Override
+    public <T> Collection<T> getFromSortedSet(String key, T value, int limit) {
+        RScoredSortedSet<T> sortedSet = redissonClient.getScoredSortedSet(key);
+        if (CollectionUtil.isEmpty(sortedSet)) {
+            return null;
+        }
+        this.setAtomicLong(key, Duration.ofDays(1).toMillis());
+        int index = (value == null || value.toString().isEmpty() ? -1 : sortedSet.rank(value));
+        return sortedSet.valueRange(index + 1, index + limit);
+    }
+
+    @Override
+    public <T> Collection<T> getReverseFromSortedSet(String key, T value, int limit) {
+        RScoredSortedSet<T> sortedSet = redissonClient.getScoredSortedSet(key);
+        if (CollectionUtil.isEmpty(sortedSet)) {
+            return null;
+        }
+        this.setAtomicLong(key, Duration.ofDays(1).toMillis());
+        int index = (value == null || value.toString().isEmpty() ? sortedSet.size() : sortedSet.rank(value));
+        return sortedSet.valueRangeReversed(index - limit, index - 1);
+    }
+
+    @Override
+    public <T> void incrSortedSetScore(String key, T value, double delta) {
+        RScoredSortedSet<T> sortedSet = redissonClient.getScoredSortedSet(key);
+        if (sortedSet != null) {
+            sortedSet.addScore(value, delta);
+            this.setAtomicLong(key, Duration.ofDays(1).toMillis());
+        }
+    }
+
+    @Override
+    public <T> void decrSortedSetScore(String key, T value, double delta) {
+        RScoredSortedSet<T> sortedSet = redissonClient.getScoredSortedSet(key);
+        if (sortedSet != null) {
+            sortedSet.addScore(value, -delta);
+            this.setAtomicLong(key, Duration.ofDays(1).toMillis());
+        }
+    }
+
+    @Override
+    public <T> Double getScoreFromSortedSet(String key, T value) {
+        this.setAtomicLong(key, Duration.ofDays(1).toMillis());
+        return redissonClient.getScoredSortedSet(key).getScore(value);
+    }
+
+    @Override
+    public <T> void RemoveFromSortedSet(String key, T value) {
+        RScoredSortedSet<T> sortedSet = redissonClient.getScoredSortedSet(key);
+        if (sortedSet != null) {
+            sortedSet.remove(value);
+            this.setAtomicLong(key, Duration.ofDays(1).toMillis());
+        }
     }
 
     @Override

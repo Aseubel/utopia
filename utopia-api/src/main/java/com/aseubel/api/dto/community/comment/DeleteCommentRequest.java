@@ -28,4 +28,10 @@ public class DeleteCommentRequest implements Serializable {
     @NotBlank(message = "评论id不能为空")
     private String commentId;
 
+    @FieldDesc(name = "帖子id")
+    private String postId;
+
+    @FieldDesc(name = "根评论id")
+    private String rootId;
+
 }

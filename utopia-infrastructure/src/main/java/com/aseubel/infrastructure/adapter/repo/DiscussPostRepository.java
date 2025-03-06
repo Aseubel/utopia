@@ -217,9 +217,9 @@ public class DiscussPostRepository implements IDiscussPostRepository {
 
         redisService.addToMap(RedisKeyBuilder.LikeStatusKey(userId), postId, isLike);
         if (isLike) {
-            redisService.incr(RedisKeyBuilder.discussPostLikeCountKey(postId));
+            redisService.incrSortedSetScore(RedisKeyBuilder.postLikeScoreKey(), postId, 1);
         } else {
-            redisService.decr(RedisKeyBuilder.discussPostLikeCountKey(postId));
+            redisService.decrSortedSetScore(RedisKeyBuilder.postLikeScoreKey(), postId, 1);
         }
         return isLike; // 返回新状态
     }

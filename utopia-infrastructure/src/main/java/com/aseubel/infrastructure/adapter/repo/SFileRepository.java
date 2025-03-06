@@ -114,9 +114,9 @@ public class SFileRepository implements IFileRepository {
 
     @Override
     public void incrementDownloadCount(String userId, String fileId) {
-        if (redisService.getValue(RedisKeyBuilder.FileRepeatDownloadKey(userId)) == null) {
+        if (redisService.getValue(RedisKeyBuilder.FileRepeatDownloadKey(userId, fileId)) != null) {
             sFileMapper.incrementDownloadCount(fileId);
-            redisService.setValue(RedisKeyBuilder.FileRepeatDownloadKey(userId), fileId, REPEAT_DOWNLOAD_EXPIRE_TIME);
+            redisService.setValue(RedisKeyBuilder.FileRepeatDownloadKey(userId, fileId), "repeat", REPEAT_DOWNLOAD_EXPIRE_TIME);
         }
     }
 

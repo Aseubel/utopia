@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Component
 public class CommentConvertor {
 
-    public CommentEntity convert(Comment comment) {
+    public CommentEntity convertToEntity(Comment comment) {
         return CommentEntity.builder()
                 .rootId(comment.getRootId())
                 .replyTo(comment.getReplyTo())
@@ -32,7 +32,7 @@ public class CommentConvertor {
                 .build();
     }
 
-    public Comment convert(CommentEntity commentEntity) {
+    public Comment convertToPO(CommentEntity commentEntity) {
         return Comment.builder()
                 .rootId(commentEntity.getRootId())
                 .replyTo(commentEntity.getReplyTo())
@@ -46,6 +46,14 @@ public class CommentConvertor {
                 .commentTime(commentEntity.getCommentTime())
                 .updateTime(commentEntity.getUpdateTime())
                 .build();
+    }
+
+    public Comment convertToPO(Comment comment) {
+        return comment;
+    }
+
+    public CommentEntity convertToEntity(CommentEntity comment) {
+        return comment;
     }
 
     public <T, U> List<U> convert(List<T> items, Function<T, U> converter) {

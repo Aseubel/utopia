@@ -117,9 +117,9 @@ public interface ICommentRepository {
 
     /**
      * 删除评论
-     * @param commentId
+     * @param communityBO
      */
-    void deleteComment(String commentId);
+    void deleteComment(CommunityBO communityBO);
 
     /**
      * 删除子评论

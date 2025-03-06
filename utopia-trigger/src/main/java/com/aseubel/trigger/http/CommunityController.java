@@ -417,6 +417,8 @@ public class CommunityController implements CommunityInterface {
         CommunityBO communityBO = CommunityBO.builder()
                 .userId(requestDTO.getUserId())
                 .commentId(requestDTO.getCommentId())
+                .postId(requestDTO.getPostId())
+                .rootId(requestDTO.getRootId())
                 .build();
         communityService.deleteComment(communityBO);
         eventPublisher.publishEvent(new DeleteCommentEvent(communityBO));

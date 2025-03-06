@@ -417,7 +417,7 @@ public class CommunityService implements ICommunityService {
     public void deleteComment(CommunityBO communityBO) {
         verifyCommentAuth(communityBO.getUserId(), communityBO.getCommentId());
         // 顺序不能调换
-        commentRepository.deleteComment(communityBO.getCommentId());
+        commentRepository.deleteComment(communityBO);
         commentRepository.decreaseRootCommentReplyCount(communityBO.getCommentId());
     }
 

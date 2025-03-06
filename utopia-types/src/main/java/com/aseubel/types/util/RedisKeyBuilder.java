@@ -32,27 +32,17 @@ public class RedisKeyBuilder {
     }
 
     /**
-     * 构造帖子的点赞数量的redis key
-     * utopia:community:post:lc:{postId}
-     * @param postId 帖子id
-     * @return redis key
-     */
-    public static String discussPostLikeCountKey(String postId) {
-        return PREFIX + SPLIT + DISCUSS_POST + SPLIT + LIKE_COUNT + SPLIT + postId;
-    }
-
-    /**
      * 构造评论的点赞数量的redis key
      * utopia:community:comment:lc:{commentId}
      * @param commentId 评论id
      * @return redis key
      */
-    public static String commentLikeCountKey(String commentId) {
-        return PREFIX + SPLIT + DISCUSS_COMMENT + SPLIT + LIKE_COUNT + SPLIT + commentId;
-    }
+//    public static String commentLikeCountKey(String commentId) {
+//        return PREFIX + SPLIT + DISCUSS_COMMENT + SPLIT + LIKE_COUNT + SPLIT + commentId;
+//    }
 
     /**
-     * 构造用户点赞状态的redis key
+     * 构造用户点赞状态的redis key 用于map
      * utopia:{userId}:ls
      * @param userId
      * @return
@@ -85,7 +75,68 @@ public class RedisKeyBuilder {
         return PREFIX + SPLIT + "courses";
     }
 
-    public static String FileRepeatDownloadKey(String userId) {
-        return PREFIX + SPLIT + "file_repeat_download" + SPLIT + userId;
+    /**
+     * 构造文件重复下载的redis key
+     * utopia:file_download:{userId}
+     * @param userId
+     * @param fileId
+     * @return
+     */
+    public static String FileRepeatDownloadKey(String userId, String fileId) {
+        return PREFIX + SPLIT + "file_download" + SPLIT + userId + SPLIT + fileId;
+    }
+
+    /**
+     * 构造帖子点赞分数的redis key
+     * utopia:community:post:like_score
+     * @return
+     */
+    public static String postLikeScoreKey() {
+        return PREFIX + SPLIT + DISCUSS_POST + SPLIT + "like_score";
+    }
+
+    /**
+     * 构造评论点赞分数的redis key
+     * utopia:community:comment:like_score:{postId}
+     * @return
+     */
+    public static String commentLikeScoreKey(String postId) {
+        return PREFIX + SPLIT + DISCUSS_COMMENT + SPLIT + "like_score";
+    }
+
+    /**
+     * 构造评论时间分数的redis key
+     * utopia:community:comment:time_score:{postId}
+     * @return
+     */
+    public static String commentTimeScoreKey(String postId) {
+        return PREFIX + SPLIT + DISCUSS_COMMENT + SPLIT + "time_score";
+    }
+
+    /**
+     * 构造子评论点赞分数的redis key
+     * utopia:community:comment:like_score_sub:{commentId}
+     * @return
+     */
+    public static String subCommentLikeScoreKey(String commentId) {
+        return PREFIX + SPLIT + DISCUSS_COMMENT + SPLIT + "like_score_sub";
+    }
+
+    /**
+     * 构造子评论时间分数的redis key
+     * utopia:community:comment:time_score_sub:{commentId}
+     * @return
+     */
+    public static String subCommentTimeScoreKey(String commentId) {
+        return PREFIX + SPLIT + DISCUSS_COMMENT + SPLIT + "time_score_sub";
+    }
+
+    /**
+     * 构造评论的redis key
+     * utopia:community:comment:{commentId}
+     * @return
+     */
+    public static String commentKey(String commentId) {
+        return PREFIX + SPLIT + DISCUSS_COMMENT + SPLIT + commentId;
     }
 }
