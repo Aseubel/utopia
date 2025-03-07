@@ -101,7 +101,7 @@ public class RedisKeyBuilder {
      * @return
      */
     public static String commentLikeScoreKey(String postId) {
-        return PREFIX + SPLIT + DISCUSS_COMMENT + SPLIT + "like_score";
+        return PREFIX + SPLIT + DISCUSS_COMMENT + SPLIT + "like_score" + SPLIT + postId;
     }
 
     /**
@@ -110,7 +110,7 @@ public class RedisKeyBuilder {
      * @return
      */
     public static String commentTimeScoreKey(String postId) {
-        return PREFIX + SPLIT + DISCUSS_COMMENT + SPLIT + "time_score";
+        return PREFIX + SPLIT + DISCUSS_COMMENT + SPLIT + "time_score" + SPLIT + postId;
     }
 
     /**
@@ -119,7 +119,7 @@ public class RedisKeyBuilder {
      * @return
      */
     public static String subCommentLikeScoreKey(String commentId) {
-        return PREFIX + SPLIT + DISCUSS_COMMENT + SPLIT + "like_score_sub";
+        return PREFIX + SPLIT + DISCUSS_COMMENT + SPLIT + "like_score_sub" + SPLIT + commentId;
     }
 
     /**
@@ -128,7 +128,7 @@ public class RedisKeyBuilder {
      * @return
      */
     public static String subCommentTimeScoreKey(String commentId) {
-        return PREFIX + SPLIT + DISCUSS_COMMENT + SPLIT + "time_score_sub";
+        return PREFIX + SPLIT + DISCUSS_COMMENT + SPLIT + "time_score_sub" + SPLIT + commentId;
     }
 
     /**
