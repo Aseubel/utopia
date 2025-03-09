@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -19,6 +20,14 @@ public class RedissonService implements IRedisService {
 
     @Resource
     private RedissonClient redissonClient;
+
+    @Override
+    public <T> T executeScript(String script, RScript.ReturnType returnType, List<Object>keys, Object... values) {
+        RScript rScript = redissonClient.getScript();
+        return rScript.eval(RScript.Mode.READ_WRITE, script, returnType, keys, values);
+    }
+
+
 
     public <T> void setValue(String key, T value) {
         redissonClient.<T>getBucket(key).set(value);

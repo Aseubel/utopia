@@ -17,6 +17,7 @@ import com.aseubel.infrastructure.redis.IRedisService;
 import com.aseubel.types.util.AliOSSUtil;
 import com.aseubel.types.util.RedisKeyBuilder;
 import org.apache.commons.lang3.StringUtils;
+import org.redisson.api.RScript;
 import org.springframework.stereotype.Repository;
 
 import jakarta.annotation.Resource;
@@ -122,15 +123,38 @@ public class CommentRepository implements ICommentRepository {
     }
 
     @Override
-    public void saveRootComment(CommentEntity commentEntity) {
-        commentMapper.addRootComment(commentConvertor.convertToPO(commentEntity));
+    public void saveRootComment(CommentEntity comment) {
+        commentMapper.addRootComment(commentConvertor.convertToPO(comment));
+
+        redisService.setValue(RedisKeyBuilder.commentKey(comment.getCommentId()), comment);
+        redisService.addToSortedSet(RedisKeyBuilder.commentTimeScoreKey(comment.getPostId()), comment.getCommentId(),
+                comment.getCommentTime().toEpochSecond(ZoneOffset.UTC) + comment.getCommentTime().getNano() / 1_000_000_000.0);
+        redisService.addToSortedSet(RedisKeyBuilder.commentLikeScoreKey(comment.getPostId()), comment.getCommentId(), 0);
     }
 
     @Override
-    public void saveReplyComment(CommentEntity commentEntity) {
-        commentMapper.addChildComment(commentConvertor.convertToPO(commentEntity));
+    public void saveReplyComment(CommentEntity comment) {
+        commentMapper.addChildComment(commentConvertor.convertToPO(comment));
 
-        redisService.remove(RedisKeyBuilder.commentKey(commentEntity.getRootId()));
+        String rootId = comment.getRootId();
+        String script = "local key = KEYS[1]\n" +
+                "local increment = ARGV[1]\n" +
+                "local comment = redis.call('GET', key)\n" +
+                "if comment then\n" +
+                "    comment = cjson.decode(comment)\n" +
+                "    comment.replyCount = comment.replyCount + increment\n" +
+                "    redis.call('SET', key, cjson.encode(comment))\n" +
+                "    return comment.replyCount\n" +
+                "else\n" +
+                "    return nil\n" +
+                "end";
+        String key = RedisKeyBuilder.commentKey(rootId);
+        redisService.executeScript(script, RScript.ReturnType.INTEGER, Collections.singletonList(key), 1);
+
+        redisService.setValue(RedisKeyBuilder.commentKey(comment.getCommentId()), comment);
+        redisService.addToSortedSet(RedisKeyBuilder.subCommentTimeScoreKey(rootId), comment.getCommentId(),
+                comment.getCommentTime().toEpochSecond(ZoneOffset.UTC) + comment.getCommentTime().getNano() / 1_000_000_000.0);
+        redisService.addToSortedSet(RedisKeyBuilder.subCommentLikeScoreKey(rootId), comment.getCommentId(), 0);
     }
 
     @Override
@@ -272,6 +296,20 @@ public class CommentRepository implements ICommentRepository {
             redisService.RemoveFromSortedSet(RedisKeyBuilder.commentTimeScoreKey(communityBO.getPostId()), communityBO.getCommentId());
             redisService.RemoveFromSortedSet(RedisKeyBuilder.commentLikeScoreKey(communityBO.getPostId()), communityBO.getCommentId());
         } else {
+            String script = "local key = KEYS[1]\n" +
+                    "local increment = ARGV[1]\n" +
+                    "local comment = redis.call('GET', key)\n" +
+                    "if comment then\n" +
+                    "    comment = cjson.decode(comment)\n" +
+                    "    comment.replyCount = comment.replyCount - increment\n" +
+                    "    redis.call('SET', key, cjson.encode(comment))\n" +
+                    "    return comment.replyCount\n" +
+                    "else\n" +
+                    "    return nil\n" +
+                    "end";
+
+            String key = RedisKeyBuilder.commentKey(communityBO.getRootId());
+            redisService.executeScript(script, RScript.ReturnType.INTEGER, Collections.singletonList(key), 1);
             redisService.RemoveFromSortedSet(RedisKeyBuilder.subCommentTimeScoreKey(communityBO.getRootId()), communityBO.getCommentId());
             redisService.RemoveFromSortedSet(RedisKeyBuilder.subCommentLikeScoreKey(communityBO.getRootId()), communityBO.getCommentId());
         }

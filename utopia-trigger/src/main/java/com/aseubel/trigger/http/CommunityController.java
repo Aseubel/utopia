@@ -205,6 +205,7 @@ public class CommunityController implements CommunityInterface {
                 .postId(requestDTO.getPostId())
                 .content(requestDTO.getContent())
                 .images(requestDTO.getImages())
+                .commentTime(requestDTO.getCommentTime())
                 .build();
         communityService.commentDiscussPost(CommunityBO.builder()
                 .commentEntity(commentEntity)
@@ -229,6 +230,7 @@ public class CommunityController implements CommunityInterface {
                 .rootId(requestDTO.getRootId())
                 .replyTo(requestDTO.getReplyTo())
                 .content(requestDTO.getContent())
+                .commentTime(requestDTO.getCommentTime())
                 .build();
         communityService.replyComment(CommunityBO.builder()
                 .commentEntity(commentEntity)

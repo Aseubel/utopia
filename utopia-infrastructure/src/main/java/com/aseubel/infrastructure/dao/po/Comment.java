@@ -41,13 +41,13 @@ public class Comment {
     private String content;
 
     @FieldDesc(name = "点赞数")
-    private Integer likeCount;
+    private int likeCount;
 
     @FieldDesc(name = "踩数")
-    private Integer unlikeCount;
+    private int unlikeCount;
     
     @FieldDesc(name = "回复数")
-    private Integer replyCount;
+    private int replyCount;
 
     @FieldDesc(name = "评论时间")
     private LocalDateTime commentTime;

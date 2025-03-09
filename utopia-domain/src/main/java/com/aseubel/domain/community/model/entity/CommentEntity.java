@@ -48,13 +48,13 @@ public class CommentEntity {
     private String content;
 
     @FieldDesc(name = "点赞数")
-    private Integer likeCount;
+    private int likeCount;
 
     @FieldDesc(name = "踩数")
-    private Integer unlikeCount;
+    private int unlikeCount;
 
     @FieldDesc(name = "回复数")
-    private Integer replyCount;
+    private int replyCount;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @JsonSerialize(using = LocalDateTimeSerializer.class)

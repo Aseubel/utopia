@@ -3,13 +3,13 @@
 <mapper namespace="com.aseubel.infrastructure.dao.CommentMapper">
 
     <insert id="addRootComment">
-        insert into `comment` (root_id, comment_id, post_id, user_id, content)
-        values (#{commentId}, #{commentId}, #{postId}, #{userId}, #{content})
+        insert into `comment` (root_id, comment_id, post_id, user_id, content, update_time)
+        values (#{rootId}, #{commentId}, #{postId}, #{userId}, #{content}, #{commentTime})
     </insert>
 
     <insert id="addChildComment">
-        insert into `comment` (root_id, reply_to, comment_id, post_id, user_id, content)
-        values (#{rootId}, #{replyTo}, #{commentId}, #{postId}, #{userId}, #{content})
+        insert into `comment` (root_id, reply_to, comment_id, post_id, user_id, content, update_time)
+        values (#{rootId}, #{replyTo}, #{commentId}, #{postId}, #{userId}, #{content}, #{commentTime})
     </insert>
 
     <insert id="relateCommentImage">

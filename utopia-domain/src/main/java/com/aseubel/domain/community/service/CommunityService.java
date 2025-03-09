@@ -250,6 +250,7 @@ public class CommunityService implements ICommunityService {
         checkPostIdValid(commentEntity.getPostId());
 
         commentEntity.generateCommentId();
+        commentEntity.setRootId(commentEntity.getCommentId());
         commentRepository.saveRootComment(commentEntity);
 
         if (!CollectionUtil.isEmpty(commentEntity.getImages())) {

@@ -2,16 +2,22 @@ package com.aseubel.infrastructure.redis;
 
 import org.redisson.api.*;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Redis 服务
  */
 public interface IRedisService {
+
+    /**
+     * 执行 Lua 脚本
+     * @param script 脚本
+     * @param returnType 返回类型
+     * @param keys 键
+     * @param values 值
+     */
+    <T> T executeScript(String script, RScript.ReturnType returnType, List<Object> keys, Object... values);
 
     /**
      * 设置指定 key 的值
