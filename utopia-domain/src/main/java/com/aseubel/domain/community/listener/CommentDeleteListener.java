@@ -3,13 +3,11 @@ package com.aseubel.domain.community.listener;
 import com.aseubel.domain.community.adapter.repo.ICommentRepository;
 import com.aseubel.domain.community.adapter.repo.IDiscussPostRepository;
 import com.aseubel.domain.community.model.bo.CommunityBO;
-import com.aseubel.types.event.CommentPostEvent;
 import com.aseubel.types.event.DeleteCommentEvent;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
-
-import jakarta.annotation.Resource;
 
 /**
  * @author Aseubel
@@ -23,11 +21,15 @@ public class CommentDeleteListener implements ApplicationListener<DeleteCommentE
     @Resource
     private ICommentRepository commentRepository;
 
+    @Resource
+    private IDiscussPostRepository discussPostRepository;
+
     @Override
     public void onApplicationEvent(DeleteCommentEvent event) {
-        log.info("监听到评论帖子事件");
+        log.info("监听到删除评论事件");
         CommunityBO communityBO = (CommunityBO) event.getSource();
         commentRepository.deleteSubComment(communityBO.getCommentId());
+        discussPostRepository.decreaseCommentCount(communityBO.getPostId());
     }
 
 }

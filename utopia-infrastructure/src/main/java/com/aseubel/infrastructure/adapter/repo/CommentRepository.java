@@ -95,6 +95,9 @@ public class CommentRepository implements ICommentRepository {
         if (CollectionUtil.isEmpty(comments)) {
             return comments;
         }
+        for (CommentEntity comment : comments) {
+            redisService.setValue(RedisKeyBuilder.commentKey(comment.getCommentId()), comment);
+        }
         // 点赞状态和主要回复
         comments = comments.stream()
                 .peek(d -> d.setReplyList(
@@ -106,7 +109,6 @@ public class CommentRepository implements ICommentRepository {
                 )
                 .collect(Collectors.toList());
         for (CommentEntity comment : comments) {
-            redisService.setValue(RedisKeyBuilder.commentKey(comment.getCommentId()), comment);
             redisService.addToSortedSet(RedisKeyBuilder.commentTimeScoreKey(postId), comment.getCommentId(),
                     comment.getCommentTime().toEpochSecond(ZoneOffset.UTC) + comment.getCommentTime().getNano() / 1_000_000_000.0);
             redisService.addToSortedSet(RedisKeyBuilder.commentLikeScoreKey(postId), comment.getCommentId(), comment.getLikeCount());
@@ -127,6 +129,8 @@ public class CommentRepository implements ICommentRepository {
     @Override
     public void saveReplyComment(CommentEntity commentEntity) {
         commentMapper.addChildComment(commentConvertor.convertToPO(commentEntity));
+
+        redisService.remove(RedisKeyBuilder.commentKey(commentEntity.getRootId()));
     }
 
     @Override
@@ -213,6 +217,9 @@ public class CommentRepository implements ICommentRepository {
         if (CollectionUtil.isEmpty(comments)) {
             return comments;
         }
+        for (CommentEntity comment : comments) {
+            redisService.setValue(RedisKeyBuilder.commentKey(comment.getCommentId()), comment);
+        }
         // 点赞状态
         comments = comments.stream()
                     .peek(d -> d.setIsLike(likeMapper.getLikeStatus(communityBO.getUserId(), d.getCommentId())
@@ -223,7 +230,6 @@ public class CommentRepository implements ICommentRepository {
                 .collect(Collectors.toList());
         // 存入缓存
         for (CommentEntity comment : comments) {
-            redisService.setValue(RedisKeyBuilder.commentKey(comment.getCommentId()), comment);
             redisService.addToSortedSet(RedisKeyBuilder.subCommentTimeScoreKey(rootId), comment.getCommentId(),
                     comment.getCommentTime().toEpochSecond(ZoneOffset.UTC) + comment.getCommentTime().getNano() / 1_000_000_000.0);
             redisService.addToSortedSet(RedisKeyBuilder.subCommentLikeScoreKey(rootId), comment.getCommentId(), comment.getLikeCount());
