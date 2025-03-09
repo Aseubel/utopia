@@ -37,4 +37,10 @@ public class LikeCommentRequest implements Serializable {
     @NotNull(message = "点赞时间不能为空")
     @FieldDesc(name = "点赞时间")
     private LocalDateTime likeTime;
+
+    @FieldDesc(name = "帖子id")
+    private String postId;
+
+    @FieldDesc(name = "根评论id")
+    private String rootId;
 }

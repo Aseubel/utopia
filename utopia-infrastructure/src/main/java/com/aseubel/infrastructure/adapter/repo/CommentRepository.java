@@ -174,7 +174,13 @@ public class CommentRepository implements ICommentRepository {
     }
 
     @Override
-    public boolean likeComment(String userId, String commentId, LocalDateTime likeTime) {
+    public boolean likeComment(CommunityBO communityBO) {
+        String userId = communityBO.getUserId();
+        String commentId = communityBO.getCommentId();
+        LocalDateTime likeTime = communityBO.getEventTime();
+        String postId = communityBO.getPostId();
+        String rootId = communityBO.getRootId();
+
         // 如果jdk升级到9以上可以使用Optional的ifPresentOrElse方法
         boolean isExist = likeMapper.getLikePostIdByUserIdAndToId(userId, commentId) != null;
         // 新状态
@@ -188,9 +194,9 @@ public class CommentRepository implements ICommentRepository {
 
         redisService.addToMap(RedisKeyBuilder.LikeStatusKey(userId), commentId, isLike);
         if (isLike) {
-            redisService.incrSortedSetScore(RedisKeyBuilder.commentLikeScoreKey(commentId), commentId, 1.0);
+            redisService.incrSortedSetScore(RedisKeyBuilder.commentLikeScoreKey(postId==null?rootId:postId), commentId, 1.0);
         } else {
-            redisService.decrSortedSetScore(RedisKeyBuilder.commentLikeScoreKey(commentId), commentId, 1.0);
+            redisService.decrSortedSetScore(RedisKeyBuilder.commentLikeScoreKey(postId==null?rootId:postId), commentId, 1.0);
         }
         return isLike; // 返回新状态
     }

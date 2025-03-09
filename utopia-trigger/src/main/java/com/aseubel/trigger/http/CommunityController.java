@@ -385,6 +385,8 @@ public class CommunityController implements CommunityInterface {
                 .userId(requestDTO.getUserId())
                 .commentId(requestDTO.getCommentId())
                 .eventTime(requestDTO.getLikeTime())
+                .postId(requestDTO.getPostId())
+                .rootId(requestDTO.getRootId())
                 .build();
         communityService.likeComment(communityBO);
 //        eventPublisher.publishEvent(new LikeEvent(CommunityBO.builder()

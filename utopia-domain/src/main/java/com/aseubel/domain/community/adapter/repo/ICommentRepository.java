@@ -70,12 +70,9 @@ public interface ICommentRepository {
 
     /**
      * 点赞评论
-     * @param userId
-     * @param commentId
-     * @param likeTime
      * @return
      */
-    boolean likeComment(String userId, String commentId, LocalDateTime likeTime);
+    boolean likeComment(CommunityBO communityBO);
 
     /**
      * 增加评论点赞数量

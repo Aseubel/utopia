@@ -398,7 +398,7 @@ public class CommunityService implements ICommunityService {
         String commentId = communityBO.getCommentId();
 
         log.info("用户点赞评论服务开始，userId: {}, commentId: {}", userId, commentId);
-        if (commentRepository.likeComment(userId, commentId, communityBO.getEventTime())) {
+        if (commentRepository.likeComment(communityBO)) {
             commentRepository.increaseLikeCount(commentId);
         } else {
             commentRepository.decreaseLikeCount(commentId);
