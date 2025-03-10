@@ -82,6 +82,9 @@ public class CommentRepository implements ICommentRepository {
         };
         List<CommentEntity> comments = new ArrayList<>();
         if (commentIds != null) {
+            if (commentIds.isEmpty()) {
+                return comments;
+            }
             for (String id : commentIds) {
                 comments.add(redisService.getValue(RedisKeyBuilder.commentKey(id)));
             }
@@ -116,9 +119,8 @@ public class CommentRepository implements ICommentRepository {
                 .collect(Collectors.toList());
         if (!isCache) {
             for (CommentEntity comment : comments) {
-                redisService.addToSortedSet(RedisKeyBuilder.commentTimeScoreKey(postId), comment.getCommentId(),
-                        comment.getCommentTime().toEpochSecond(ZoneOffset.UTC) + comment.getCommentTime().getNano() / 1_000_000_000.0);
-                redisService.addToSortedSet(RedisKeyBuilder.commentLikeScoreKey(postId), comment.getCommentId(), comment.getLikeCount());
+                redisService.addToSortedSet(RedisKeyBuilder.commentTimeScoreKey(postId), comment.getCommentId(), getTimeScore(comment));
+                redisService.addToSortedSet(RedisKeyBuilder.commentLikeScoreKey(postId), comment.getCommentId(), getLikeScore(comment));
             }
         }
         return comments;
@@ -134,9 +136,8 @@ public class CommentRepository implements ICommentRepository {
         commentMapper.addRootComment(commentConvertor.convertToPO(comment));
 
         redisService.setValue(RedisKeyBuilder.commentKey(comment.getCommentId()), comment);
-        redisService.addToSortedSet(RedisKeyBuilder.commentTimeScoreKey(comment.getPostId()), comment.getCommentId(),
-                comment.getCommentTime().toEpochSecond(ZoneOffset.UTC) + comment.getCommentTime().getNano() / 1_000_000_000.0);
-        redisService.addToSortedSet(RedisKeyBuilder.commentLikeScoreKey(comment.getPostId()), comment.getCommentId(), 0);
+        redisService.addToSortedSet(RedisKeyBuilder.commentTimeScoreKey(comment.getPostId()), comment.getCommentId(), getTimeScore(comment));
+        redisService.addToSortedSet(RedisKeyBuilder.commentLikeScoreKey(comment.getPostId()), comment.getCommentId(), getLikeScore(comment));
     }
 
     @Override
@@ -160,9 +161,8 @@ public class CommentRepository implements ICommentRepository {
         redisService.executeScript(script, RScript.ReturnType.INTEGER, Collections.singletonList(key), 1);
 
         redisService.setValue(RedisKeyBuilder.commentKey(comment.getCommentId()), comment);
-        redisService.addToSortedSet(RedisKeyBuilder.subCommentTimeScoreKey(rootId), comment.getCommentId(),
-                comment.getCommentTime().toEpochSecond(ZoneOffset.UTC) + comment.getCommentTime().getNano() / 1_000_000_000.0);
-        redisService.addToSortedSet(RedisKeyBuilder.subCommentLikeScoreKey(rootId), comment.getCommentId(), 0);
+        redisService.addToSortedSet(RedisKeyBuilder.subCommentTimeScoreKey(rootId), comment.getCommentId(), getTimeScore(comment));
+        redisService.addToSortedSet(RedisKeyBuilder.subCommentLikeScoreKey(rootId), comment.getCommentId(), getLikeScore(comment));
     }
 
     @Override
@@ -201,7 +201,7 @@ public class CommentRepository implements ICommentRepository {
         }
 
         redisService.addToMap(RedisKeyBuilder.LikeStatusKey(userId), commentId, isLike);
-        String key = RedisKeyBuilder.commentKey(communityBO.getCommentId());
+        String key = RedisKeyBuilder.commentKey(commentId);
         String script = """
                     local key = KEYS[1]
                     local increment = ARGV[1]
@@ -256,6 +256,9 @@ public class CommentRepository implements ICommentRepository {
         };
         List<CommentEntity> comments = new ArrayList<>();
         if (commentIds != null) {
+            if (commentIds.isEmpty()) {
+                return comments;
+            }
             for (String id : commentIds) {
                 comments.add(redisService.getValue(RedisKeyBuilder.commentKey(id)));
             }
@@ -290,9 +293,8 @@ public class CommentRepository implements ICommentRepository {
         // 存入缓存
         if (!isCache) {
             for (CommentEntity comment : comments) {
-                redisService.addToSortedSet(RedisKeyBuilder.subCommentTimeScoreKey(rootId), comment.getCommentId(),
-                        comment.getCommentTime().toEpochSecond(ZoneOffset.UTC) + comment.getCommentTime().getNano() / 1_000_000_000.0);
-                redisService.addToSortedSet(RedisKeyBuilder.subCommentLikeScoreKey(rootId), comment.getCommentId(), comment.getLikeCount());
+                redisService.addToSortedSet(RedisKeyBuilder.subCommentTimeScoreKey(rootId), comment.getCommentId(), getTimeScore(comment));
+                redisService.addToSortedSet(RedisKeyBuilder.subCommentLikeScoreKey(rootId), comment.getCommentId(), getLikeScore(comment));
             }
         }
         return comments;
@@ -361,6 +363,19 @@ public class CommentRepository implements ICommentRepository {
     @Override
     public void decreaseRootCommentReplyCount(String commentId) {
         commentMapper.decreaseReplyCount(commentId);
+    }
+
+    /**
+     * 计算评论的热度得分
+     * 6位存储点赞数，10位存储评论时间
+     */
+    private double getLikeScore(CommentEntity comment) {
+        return Math.pow(10, 16) + comment.getLikeCount() * Math.pow(10, 10) + getTimeScore(comment);
+    }
+
+    private double getTimeScore(CommentEntity comment) {
+        LocalDateTime commentTime = comment.getCommentTime();
+        return commentTime.toEpochSecond(ZoneOffset.UTC) + commentTime.getNano() / 1_000_000_000.0;
     }
 
 }

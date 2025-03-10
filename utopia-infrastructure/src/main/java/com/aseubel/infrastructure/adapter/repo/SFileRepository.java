@@ -77,7 +77,10 @@ public class SFileRepository implements IFileRepository {
                     (List<String>) redisService.getFromSortedSet(RedisKeyBuilder.fileScoreKey(), fileId, limit);
             default -> fileIds;
         };
-        if (CollectionUtil.isNotEmpty(fileIds)) {
+        if (fileIds != null) {
+            if (StringUtils.isEmpty(fileId)) {
+                return files;
+            }
             for (String id : fileIds) {
                 files.add(redisService.getValue(RedisKeyBuilder.fileKey(id)));
             }
