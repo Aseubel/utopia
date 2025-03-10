@@ -3,6 +3,7 @@ package com.aseubel.infrastructure.redis;
 import cn.hutool.core.collection.CollectionUtil;
 import jakarta.annotation.Resource;
 import org.redisson.api.*;
+import org.redisson.client.protocol.ScoredEntry;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -176,23 +177,17 @@ public class RedissonService implements IRedisService {
     }
 
     public void addToSortedSet(String key, String value) {
-        RSortedSet<String> sortedSet = redissonClient.getSortedSet(key);
-        if (sortedSet != null) {
-            sortedSet.add(value);
-        }
+        redissonClient.getSortedSet(key).add(value);
     }
 
     @Override
     public <V> void addToSortedSet(String key, V value, double score) {
-        RScoredSortedSet<V> sortedSet = redissonClient.getScoredSortedSet(key);
-        if (sortedSet != null) {
-            sortedSet.add(score, value);
-        }
+        redissonClient.getScoredSortedSet(key).add(score, value);
     }
 
     @Override
-    public <T> Collection<T> getFromSortedSet(String key, T value, int limit) {
-        RScoredSortedSet<T> sortedSet = redissonClient.getScoredSortedSet(key);
+    public <V> Collection<V> getFromSortedSet(String key, V value, int limit) {
+        RScoredSortedSet<V> sortedSet = redissonClient.getScoredSortedSet(key);
         if (CollectionUtil.isEmpty(sortedSet)) {
             return null;
         }
@@ -201,8 +196,8 @@ public class RedissonService implements IRedisService {
     }
 
     @Override
-    public <T> Collection<T> getReverseFromSortedSet(String key, T value, int limit) {
-        RScoredSortedSet<T> sortedSet = redissonClient.getScoredSortedSet(key);
+    public <V> Collection<V> getReverseFromSortedSet(String key, V value, int limit) {
+        RScoredSortedSet<V> sortedSet = redissonClient.getScoredSortedSet(key);
         if (CollectionUtil.isEmpty(sortedSet)) {
             return null;
         }
@@ -212,18 +207,12 @@ public class RedissonService implements IRedisService {
 
     @Override
     public <T> void incrSortedSetScore(String key, T value, double delta) {
-        RScoredSortedSet<T> sortedSet = redissonClient.getScoredSortedSet(key);
-        if (sortedSet != null) {
-            sortedSet.addScore(value, delta);
-        }
+        redissonClient.getScoredSortedSet(key).addScore(value, delta);
     }
 
     @Override
     public <T> void decrSortedSetScore(String key, T value, double delta) {
-        RScoredSortedSet<T> sortedSet = redissonClient.getScoredSortedSet(key);
-        if (sortedSet != null) {
-            sortedSet.addScore(value, -delta);
-        }
+        redissonClient.getScoredSortedSet(key).addScore(value, -delta);
     }
 
     @Override

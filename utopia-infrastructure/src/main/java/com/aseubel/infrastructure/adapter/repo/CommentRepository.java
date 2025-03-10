@@ -6,6 +6,7 @@ import com.aseubel.domain.community.adapter.repo.ICommentRepository;
 import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.community.model.entity.CommunityImage;
+import com.aseubel.domain.sfile.model.entity.SFileEntity;
 import com.aseubel.infrastructure.convertor.CommentConvertor;
 import com.aseubel.infrastructure.convertor.CommunityImageConvertor;
 import com.aseubel.infrastructure.dao.CommentMapper;
@@ -68,6 +69,7 @@ public class CommentRepository implements ICommentRepository {
         Integer limit = communityBO.getLimit();
         Integer sortType = Optional.ofNullable(communityBO.getSortType()).orElse(0);
         List<String> commentIds = null;
+        boolean isCache = true;
 
         commentIds = switch (sortType) {
             case 0 ->
@@ -85,14 +87,17 @@ public class CommentRepository implements ICommentRepository {
             }
         }
         // 评论本体
-        comments = CollectionUtil.isNotEmpty(comments) ? comments :
-                Optional.ofNullable(StringUtils.isEmpty(commentId)
-                ? commentMapper.listCommentByPostIdAhead(postId, limit, sortType)
-                : commentMapper.listCommentByPostId(postId, commentId, limit, sortType))
-                .map(c -> c.stream()
-                        .map(commentConvertor::convertToEntity)
-                        .collect(Collectors.toList()))
-                .orElse(Collections.emptyList());
+        if (CollectionUtil.isEmpty(comments)) {
+            comments = Optional.ofNullable(StringUtils.isEmpty(commentId)
+                            ? commentMapper.listCommentByPostIdAhead(postId, limit, sortType)
+                            : commentMapper.listCommentByPostId(postId, commentId, limit, sortType))
+                    .map(c -> c.stream()
+                            .map(commentConvertor::convertToEntity)
+                            .collect(Collectors.toList()))
+                    .orElse(Collections.emptyList());
+            isCache = false;
+        }
+
         if (CollectionUtil.isEmpty(comments)) {
             return comments;
         }
@@ -109,10 +114,12 @@ public class CommentRepository implements ICommentRepository {
                                 .orElse(false)))
                 )
                 .collect(Collectors.toList());
-        for (CommentEntity comment : comments) {
-            redisService.addToSortedSet(RedisKeyBuilder.commentTimeScoreKey(postId), comment.getCommentId(),
-                    comment.getCommentTime().toEpochSecond(ZoneOffset.UTC) + comment.getCommentTime().getNano() / 1_000_000_000.0);
-            redisService.addToSortedSet(RedisKeyBuilder.commentLikeScoreKey(postId), comment.getCommentId(), comment.getLikeCount());
+        if (!isCache) {
+            for (CommentEntity comment : comments) {
+                redisService.addToSortedSet(RedisKeyBuilder.commentTimeScoreKey(postId), comment.getCommentId(),
+                        comment.getCommentTime().toEpochSecond(ZoneOffset.UTC) + comment.getCommentTime().getNano() / 1_000_000_000.0);
+                redisService.addToSortedSet(RedisKeyBuilder.commentLikeScoreKey(postId), comment.getCommentId(), comment.getLikeCount());
+            }
         }
         return comments;
     }
@@ -137,17 +144,18 @@ public class CommentRepository implements ICommentRepository {
         commentMapper.addChildComment(commentConvertor.convertToPO(comment));
 
         String rootId = comment.getRootId();
-        String script = "local key = KEYS[1]\n" +
-                "local increment = ARGV[1]\n" +
-                "local comment = redis.call('GET', key)\n" +
-                "if comment then\n" +
-                "    comment = cjson.decode(comment)\n" +
-                "    comment.replyCount = comment.replyCount + increment\n" +
-                "    redis.call('SET', key, cjson.encode(comment))\n" +
-                "    return comment.replyCount\n" +
-                "else\n" +
-                "    return nil\n" +
-                "end";
+        String script = """
+                local key = KEYS[1]
+                local increment = ARGV[1]
+                local comment = redis.call('GET', key)
+                if comment then
+                    comment = cjson.decode(comment)
+                    comment.replyCount = comment.replyCount + increment
+                    redis.call('SET', key, cjson.encode(comment))
+                    return comment.replyCount
+                else
+                    return nil
+                end""";
         String key = RedisKeyBuilder.commentKey(rootId);
         redisService.executeScript(script, RScript.ReturnType.INTEGER, Collections.singletonList(key), 1);
 
@@ -193,10 +201,27 @@ public class CommentRepository implements ICommentRepository {
         }
 
         redisService.addToMap(RedisKeyBuilder.LikeStatusKey(userId), commentId, isLike);
+        String key = RedisKeyBuilder.commentKey(communityBO.getCommentId());
+        String script = """
+                    local key = KEYS[1]
+                    local increment = ARGV[1]
+                    local comment = redis.call('GET', key)
+                    if comment then
+                        comment = cjson.decode(comment)
+                        comment.likeCount = comment.likeCount + increment
+                        redis.call('SET', key, cjson.encode(comment))
+                        return comment.likeCount
+                    else
+                        return nil
+                    end""";
         if (isLike) {
-            redisService.incrSortedSetScore(RedisKeyBuilder.commentLikeScoreKey(postId==null?rootId:postId), commentId, 1.0);
+            redisService.executeScript(script, RScript.ReturnType.INTEGER, Collections.singletonList(key), 1);
+            redisService.incrSortedSetScore(StringUtils.isEmpty(rootId)?RedisKeyBuilder.commentLikeScoreKey(postId):RedisKeyBuilder.subCommentLikeScoreKey(rootId),
+                    commentId, 1.0);
         } else {
-            redisService.decrSortedSetScore(RedisKeyBuilder.commentLikeScoreKey(postId==null?rootId:postId), commentId, 1.0);
+            redisService.executeScript(script, RScript.ReturnType.INTEGER, Collections.singletonList(key), -1);
+            redisService.decrSortedSetScore(StringUtils.isEmpty(rootId)?RedisKeyBuilder.commentLikeScoreKey(postId):RedisKeyBuilder.subCommentLikeScoreKey(rootId),
+                    commentId, 1.0);
         }
         return isLike; // 返回新状态
     }
@@ -219,6 +244,7 @@ public class CommentRepository implements ICommentRepository {
         Integer sortType = Optional.ofNullable(communityBO.getSortType()).orElse(0);
 
         List<String> commentIds = null;
+        boolean isCache = true;
         commentIds = switch (sortType) {
             case 0 ->
                     (List<String>) redisService.getFromSortedSet(RedisKeyBuilder.subCommentTimeScoreKey(rootId), commentId, limit);
@@ -236,14 +262,17 @@ public class CommentRepository implements ICommentRepository {
         }
 
         // 评论本体
-        comments = CollectionUtil.isNotEmpty(comments) ? comments :
-                Optional.ofNullable(StringUtils.isEmpty(commentId)
-                                ? commentMapper.listSubCommentByRootIdAhead(rootId, limit, sortType)
-                                : commentMapper.listSubCommentByRootId(rootId, commentId, limit, sortType))
-                        .map(c -> c.stream()
-                                .map(commentConvertor::convertToEntity)
-                                .collect(Collectors.toList()))
-                        .orElse(Collections.emptyList());
+        if (CollectionUtil.isEmpty(comments)) {
+            comments = Optional.ofNullable(StringUtils.isEmpty(commentId)
+                            ? commentMapper.listSubCommentByRootIdAhead(rootId, limit, sortType)
+                            : commentMapper.listSubCommentByRootId(rootId, commentId, limit, sortType))
+                    .map(c -> c.stream()
+                            .map(commentConvertor::convertToEntity)
+                            .collect(Collectors.toList()))
+                    .orElse(Collections.emptyList());
+            isCache = false;
+        }
+
         if (CollectionUtil.isEmpty(comments)) {
             return comments;
         }
@@ -254,15 +283,17 @@ public class CommentRepository implements ICommentRepository {
         comments = comments.stream()
                     .peek(d -> d.setIsLike(likeMapper.getLikeStatus(communityBO.getUserId(), d.getCommentId())
                         .orElse(Optional.ofNullable(
-                                (Boolean)redisService.getFromMap(RedisKeyBuilder.LikeStatusKey(communityBO.getUserId()), d.getCommentId()))
+                                (Boolean) redisService.getFromMap(RedisKeyBuilder.LikeStatusKey(communityBO.getUserId()), d.getCommentId()))
                                 .orElse(false)))
                     )
                 .collect(Collectors.toList());
         // 存入缓存
-        for (CommentEntity comment : comments) {
-            redisService.addToSortedSet(RedisKeyBuilder.subCommentTimeScoreKey(rootId), comment.getCommentId(),
-                    comment.getCommentTime().toEpochSecond(ZoneOffset.UTC) + comment.getCommentTime().getNano() / 1_000_000_000.0);
-            redisService.addToSortedSet(RedisKeyBuilder.subCommentLikeScoreKey(rootId), comment.getCommentId(), comment.getLikeCount());
+        if (!isCache) {
+            for (CommentEntity comment : comments) {
+                redisService.addToSortedSet(RedisKeyBuilder.subCommentTimeScoreKey(rootId), comment.getCommentId(),
+                        comment.getCommentTime().toEpochSecond(ZoneOffset.UTC) + comment.getCommentTime().getNano() / 1_000_000_000.0);
+                redisService.addToSortedSet(RedisKeyBuilder.subCommentLikeScoreKey(rootId), comment.getCommentId(), comment.getLikeCount());
+            }
         }
         return comments;
     }
@@ -302,17 +333,18 @@ public class CommentRepository implements ICommentRepository {
             redisService.RemoveFromSortedSet(RedisKeyBuilder.commentTimeScoreKey(communityBO.getPostId()), communityBO.getCommentId());
             redisService.RemoveFromSortedSet(RedisKeyBuilder.commentLikeScoreKey(communityBO.getPostId()), communityBO.getCommentId());
         } else {
-            String script = "local key = KEYS[1]\n" +
-                    "local increment = ARGV[1]\n" +
-                    "local comment = redis.call('GET', key)\n" +
-                    "if comment then\n" +
-                    "    comment = cjson.decode(comment)\n" +
-                    "    comment.replyCount = comment.replyCount - increment\n" +
-                    "    redis.call('SET', key, cjson.encode(comment))\n" +
-                    "    return comment.replyCount\n" +
-                    "else\n" +
-                    "    return nil\n" +
-                    "end";
+            String script = """
+                    local key = KEYS[1]
+                    local increment = ARGV[1]
+                    local comment = redis.call('GET', key)
+                    if comment then
+                        comment = cjson.decode(comment)
+                        comment.replyCount = comment.replyCount - increment
+                        redis.call('SET', key, cjson.encode(comment))
+                        return comment.replyCount
+                    else
+                        return nil
+                    end""";
 
             String key = RedisKeyBuilder.commentKey(communityBO.getRootId());
             redisService.executeScript(script, RScript.ReturnType.INTEGER, Collections.singletonList(key), 1);

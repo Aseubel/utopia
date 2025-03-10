@@ -1,6 +1,7 @@
 package com.aseubel.infrastructure.redis;
 
 import org.redisson.api.*;
+import org.redisson.client.protocol.ScoredEntry;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -277,9 +278,9 @@ public interface IRedisService {
      * @param key   键
      * @param value 上一页最后的值
      * @param limit 限制数量
-     * @return 值
+     * @return      entry
      */
-    <T> Collection<T> getFromSortedSet(String key, T value, int limit);
+    <V> Collection<V> getFromSortedSet(String key, V value, int limit);
 
     /**
      * 获取有序集合中指定索引的值
@@ -288,7 +289,7 @@ public interface IRedisService {
      * @param limit 限制数量
      * @return 值
      */
-    <T> Collection<T> getReverseFromSortedSet(String key, T value, int limit);
+    <V> Collection<V> getReverseFromSortedSet(String key, V value, int limit);
 
     /**
      * 增加有序集合中指定值的分数

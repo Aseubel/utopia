@@ -2,7 +2,6 @@ package com.aseubel.infrastructure.adapter.repo;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.aliyuncs.exceptions.ClientException;
-import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.sfile.adapter.repo.IFileRepository;
 import com.aseubel.domain.sfile.model.entity.SFileEntity;
 import com.aseubel.domain.sfile.model.vo.CourseVO;
@@ -17,7 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
-import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -79,7 +77,7 @@ public class SFileRepository implements IFileRepository {
                     (List<String>) redisService.getFromSortedSet(RedisKeyBuilder.fileScoreKey(), fileId, limit);
             default -> fileIds;
         };
-        if (fileIds != null) {
+        if (CollectionUtil.isNotEmpty(fileIds)) {
             for (String id : fileIds) {
                 files.add(redisService.getValue(RedisKeyBuilder.fileKey(id)));
             }
