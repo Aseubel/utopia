@@ -1,7 +1,6 @@
 package com.aseubel.types.event;
 
 import com.aseubel.types.annotation.FieldDesc;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;
@@ -86,9 +85,9 @@ public class PublishDiscussPostEvent extends ApplicationEvent {
                 ", \"content\":\"" + content + '\"' +
                 ", \"image\":\"" + image + '\"' +
                 ", \"tag\":\"" + tag + '\"' +
-                ", \"likeCount\":" + likeCount + '\"' +
-                ", \"commentCount\":" + commentCount + '\"' +
-                ", \"favoriteCount\":" + favoriteCount + '\"' +
+                ", \"likeCount\":\"" + likeCount + '\"' +
+                ", \"commentCount\":\"" + commentCount + '\"' +
+                ", \"favoriteCount\":\"" + favoriteCount + '\"' +
                 "}]";
     }
 }
