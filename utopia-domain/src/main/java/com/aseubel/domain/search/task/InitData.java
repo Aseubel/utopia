@@ -9,6 +9,7 @@ import com.aseubel.types.common.Constant;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.meilisearch.sdk.Client;
+import com.meilisearch.sdk.Index;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
@@ -37,6 +38,12 @@ public class InitData {
 
     @PostConstruct
     public void init() throws JsonProcessingException {
+        // 清空索引
+        Index[] results = client.getIndexes().getResults();
+        for (Index index : results) {
+            client.deleteIndex(index.getUid());
+        }
+
         int pageSize = 500;
         Long lastPostId = null;
         Set<String> dpIndexSet = new HashSet<>();
