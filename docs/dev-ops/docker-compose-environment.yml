@@ -77,6 +77,22 @@ services:
     depends_on:
       - redis
 
+  # MeiliSearch https://github.com/meilisearch/MeiliSearch
+  meilisearch:
+    image: getmeili/meilisearch:v1.13
+    container_name: meilisearch
+    restart: always
+    hostname: meilisearch
+    ports:
+      - "17700:7700"
+    environment:
+      - MEILI_ENV=production
+      - MEILI_MASTER_KEY=xqVIYGKcaZxsBvzk7-HvPgcFwSG0MAHx0S9OfdwdAso
+    volumes:
+      - ./meili_data:/meili_data
+    networks:
+      - my-network
+
 networks:
   my-network:
     driver: bridge

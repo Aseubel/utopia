@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class MeiliSearchClientProperties {
 
     /** hostUrl */
-    private String hostUrl = "http://127.0.0.1:7700";
+    private String hostUrl = "http://localhost:7700";
     /** ApiKey */
     private String apiKey = "masterKey";
 

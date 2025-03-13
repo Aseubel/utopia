@@ -10,7 +10,7 @@ meilisearch:
   sdk:
     config:
       api-key: 'masterKey'
-      host-url: http://127.0.0.1:7700
+      host-url: 'http://127.0.0.1:7700'
 
 netty:
   server:
