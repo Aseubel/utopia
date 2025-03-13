@@ -13,7 +13,8 @@ public class TradePostConvertor {
 
     public TradePostEntity convert(TradePost tradePost) {
         return TradePostEntity.builder()
-                .tradePostId(tradePost.getTradePostId())
+                .id(tradePost.getId())
+                .postId(tradePost.getTradePostId())
                 .userId(tradePost.getUserId())
                 .title(tradePost.getTitle())
                 .content(tradePost.getContent())
@@ -29,7 +30,7 @@ public class TradePostConvertor {
 
     public TradePost convert(TradePostEntity tradePostEntity) {
         return TradePost.builder()
-                .tradePostId(tradePostEntity.getTradePostId())
+                .tradePostId(tradePostEntity.getPostId())
                 .userId(tradePostEntity.getUserId())
                 .title(tradePostEntity.getTitle())
                 .content(tradePostEntity.getContent())

@@ -6,26 +6,26 @@ import com.aseubel.domain.community.adapter.repo.ICommentRepository;
 import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.community.model.entity.CommunityImage;
-import com.aseubel.domain.sfile.model.entity.SFileEntity;
 import com.aseubel.infrastructure.convertor.CommentConvertor;
 import com.aseubel.infrastructure.convertor.CommunityImageConvertor;
 import com.aseubel.infrastructure.dao.CommentMapper;
 import com.aseubel.infrastructure.dao.ImageMapper;
 import com.aseubel.infrastructure.dao.LikeMapper;
-import com.aseubel.infrastructure.dao.po.Comment;
 import com.aseubel.infrastructure.dao.po.Image;
 import com.aseubel.infrastructure.redis.IRedisService;
 import com.aseubel.types.util.AliOSSUtil;
 import com.aseubel.types.util.RedisKeyBuilder;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RScript;
 import org.springframework.stereotype.Repository;
 
-import jakarta.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.aseubel.types.common.Constant.COMMENT_CACHE_EXPIRE_TIME;
 
 /**
  * @author Aseuebl
@@ -68,6 +68,8 @@ public class CommentRepository implements ICommentRepository {
         String commentId = communityBO.getCommentId();
         Integer limit = communityBO.getLimit();
         Integer sortType = Optional.ofNullable(communityBO.getSortType()).orElse(0);
+        int likeCount = communityBO.getLikeCount();
+
         List<String> commentIds = null;
         boolean isCache = true;
 
@@ -93,7 +95,7 @@ public class CommentRepository implements ICommentRepository {
         if (CollectionUtil.isEmpty(comments)) {
             comments = Optional.ofNullable(StringUtils.isEmpty(commentId)
                             ? commentMapper.listCommentByPostIdAhead(postId, limit, sortType)
-                            : commentMapper.listCommentByPostId(postId, commentId, limit, sortType))
+                            : commentMapper.listCommentByPostId(postId, commentId, limit, sortType, likeCount))
                     .map(c -> c.stream()
                             .map(commentConvertor::convertToEntity)
                             .collect(Collectors.toList()))
@@ -105,7 +107,7 @@ public class CommentRepository implements ICommentRepository {
             return comments;
         }
         for (CommentEntity comment : comments) {
-            redisService.setValue(RedisKeyBuilder.commentKey(comment.getCommentId()), comment);
+            redisService.setValue(RedisKeyBuilder.commentKey(comment.getCommentId()), comment, COMMENT_CACHE_EXPIRE_TIME);
         }
         // 点赞状态和主要回复
         comments = comments.stream()
@@ -135,7 +137,7 @@ public class CommentRepository implements ICommentRepository {
     public void saveRootComment(CommentEntity comment) {
         commentMapper.addRootComment(commentConvertor.convertToPO(comment));
 
-        redisService.setValue(RedisKeyBuilder.commentKey(comment.getCommentId()), comment);
+        redisService.setValue(RedisKeyBuilder.commentKey(comment.getCommentId()), comment, COMMENT_CACHE_EXPIRE_TIME);
         redisService.addToSortedSet(RedisKeyBuilder.commentTimeScoreKey(comment.getPostId()), comment.getCommentId(), getTimeScore(comment));
         redisService.addToSortedSet(RedisKeyBuilder.commentLikeScoreKey(comment.getPostId()), comment.getCommentId(), getLikeScore(comment));
     }
@@ -160,7 +162,7 @@ public class CommentRepository implements ICommentRepository {
         String key = RedisKeyBuilder.commentKey(rootId);
         redisService.executeScript(script, RScript.ReturnType.INTEGER, Collections.singletonList(key), 1);
 
-        redisService.setValue(RedisKeyBuilder.commentKey(comment.getCommentId()), comment);
+        redisService.setValue(RedisKeyBuilder.commentKey(comment.getCommentId()), comment, COMMENT_CACHE_EXPIRE_TIME);
         redisService.addToSortedSet(RedisKeyBuilder.subCommentTimeScoreKey(rootId), comment.getCommentId(), getTimeScore(comment));
         redisService.addToSortedSet(RedisKeyBuilder.subCommentLikeScoreKey(rootId), comment.getCommentId(), getLikeScore(comment));
     }
@@ -217,11 +219,11 @@ public class CommentRepository implements ICommentRepository {
         if (isLike) {
             redisService.executeScript(script, RScript.ReturnType.INTEGER, Collections.singletonList(key), 1);
             redisService.incrSortedSetScore(StringUtils.isEmpty(rootId)?RedisKeyBuilder.commentLikeScoreKey(postId):RedisKeyBuilder.subCommentLikeScoreKey(rootId),
-                    commentId, 1.0);
+                    commentId, likeScoreDelta(1.0));
         } else {
             redisService.executeScript(script, RScript.ReturnType.INTEGER, Collections.singletonList(key), -1);
             redisService.decrSortedSetScore(StringUtils.isEmpty(rootId)?RedisKeyBuilder.commentLikeScoreKey(postId):RedisKeyBuilder.subCommentLikeScoreKey(rootId),
-                    commentId, 1.0);
+                    commentId, likeScoreDelta(1.0));
         }
         return isLike; // 返回新状态
     }
@@ -241,6 +243,7 @@ public class CommentRepository implements ICommentRepository {
         String rootId = communityBO.getRootId();
         String commentId = communityBO.getCommentId();
         Integer limit = communityBO.getLimit();
+        int likeCount = communityBO.getLikeCount();
         Integer sortType = Optional.ofNullable(communityBO.getSortType()).orElse(0);
 
         List<String> commentIds = null;
@@ -268,7 +271,7 @@ public class CommentRepository implements ICommentRepository {
         if (CollectionUtil.isEmpty(comments)) {
             comments = Optional.ofNullable(StringUtils.isEmpty(commentId)
                             ? commentMapper.listSubCommentByRootIdAhead(rootId, limit, sortType)
-                            : commentMapper.listSubCommentByRootId(rootId, commentId, limit, sortType))
+                            : commentMapper.listSubCommentByRootId(rootId, commentId, limit, sortType, likeCount))
                     .map(c -> c.stream()
                             .map(commentConvertor::convertToEntity)
                             .collect(Collectors.toList()))
@@ -280,7 +283,7 @@ public class CommentRepository implements ICommentRepository {
             return comments;
         }
         for (CommentEntity comment : comments) {
-            redisService.setValue(RedisKeyBuilder.commentKey(comment.getCommentId()), comment);
+            redisService.setValue(RedisKeyBuilder.commentKey(comment.getCommentId()), comment, COMMENT_CACHE_EXPIRE_TIME);
         }
         // 点赞状态
         comments = comments.stream()
@@ -371,6 +374,10 @@ public class CommentRepository implements ICommentRepository {
      */
     private double getLikeScore(CommentEntity comment) {
         return Math.pow(10, 16) + comment.getLikeCount() * Math.pow(10, 10) + getTimeScore(comment);
+    }
+
+    private double likeScoreDelta(double delta) {
+        return Math.pow(10, 10) * delta;
     }
 
     private double getTimeScore(CommentEntity comment) {

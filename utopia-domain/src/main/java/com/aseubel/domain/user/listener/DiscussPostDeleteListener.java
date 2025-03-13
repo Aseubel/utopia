@@ -1,8 +1,7 @@
 package com.aseubel.domain.user.listener;
 
-import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.user.adapter.repo.IUserRepository;
-import com.aseubel.types.event.DeletePostEvent;
+import com.aseubel.types.event.DeleteDiscussPostEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -17,17 +16,16 @@ import jakarta.annotation.Resource;
  */
 @Component
 @Slf4j
-public class PostDeleteListener implements ApplicationListener<DeletePostEvent> {
+public class DiscussPostDeleteListener implements ApplicationListener<DeleteDiscussPostEvent> {
 
     @Resource
     private IUserRepository userRepository;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void onApplicationEvent(DeletePostEvent event) {
+    public void onApplicationEvent(DeleteDiscussPostEvent event) {
         log.info("user domain: 监听到删除帖子事件");
-        CommunityBO communityBO = (CommunityBO) event.getSource();
-        userRepository.deleteUserToPost(communityBO.getUserId(), communityBO.getPostId());
+        userRepository.deleteUserToPost(event.getUserId(), event.getPostId());
     }
 
 }

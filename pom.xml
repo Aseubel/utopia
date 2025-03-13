@@ -32,9 +32,19 @@
 
     <repositories>
         <repository>
+            <id>aliyun-maven</id>
+            <name>aliyun maven repo</name>
+            <url>https://maven.aliyun.com/repository/public</url>
+        </repository>
+        <repository>
             <id>es-snapshots</id>
             <name>elasticsearch snapshot repo</name>
             <url>https://snapshots.elastic.co/maven/</url>
+        </repository>
+        <repository>
+            <id>jcentral</id>
+            <name>JCentral Repository</name>
+            <url>https://repo1.maven.org/maven2/</url>
         </repository>
     </repositories>
 
@@ -154,6 +164,11 @@
                 <groupId>io.netty</groupId>
                 <artifactId>netty-all</artifactId>
                 <version>4.1.100.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>com.meilisearch.sdk</groupId>
+                <artifactId>meilisearch-java</artifactId>
+                <version>0.14.2</version>
             </dependency>
 
             <dependency>

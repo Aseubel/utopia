@@ -145,4 +145,14 @@ public interface DiscussPostMapper {
 
     @Select("SELECT user_id FROM discuss_post WHERE discuss_post_id = #{postId}")
     String getUserIdByPostId(String postId);
+
+    /**
+     * 获取帖子的点赞、评论、收藏数
+     */
+    List<DiscussPost> listPostBase();
+
+    /**
+     * 获取帖子的点赞、评论、收藏数
+     */
+    List<DiscussPost> listPartialPostBase(Long postId, int pageSize);
 }

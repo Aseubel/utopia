@@ -78,7 +78,7 @@ public class SFileRepository implements IFileRepository {
             default -> fileIds;
         };
         if (fileIds != null) {
-            if (StringUtils.isEmpty(fileId)) {
+            if (fileIds.isEmpty()) {
                 return files;
             }
             for (String id : fileIds) {

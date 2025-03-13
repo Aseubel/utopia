@@ -76,9 +76,9 @@ public class CommunityService implements ICommunityService {
 
         discussPostEntities.forEach(d -> {
                     // 获取帖子的第一张图片
-                    d.setImage(discussPostRepository.getPostFirstImage(d.getDiscussPostId()));
+                    d.setImage(discussPostRepository.getPostFirstImage(d.getPostId()));
                     // 加载评论
-                    d.setComments(commentRepository.listPostMainComment(d.getDiscussPostId()));
+                    d.setComments(commentRepository.listPostMainComment(d.getPostId()));
                     // 获取主评论的用户名
                     if (!CollectionUtil.isEmpty(d.getComments())) {
                         Map<String, String> userNameMap = communityUserRepository.queryUserNames(d.getComments().stream()
@@ -138,7 +138,7 @@ public class CommunityService implements ICommunityService {
         if (!CollectionUtil.isEmpty(discussPostEntity.getImages())) {
             List<CommunityImage> images = discussPostRepository.listPostImagesByImageIds(discussPostEntity.getImages());
             if (!CollectionUtil.isEmpty(images)) {
-                discussPostRepository.relateNewPostImage(discussPostEntity.getDiscussPostId(), images);
+                discussPostRepository.relateNewPostImage(discussPostEntity.getPostId(), images);
             }
         }
 

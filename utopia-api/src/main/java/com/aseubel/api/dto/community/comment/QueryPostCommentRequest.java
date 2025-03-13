@@ -34,4 +34,7 @@ public class QueryPostCommentRequest implements Serializable {
     @FieldDesc(name = "排序方式")
     private Integer sortType;
 
+    @FieldDesc(name = "点赞数量")
+    private Integer likeCount;
+
 }

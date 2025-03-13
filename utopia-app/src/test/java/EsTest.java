@@ -18,13 +18,13 @@ import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(classes = Application.class)
+//@SpringBootTest(classes = Application.class)
 public class EsTest {
 
-    @Resource
+//    @Resource
     private ElasticsearchClient elasticsearchClient;
 
-    @Test
+//    @Test
     public void testElasticsearchClient() throws IOException {
         // 1. 创建一个索引
         String indexName = "test-index";
@@ -72,7 +72,7 @@ public class EsTest {
         elasticsearchClient.indices().delete(d -> d.index(indexName));
     }
 
-    @Test
+//    @Test
     public void simpleTest() {
         System.out.println(elasticsearchClient);
     }

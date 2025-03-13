@@ -14,20 +14,20 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.handler.timeout.IdleStateHandler;
+import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
-
 import java.util.concurrent.TimeUnit;
 
 import static com.aseubel.types.common.Constant.NETTY_PORT;
 
 @Component
 @Slf4j
+@EnableConfigurationProperties(NettyServerConfigProperties.class)
 public class NettyServerConfig {
 
     private ChannelFuture serverChannelFuture;

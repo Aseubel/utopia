@@ -1,5 +1,6 @@
 package com.aseubel.trigger.http;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.api.CommunityInterface;
 import com.aseubel.api.dto.community.comment.*;
@@ -27,8 +28,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static com.aseubel.types.enums.CustomServiceCode.COMMUNITY_POST_PUBLISH;
 import static com.aseubel.types.enums.GlobalServiceStatusCode.OSS_UPLOAD_ERROR;
 import static com.aseubel.types.enums.GlobalServiceStatusCode.PARAM_NOT_COMPLETE;
 
@@ -66,7 +67,7 @@ public class CommunityController implements CommunityInterface {
         List<QueryIndexDiscussPostResponseDTO> responseDTOs = new ArrayList<>();
         for (DiscussPostEntity discussPost : discussPosts) {
             responseDTOs.add(QueryIndexDiscussPostResponseDTO.builder()
-                    .discussPostId(discussPost.getDiscussPostId())
+                    .discussPostId(discussPost.getPostId())
                     .userId(discussPost.getUserId())
                     .userName(discussPost.getUserName())
                     .userAvatar(discussPost.getUserAvatar())
@@ -138,25 +139,27 @@ public class CommunityController implements CommunityInterface {
      */
     @Override
     @PostMapping("/post")
-    public Response<PublishDiscussPostResponse> publishDiscussPost(@Valid @RequestBody PublishDiscussPostRequest publishDiscussPostRequest) {
-        DiscussPostEntity discussPostEntity = DiscussPostEntity.builder()
-                .userId(publishDiscussPostRequest.getUserId())
-                .schoolCode(publishDiscussPostRequest.getSchoolCode())
-                .title(publishDiscussPostRequest.getTitle())
-                .content(publishDiscussPostRequest.getContent())
-                .tag(publishDiscussPostRequest.getTag())
-                .images(publishDiscussPostRequest.getImages())
+    public Response<PublishDiscussPostResponse> publishDiscussPost(@Valid @RequestBody PublishDiscussPostRequest requestDTO) {
+        DiscussPostEntity post = DiscussPostEntity.builder()
+                .userId(requestDTO.getUserId())
+                .schoolCode(requestDTO.getSchoolCode())
+                .title(requestDTO.getTitle())
+                .content(requestDTO.getContent())
+                .tag(requestDTO.getTag())
+                .images(requestDTO.getImages())
                 .build();
-        communityService.publishDiscussPost(discussPostEntity);
+        communityService.publishDiscussPost(post);
 
-        eventPublisher.publishEvent(new CustomEvent(discussPostEntity, COMMUNITY_POST_PUBLISH));
+        eventPublisher.publishEvent(new PublishDiscussPostEvent("publishDiscussPost",
+                post.getUserId(), post.getPostId(), post.getTitle(),
+                post.getContent(), getFirstImage(post), post.getTag(), post.getSchoolCode()));
         return Response.SYSTEM_SUCCESS(PublishDiscussPostResponse.builder()
-                        .userId(discussPostEntity.getUserId())
-                        .postId(discussPostEntity.getDiscussPostId())
-                        .title(discussPostEntity.getTitle())
-                        .content(discussPostEntity.getContent())
-                        .tag(discussPostEntity.getTag())
-                        .image(discussPostEntity.getImage())
+                        .userId(post.getUserId())
+                        .postId(post.getPostId())
+                        .title(post.getTitle())
+                        .content(post.getContent())
+                        .tag(post.getTag())
+                        .image(post.getImage())
                         .build());
     }
 
@@ -186,11 +189,7 @@ public class CommunityController implements CommunityInterface {
                 .eventTime(requestDTO.getLikeTime())
                 .build();
         communityService.likeDiscussPost(communityBO);
-//        eventPublisher.publishEvent(new LikeEvent(CommunityBO.builder()
-//                .userId(requestDTO.getUserId())
-//                .postId(requestDTO.getPostId())
-//                .eventTime(requestDTO.getLikeTime())
-//                .build()));
+        eventPublisher.publishEvent(new LikeEvent("likePost", requestDTO.getPostId()));
         return Response.SYSTEM_SUCCESS();
     }
 
@@ -315,6 +314,7 @@ public class CommunityController implements CommunityInterface {
                 .commentId(requestDTO.getCommentId())
                 .limit(requestDTO.getLimit())
                 .sortType(requestDTO.getSortType())
+                .likeCount(Optional.ofNullable(requestDTO.getLikeCount()).orElse(0))
                 .build();
         List<CommentEntity> comments = communityService.listPostComment(communityBO);
 
@@ -353,6 +353,7 @@ public class CommunityController implements CommunityInterface {
                 .commentId(requestDTO.getCommentId())
                 .limit(requestDTO.getLimit())
                 .sortType(requestDTO.getSortType())
+                .likeCount(Optional.ofNullable(requestDTO.getLikeCount()).orElse(0))
                 .build();
         List<CommentEntity> comments = communityService.listSubComment(communityBO);
 
@@ -406,9 +407,10 @@ public class CommunityController implements CommunityInterface {
         CommunityBO communityBO = CommunityBO.builder()
                 .userId(requestDTO.getUserId())
                 .postId(requestDTO.getPostId())
+                .schoolCode(requestDTO.getSchoolCode())
                 .build();
         communityService.deletePost(communityBO);
-        eventPublisher.publishEvent(new DeletePostEvent(communityBO));
+        eventPublisher.publishEvent(new DeleteDiscussPostEvent("deleteDiscussPost", requestDTO.getUserId(), requestDTO.getPostId(), requestDTO.getSchoolCode()));
         return Response.SYSTEM_SUCCESS();
     }
 
@@ -471,6 +473,15 @@ public class CommunityController implements CommunityInterface {
     private void validateCommentId(String postId) {
         if (StringUtils.isEmpty(postId)) {
             throw new AppException(400, "评论id不能为空!");
+        }
+    }
+
+    private String getFirstImage(DiscussPostEntity post) {
+        List<String> images = post.getImages();
+        if (CollectionUtil.isEmpty(images)) {
+            return "";
+        } else {
+            return images.get(0);
         }
     }
 }

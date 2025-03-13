@@ -1,14 +1,18 @@
 package com.aseubel.infrastructure.adapter.repo;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.aseubel.domain.bazaar.adapter.repo.ITradePostRepository;
 import com.aseubel.domain.bazaar.model.bo.BazaarBO;
 import com.aseubel.domain.bazaar.model.entity.TradeImage;
 import com.aseubel.domain.bazaar.model.entity.TradePostEntity;
+import com.aseubel.domain.search.adapter.repo.ISearchTradePostRepository;
 import com.aseubel.infrastructure.convertor.TradeImageConvertor;
 import com.aseubel.infrastructure.convertor.TradePostConvertor;
 import com.aseubel.infrastructure.dao.ImageMapper;
 import com.aseubel.infrastructure.dao.TradePostMapper;
 import com.aseubel.infrastructure.dao.po.TradePost;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
@@ -26,7 +30,7 @@ import java.util.stream.Collectors;
  * @date 2025-01-30 23:05
  */
 @Repository
-public class TradePostRepository implements ITradePostRepository {
+public class TradePostRepository implements ITradePostRepository, ISearchTradePostRepository {
 
     @Resource
     private TradePostMapper tradePostMapper;
@@ -39,6 +43,9 @@ public class TradePostRepository implements ITradePostRepository {
 
     @Resource
     private TradeImageConvertor tradeImageConvertor;
+
+    @Resource
+    private ObjectMapper objectMapper;
 
     @Override
     public List<TradePostEntity> listTradePost(BazaarBO bazaarBO) {
@@ -68,7 +75,7 @@ public class TradePostRepository implements ITradePostRepository {
                 .map(l -> {
                     Map<String, TradePostEntity> postMap = l.stream()
                             .map(tradePostConvertor::convert) // 先转换为 UserEntity
-                            .collect(Collectors.toMap(TradePostEntity::getTradePostId, post -> post));
+                            .collect(Collectors.toMap(TradePostEntity::getPostId, post -> post));
                     return postIds.stream()
                             .map(postMap::get)
                             .collect(Collectors.toList());
@@ -134,4 +141,37 @@ public class TradePostRepository implements ITradePostRepository {
         tradePostMapper.updateTradePostStatusToCompleted(postId);
     }
 
+    @Override
+    public String listTradePostStatistics() throws JsonProcessingException {
+        List<TradePost> tradePosts = tradePostMapper.listPostBase();
+        List<TradePostEntity> tradePostEntities = tradePosts.stream()
+                .map(tradePostConvertor::convert)
+                .toList();
+        for (TradePostEntity discussPost : tradePostEntities) {
+            List<String> images = listPostImages(discussPost.getPostId());
+            if (CollectionUtil.isNotEmpty(images)) {
+                discussPost.setImage(images.get(0));
+            } else {
+                discussPost.setImage("");
+            }
+        }
+        return objectMapper.writeValueAsString(tradePostEntities);
+    }
+
+    @Override
+    public String listTradePostStatistics(Long postId, int pageSize) throws JsonProcessingException {
+        List<TradePost> tradePosts = tradePostMapper.listPartialPostBase(postId, pageSize);
+        List<TradePostEntity> tradePostEntities = tradePosts.stream()
+                .map(tradePostConvertor::convert)
+                .toList();
+        for (TradePostEntity discussPost : tradePostEntities) {
+            List<String> images = listPostImages(discussPost.getPostId());
+            if (CollectionUtil.isNotEmpty(images)) {
+                discussPost.setImage(images.get(0));
+            } else {
+                discussPost.setImage("");
+            }
+        }
+        return objectMapper.writeValueAsString(tradePostEntities);
+    }
 }

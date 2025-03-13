@@ -120,4 +120,18 @@ public interface TradePostMapper {
      */
     @Update("UPDATE trade_post SET status = 1 WHERE trade_post_id = #{postId}")
     void updateTradePostStatusToCompleted(String postId);
+
+    /**
+     * 获取交易帖子基础信息
+     * @return
+     */
+    List<TradePost> listPostBase();
+
+    /**
+     * 获取交易帖子基础信息，分页查询
+     * @param postId
+     * @param pageSize
+     * @return
+     */
+    List<TradePost> listPartialPostBase(Long postId, int pageSize);
 }

@@ -6,23 +6,31 @@ import com.aseubel.domain.community.adapter.repo.IDiscussPostRepository;
 import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
+import com.aseubel.domain.search.adapter.repo.ISearchDiscussPostRepository;
 import com.aseubel.infrastructure.convertor.CommunityImageConvertor;
 import com.aseubel.infrastructure.convertor.DiscussPostConvertor;
 import com.aseubel.infrastructure.dao.*;
+import com.aseubel.infrastructure.dao.po.DiscussPost;
 import com.aseubel.infrastructure.dao.po.Image;
 import com.aseubel.infrastructure.redis.IRedisService;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.AliOSSUtil;
 import com.aseubel.types.util.RedisKeyBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
-import jakarta.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.aseubel.types.common.Constant.RECENT_POST_CACHE_EXPIRE_TIME;
 
 /**
  * @author Aseubel
@@ -30,7 +38,8 @@ import java.util.stream.Collectors;
  * @date 2025-01-22 13:35
  */
 @Repository
-public class DiscussPostRepository implements IDiscussPostRepository {
+@EnableAsync
+public class DiscussPostRepository implements IDiscussPostRepository, ISearchDiscussPostRepository {
 
     @Resource
     private DiscussPostMapper discussPostMapper;
@@ -59,6 +68,9 @@ public class DiscussPostRepository implements IDiscussPostRepository {
     @Resource
     private IRedisService redisService;
 
+    @Resource
+    private ObjectMapper objectMapper;
+
     @Override
     public List<DiscussPostEntity> listDiscussPost(CommunityBO communityBO) {
         String userId = communityBO.getUserId();
@@ -67,15 +79,28 @@ public class DiscussPostRepository implements IDiscussPostRepository {
         String schoolCode = communityBO.getSchoolCode();
         String tag = communityBO.getTag();
 
-        return Optional.ofNullable(StringUtils.isEmpty(postId)
+        List<DiscussPostEntity> posts = Optional.ofNullable(StringUtils.isEmpty(postId)
                         ? discussPostMapper.listDiscussPostAhead(limit, schoolCode, tag)
                         : discussPostMapper.listDiscussPost(postId, limit, schoolCode, tag))
                 .map(p -> p.stream()
                         .map(discussPostConvertor::convert)
-                        .peek(d -> d.setIsFavorite(favoriteMapper.getFavoriteStatus(userId, d.getDiscussPostId()).orElse(false)))
-                        .peek(d -> d.setIsLike(likeMapper.getLikeStatus(userId, d.getDiscussPostId()).orElse(false)))
+                        .peek(d -> d.setIsFavorite(favoriteMapper.getFavoriteStatus(userId, d.getPostId()).orElse(false)))
+                        .peek(d -> d.setIsLike(likeMapper.getLikeStatus(userId, d.getPostId()).orElse(false)))
                         .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
+
+        if(CollectionUtil.isNotEmpty(posts)) {
+            updateCacheAsync(posts);
+        }
+        return posts;
+    }
+
+    @Async
+    public void updateCacheAsync(List<DiscussPostEntity> posts) {
+        for (DiscussPostEntity post : posts) {
+            redisService.setValue(RedisKeyBuilder.postSchoolCodeKey(post.getPostId()), post.getSchoolCode(), RECENT_POST_CACHE_EXPIRE_TIME);
+            redisService.addToMap(RedisKeyBuilder.discussPostCommentCountKey(), post.getPostId(), post.getCommentCount());
+        }
     }
 
     @Override
@@ -167,7 +192,7 @@ public class DiscussPostRepository implements IDiscussPostRepository {
                 .map(l -> {
                     Map<String, DiscussPostEntity> postMap = l.stream()
                             .map(discussPostConvertor::convert) // 先转换为 UserEntity
-                            .collect(Collectors.toMap(DiscussPostEntity::getDiscussPostId, post -> post));
+                            .collect(Collectors.toMap(DiscussPostEntity::getPostId, post -> post));
                     return postIds.stream()
                             .map(postMap::get)
                             .collect(Collectors.toList());
@@ -190,9 +215,9 @@ public class DiscussPostRepository implements IDiscussPostRepository {
 
         redisService.addToMap(RedisKeyBuilder.FavoriteStatusKey(userId), postId, isFavorite);
         if (isFavorite) {
-            redisService.incr(RedisKeyBuilder.discussPostFavoriteCountKey(postId));
+            redisService.incrSortedSetScore(RedisKeyBuilder.postFavoriteScoreKey(), postId, 1);
         } else {
-            redisService.decr(RedisKeyBuilder.discussPostFavoriteCountKey(postId));
+            redisService.decrSortedSetScore(RedisKeyBuilder.postFavoriteScoreKey(), postId, 1);
         }
         return isFavorite; // 返回新状态
     }
@@ -247,6 +272,7 @@ public class DiscussPostRepository implements IDiscussPostRepository {
     @Override
     public void increaseCommentCount(String postId) {
         discussPostMapper.increaseCommentCount(postId);
+
     }
 
     @Override
@@ -291,4 +317,42 @@ public class DiscussPostRepository implements IDiscussPostRepository {
         favoriteMapper.deletePostFavorite(postId);
     }
 
+    @Override
+    public String listDiscussPostStatistics() throws JsonProcessingException {
+        List<DiscussPost> discussPosts = discussPostMapper.listPostBase();
+        List<DiscussPostEntity> discussPostEntities = discussPosts.stream()
+               .map(discussPostConvertor::convert)
+               .toList();
+        for (DiscussPostEntity discussPost : discussPostEntities) {
+            List<String> images = discussPostMapper.listImageUrlByPostId(discussPost.getPostId());
+            if (CollectionUtil.isNotEmpty(images)) {
+                discussPost.setImage(images.get(0));
+            } else {
+                discussPost.setImage("");
+            }
+        }
+        return objectMapper.writeValueAsString(discussPostEntities);
+    }
+
+    @Override
+    public String listDiscussPostStatistics(Long postId, int pageSize) throws JsonProcessingException {
+        List<DiscussPost> discussPosts = discussPostMapper.listPartialPostBase(postId, pageSize);
+        List<DiscussPostEntity> discussPostEntities = discussPosts.stream()
+                .map(discussPostConvertor::convert)
+                .toList();
+        for (DiscussPostEntity discussPost : discussPostEntities) {
+            List<String> images = discussPostMapper.listImageUrlByPostId(discussPost.getPostId());
+            if (CollectionUtil.isNotEmpty(images)) {
+                discussPost.setImage(images.get(0));
+            } else {
+                discussPost.setImage("");
+            }
+        }
+        return objectMapper.writeValueAsString(discussPostEntities);
+    }
+
+    @Override
+    public Map<String, String> listRecentPost() {
+        return Map.of();
+    }
 }

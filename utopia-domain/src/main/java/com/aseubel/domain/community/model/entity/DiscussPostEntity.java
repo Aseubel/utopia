@@ -21,8 +21,11 @@ import java.util.UUID;
 @Builder
 public class DiscussPostEntity {
 
+    @FieldDesc(name = "id")
+    private Long id;
+
     @FieldDesc(name = "帖子id")
-    private String discussPostId;
+    private String postId;
 
     @FieldDesc(name = "用户id")
     private String userId;
@@ -82,7 +85,7 @@ public class DiscussPostEntity {
     private Boolean isLike;
 
     public void generatePostId() {
-        this.discussPostId = "dp_" + UUID.randomUUID().toString().replaceAll("-", "");
+        this.postId = "dp_" + UUID.randomUUID().toString().replaceAll("-", "");
     }
 
 }

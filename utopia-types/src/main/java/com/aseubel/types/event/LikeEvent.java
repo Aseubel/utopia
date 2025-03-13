@@ -37,6 +37,11 @@ public class LikeEvent extends ApplicationEvent {
         super(source, clock);
     }
 
+    public LikeEvent(Object source, String postId) {
+        super(source);
+        this.postId = postId;
+    }
+
     public LikeEvent(Object source, String userId, String postId) {
         super(source);
         this.userId = userId;

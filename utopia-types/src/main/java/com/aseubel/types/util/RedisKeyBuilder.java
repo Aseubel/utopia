@@ -62,6 +62,32 @@ public class RedisKeyBuilder {
     }
 
     /**
+     * 构造帖子数据的redis key
+     * utopia:discuss:post:{postId}
+     * @param postId 帖子id
+     * @return redis key
+     */
+    public static String discussPostKey(String postId) {
+        return PREFIX + SPLIT + DISCUSS_POST + SPLIT + postId;
+    }
+
+    /**
+     * 帖子对应的学校代码的redis key
+     * @return
+     */
+    public static String postSchoolCodeKey(String postId) {
+        return PREFIX + SPLIT + "post_school_code" + SPLIT + postId;
+    }
+
+    /**
+     * 帖子评论数量的redis key
+     * @return
+     */
+    public static String discussPostCommentCountKey() {
+        return PREFIX + SPLIT + DISCUSS_POST + SPLIT +"comment_count";
+    }
+
+    /**
      * 构造用户收藏状态的redis key
      * utopia:{userId}:fs
      * @param userId
@@ -93,6 +119,15 @@ public class RedisKeyBuilder {
      */
     public static String postLikeScoreKey() {
         return PREFIX + SPLIT + DISCUSS_POST + SPLIT + "like_score";
+    }
+
+    /**
+     * 构造帖子收藏分数的redis key
+     * utopia:community:post:favorite_score
+     * @return
+     */
+    public static String postFavoriteScoreKey() {
+        return PREFIX + SPLIT + DISCUSS_POST + SPLIT + "favorite_score";
     }
 
     /**

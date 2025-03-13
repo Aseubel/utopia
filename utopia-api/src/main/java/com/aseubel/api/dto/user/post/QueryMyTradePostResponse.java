@@ -49,6 +49,9 @@ public class QueryMyTradePostResponse implements Serializable {
     @FieldDesc(name = "0-未完成;1-已完成")
     private Integer status;
 
+    @FieldDesc(name = "院校代码")
+    private String schoolCode;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)

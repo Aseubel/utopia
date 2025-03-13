@@ -1,5 +1,6 @@
 package com.aseubel.trigger.http;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.api.BazaarInterface;
 import com.aseubel.api.dto.bazaar.*;
@@ -7,7 +8,12 @@ import com.aseubel.domain.bazaar.model.bo.BazaarBO;
 import com.aseubel.domain.bazaar.model.entity.TradeImage;
 import com.aseubel.domain.bazaar.model.entity.TradePostEntity;
 import com.aseubel.domain.bazaar.service.IBazaarService;
+import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.types.Response;
+import com.aseubel.types.event.DeleteDiscussPostEvent;
+import com.aseubel.types.event.DeleteTradePostEvent;
+import com.aseubel.types.event.PublishDiscussPostEvent;
+import com.aseubel.types.event.PublishTradePostEvent;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.CustomMultipartFile;
 import jakarta.validation.Valid;
@@ -15,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,6 +48,8 @@ public class BazaarController implements BazaarInterface {
 
     private final IBazaarService bazaarService;
 
+    private final ApplicationEventPublisher eventPublisher;
+
     /**
      * 查询首页帖子列表
      */
@@ -58,7 +67,7 @@ public class BazaarController implements BazaarInterface {
         List<QueryIndexTradePostResponse> responseDTOs = new ArrayList<>();
         for (TradePostEntity tradePost : tradePosts) {
             responseDTOs.add(QueryIndexTradePostResponse.builder()
-                    .tradePostId(tradePost.getTradePostId())
+                    .tradePostId(tradePost.getPostId())
                     .userId(tradePost.getUserId())
                     .userName(tradePost.getUserName())
                     .userAvatar(tradePost.getUserAvatar())
@@ -128,7 +137,7 @@ public class BazaarController implements BazaarInterface {
     @Override
     @PostMapping("/post")
     public Response<PublishPostResponse> publishTradePost(@Valid @RequestBody PublishTradePostRequest publishTradePostRequest) {
-        TradePostEntity tradePostEntity = TradePostEntity.builder()
+        TradePostEntity post = TradePostEntity.builder()
                 .userId(publishTradePostRequest.getUserId())
                 .title(publishTradePostRequest.getTitle())
                 .content(publishTradePostRequest.getContent())
@@ -139,8 +148,13 @@ public class BazaarController implements BazaarInterface {
                 .schoolCode(publishTradePostRequest.getSchoolCode())
                 .images(publishTradePostRequest.getImages())
                 .build();
+
+        eventPublisher.publishEvent(new PublishTradePostEvent("publishDiscussPost",
+                post.getUserId(), post.getPostId(), post.getPrice(), post.getTitle(),
+                post.getContent(), getFirstImage(post), post.getType(), post.getSchoolCode()));
+
         return Response.SYSTEM_SUCCESS(new PublishPostResponse(
-                bazaarService.publishTradePost(tradePostEntity)));
+                bazaarService.publishTradePost(post)));
     }
 
     /**
@@ -153,7 +167,7 @@ public class BazaarController implements BazaarInterface {
     public Response<QueryPostDetailResponse> queryPostDetail(QueryPostDetailRequest requestDTO) {
         TradePostEntity tradePost = bazaarService.queryPostDetail(requestDTO.getPostId());
         return Response.SYSTEM_SUCCESS(QueryPostDetailResponse.builder()
-                    .tradePostId(tradePost.getTradePostId())
+                    .tradePostId(tradePost.getPostId())
                     .userId(tradePost.getUserId())
                     .userName(tradePost.getUserName())
                     .userAvatar(tradePost.getUserAvatar())
@@ -181,6 +195,7 @@ public class BazaarController implements BazaarInterface {
                 .postId(requestDTO.getPostId())
                 .build();
         bazaarService.deletePost(bazaarBO);
+        eventPublisher.publishEvent(new DeleteTradePostEvent("deleteTradePost", requestDTO.getUserId(), requestDTO.getPostId(), requestDTO.getSchoolCode()));
         return Response.SYSTEM_SUCCESS();
     }
 
@@ -200,6 +215,15 @@ public class BazaarController implements BazaarInterface {
 
     private boolean imageOrUserIdIsBlank(UploadTradePostImageRequest requestDTO) {
         return StringUtils.isEmpty(requestDTO.getPostImage().getOriginalFilename()) || StringUtils.isEmpty(requestDTO.getUserId());
+    }
+
+    private String getFirstImage(TradePostEntity post) {
+        List<String> images = post.getImages();
+        if (CollectionUtil.isEmpty(images)) {
+            return "";
+        } else {
+            return images.get(0);
+        }
     }
 
 }

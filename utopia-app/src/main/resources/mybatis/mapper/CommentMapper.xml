@@ -143,14 +143,14 @@
         where
         <if test="sortType == 0 or sortType == null">id > (select id from `comment` where comment_id = #{commentId} and is_deleted = 0)</if>
         <if test="sortType == 1">id &lt; (select id from `comment` where comment_id = #{commentId} and is_deleted = 0)</if>
-        <if test="sortType == 2">like_count &lt;= (select like_count from `comment` where comment_id = #{commentId} and is_deleted = 0)</if>
+        <if test="sortType == 2">like_count &lt;= #{likeCount} and id &lt; (select id from `comment` where comment_id = #{commentId} and is_deleted = 0)</if>
             and comment_id = root_id
             and post_id = #{postId}
             and is_deleted = 0
         order by
             <if test="sortType == 0 or sortType == null">id</if>
             <if test="sortType == 1">id DESC</if>
-            <if test="sortType == 2">like_count DESC, id</if>
+            <if test="sortType == 2">like_count DESC, id DESC</if>
         limit #{limit}
     </select>
 
@@ -161,7 +161,7 @@
         order by
             <if test="sortType == 0 or sortType == null">id</if>
             <if test="sortType == 1">id DESC</if>
-            <if test="sortType == 2">like_count DESC, id</if>
+            <if test="sortType == 2">like_count DESC, id DESC</if>
         limit #{limit}
     </select>
 
@@ -178,14 +178,14 @@
         where
         <if test="sortType == 0 or sortType == null">id > (select id from `comment` where comment_id = #{commentId} and is_deleted = 0)</if>
         <if test="sortType == 1">id &lt; (select id from `comment` where comment_id = #{commentId} and is_deleted = 0)</if>
-        <if test="sortType == 2">like_count &lt;= (select like_count from `comment` where comment_id = #{commentId} and is_deleted = 0)</if>
+        <if test="sortType == 2">like_count &lt;= #{likeCount} and id &lt; (select id from `comment` where comment_id = #{commentId} and is_deleted = 0)</if>
             and root_id = #{rootId}
             and root_id != comment_id
             and is_deleted = 0
         order by
         <if test="sortType == 0 or sortType == null">id</if>
         <if test="sortType == 1">id DESC</if>
-        <if test="sortType == 2">like_count DESC, id</if>
+        <if test="sortType == 2">like_count DESC, id DESC</if>
         limit #{limit}
     </select>
 
@@ -196,7 +196,7 @@
         order by
         <if test="sortType == 0 or sortType == null">id</if>
         <if test="sortType == 1">id DESC</if>
-        <if test="sortType == 2">like_count DESC, id</if>
+        <if test="sortType == 2">like_count DESC, id DESC</if>
         limit #{limit}
     </select>
 

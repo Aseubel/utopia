@@ -1,6 +1,5 @@
 package com.aseubel.domain.bazaar.model.entity;
 
-import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.types.annotation.FieldDesc;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,8 +21,11 @@ import java.util.UUID;
 @Builder
 public class TradePostEntity {
 
+    @FieldDesc(name = "id")
+    private Long id;
+
     @FieldDesc(name = "帖子id")
-    private String tradePostId;
+    private String postId;
 
     @FieldDesc(name = "用户id")
     private String userId;
@@ -71,7 +73,7 @@ public class TradePostEntity {
     private String image;
 
     public void generatePostId() {
-        this.tradePostId = "tp_" + UUID.randomUUID().toString().replaceAll("-", "");
+        this.postId = "tp_" + UUID.randomUUID().toString().replaceAll("-", "");
     }
 
 }

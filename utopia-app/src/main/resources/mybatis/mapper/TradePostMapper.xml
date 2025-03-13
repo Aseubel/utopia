@@ -124,4 +124,18 @@
           and a.is_deleted = 0 and b.is_deleted = 0
     </select>
 
+    <select id="listPostBase" resultType="com.aseubel.infrastructure.dao.po.TradePost">
+        SELECT id, trade_post_id, user_id, title, content, price, contact, type, school_code
+        FROM `trade_post`
+        WHERE is_deleted = 0 AND status = 0
+    </select>
+
+    <select id="listPartialPostBase" resultType="com.aseubel.infrastructure.dao.po.TradePost">
+        SELECT id, trade_post_id, user_id, title, content, price, contact, type, school_code
+        FROM `trade_post`
+        WHERE is_deleted = 0 AND status = 0
+        <if test="postId != null">AND trade_post_id > #{postId}</if>
+        limit #{pageSize}
+    </select>
+
 </mapper>

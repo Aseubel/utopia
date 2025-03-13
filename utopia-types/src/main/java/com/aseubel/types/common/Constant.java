@@ -49,6 +49,8 @@ public class Constant {
     public static final AttributeKey<String> WS_TOKEN_KEY = AttributeKey.valueOf("code");
     public static final AttributeKey<String> WS_USER_ID_KEY = AttributeKey.valueOf("userId");
 
+    public static final long RECENT_POST_CACHE_EXPIRE_TIME = 6 * 60 * 1000L; // 6分钟
+
     public static final long COURSES_EXPIRE_TIME = 24 * 3600 * 1000L; // 一天
 
     public static final long REPEAT_DOWNLOAD_EXPIRE_TIME = 2 * 3600 * 1000L; // 两小时
@@ -56,4 +58,18 @@ public class Constant {
     public static final long COMMENT_CACHE_EXPIRE_TIME = 7 * 24 * 3600 * 1000L; // 七天
 
     public static final long POST_CACHE_EXPIRE_TIME = 7 * 24 * 3600 * 1000L; // 七天
+
+    public static String getDiscussPostSearchIndex(String schoolCode) {
+        return "dp_" + schoolCode;
+    }
+
+    public static String getTradePostSearchIndex(String schoolCode) {
+        return "tp_" + schoolCode;
+    }
+
+    public static final String[] SEARCH_FIELD = new String[] {"title", "content"};
+
+    public static final String[] SEARCH_SORT = new String[] {"likeCount:desc", "commentCount:desc", "favoriteCount:desc"};
+
+    public static final String[] SEARCH_SORT_SETTINGS = new String[] {"likeCount", "commentCount", "favoriteCount"};
 }

@@ -1,0 +1,61 @@
+package com.aseubel.domain.search.model;
+
+import com.aseubel.types.annotation.FieldDesc;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * @author Aseubel
+ * @date 2025-03-12 11:19
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class TradePostVO {
+
+    @FieldDesc(name = "id")
+    private Long id;
+
+    @FieldDesc(name = "用户id")
+    private String userId;
+
+    @FieldDesc(name = "帖子id")
+    private String postId;
+
+    @FieldDesc(name = "价格")
+    private double price;
+
+    @FieldDesc(name = "标题")
+    private String title;
+
+    @FieldDesc(name = "内容")
+    private String content;
+
+    @FieldDesc(name = "图片url")
+    private String image;
+
+    @FieldDesc(name = "类型,0-出售;1-求购:2-赠送")
+    private int type;
+
+    @FieldDesc(name = "学校代号")
+    private String schoolCode;
+
+    /**
+     * 转换成json字符串
+     */
+    public String toJsonString() {
+        return "[{" +
+                "\"userId\":\"" + userId + '\"' +
+                ", \"postId\":\"" + postId + '\"' +
+                ", \"title\":\"" + title + '\"' +
+                ", \"content\":\"" + content + '\"' +
+                ", \"image\":\"" + image + '\"' +
+                ", \"price\":\"" + price + '\"' +
+                ", \"type\":\"" + type + '\"' +
+                "}]";
+    }
+
+}

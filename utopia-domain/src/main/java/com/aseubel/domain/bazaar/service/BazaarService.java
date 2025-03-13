@@ -70,7 +70,7 @@ public class BazaarService implements IBazaarService{
         if (!CollectionUtil.isEmpty(tradePostEntities)) {
             tradePostEntities.forEach(d ->
             {
-                String imageUrl = tradePostRepository.getPostFirstImage(d.getTradePostId());
+                String imageUrl = tradePostRepository.getPostFirstImage(d.getPostId());
                 d.setImage(imageUrl);}
             );
         }
@@ -108,12 +108,12 @@ public class BazaarService implements IBazaarService{
         if (!CollectionUtil.isEmpty(tradePostEntity.getImages())) {
             List<TradeImage> images = tradePostRepository.listPostImagesByImageIds(tradePostEntity.getImages());
             if (!CollectionUtil.isEmpty(images)) {
-                tradePostRepository.relateNewPostImage(tradePostEntity.getTradePostId(), images);
+                tradePostRepository.relateNewPostImage(tradePostEntity.getPostId(), images);
             }
         }
 
         log.info("发布集市帖子服务结束执行，userId:{}", tradePostEntity.getUserId());
-        return tradePostEntity.getTradePostId();
+        return tradePostEntity.getPostId();
     }
 
     @Override
@@ -146,7 +146,7 @@ public class BazaarService implements IBazaarService{
         if (!CollectionUtil.isEmpty(tradePostEntities)) {
             tradePostEntities.forEach(d ->
                     {
-                        String imageUrl = tradePostRepository.getPostFirstImage(d.getTradePostId());
+                        String imageUrl = tradePostRepository.getPostFirstImage(d.getPostId());
                         d.setImage(imageUrl);}
             );
         }

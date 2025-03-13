@@ -14,7 +14,7 @@ import java.time.Clock;
  */
 @Setter
 @Getter
-public class DeletePostEvent extends ApplicationEvent {
+public class DeleteDiscussPostEvent extends ApplicationEvent {
 
     @FieldDesc(name = "用户id")
     private String userId;
@@ -22,12 +22,22 @@ public class DeletePostEvent extends ApplicationEvent {
     @FieldDesc(name = "帖子id")
     private String postId;
 
-    public DeletePostEvent(Object source) {
+    @FieldDesc(name = "学校代码")
+    private String schoolCode;
+
+    public DeleteDiscussPostEvent(Object source) {
         super(source);
     }
 
-    public DeletePostEvent(Object source, Clock clock) {
+    public DeleteDiscussPostEvent(Object source, Clock clock) {
         super(source, clock);
+    }
+
+    public DeleteDiscussPostEvent(Object source, String userId, String postId, String schoolCode) {
+        super(source);
+        this.userId = userId;
+        this.postId = postId;
+        this.schoolCode = schoolCode;
     }
 
     public Object getSource() {

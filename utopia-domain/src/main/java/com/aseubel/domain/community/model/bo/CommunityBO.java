@@ -58,4 +58,7 @@ public class CommunityBO {
     @FieldDesc(name = "排序类型")
     private Integer sortType;
 
+    @FieldDesc(name = "点赞数量")
+    private int likeCount;
+
 }

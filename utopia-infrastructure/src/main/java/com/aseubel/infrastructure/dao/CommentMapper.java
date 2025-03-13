@@ -77,7 +77,7 @@ public interface CommentMapper {
      * 根据帖子id查询评论列表
      * @return
      */
-    List<Comment> listCommentByPostId(String postId, String commentId, Integer limit, Integer sortType);
+    List<Comment> listCommentByPostId(String postId, String commentId, Integer limit, Integer sortType, int likeCount);
 
     /**
      * 根据帖子id查询评论列表
@@ -89,7 +89,7 @@ public interface CommentMapper {
      * 根据根评论id查询评论列表
      * @return
      */
-    List<Comment> listSubCommentByRootId(String rootId, String commentId, Integer limit, Integer sortType);
+    List<Comment> listSubCommentByRootId(String rootId, String commentId, Integer limit, Integer sortType, int likeCount);
 
     /**
      * 根据根评论id查询评论列表
@@ -128,9 +128,9 @@ public interface CommentMapper {
     /**
      * 关联评论图片
      * @param commentId
-     * @param convert
+     * @param images
      */
-    void relateCommentImage(String commentId, List<Image> convert);
+    void relateCommentImage(String commentId, List<Image> images);
 
     /**
      * 获取评论图片url列表
@@ -166,11 +166,10 @@ public interface CommentMapper {
     List<String> listCommentIdsByUserIdAndPostId(String userId, String postId);
 
     /**
-     * 根据用户id和帖子id删除评论
-     * @param userId
+     * 根据帖子id删除评论
      * @param postId
      */
-    void deleteCommentByPostId(String userId, String postId);
+    void deleteCommentByPostId(String postId);
 
     /**
      * 根据根评论id删除所有子评论

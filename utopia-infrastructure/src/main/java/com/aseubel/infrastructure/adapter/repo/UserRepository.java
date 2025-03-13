@@ -208,7 +208,7 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
         toIds.add(postId);
         toIds.addAll(commentMapper.listCommentIdsByUserIdAndPostId(userId, postId));
         likeMapper.deleteLikeByToIds(toIds);
-        commentMapper.deleteCommentByPostId(userId, postId);
+        commentMapper.deleteCommentByPostId(postId);
     }
 
 }

@@ -28,7 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.aseubel.types.enums.GlobalServiceStatusCode.OSS_UPLOAD_ERROR;
 import static com.aseubel.types.enums.GlobalServiceStatusCode.PARAM_NOT_COMPLETE;
@@ -210,7 +209,7 @@ public class UserController implements UserInterface {
         List<QueryFavoriteDiscussPostResponseDTO> responseDTOs = new ArrayList<>();
         for (DiscussPostEntity discussPost : discussPosts) {
             responseDTOs.add(QueryFavoriteDiscussPostResponseDTO.builder()
-                    .discussPostId(discussPost.getDiscussPostId())
+                    .discussPostId(discussPost.getPostId())
                     .userName(discussPost.getUserName())
                     .userAvatar(discussPost.getUserAvatar())
                     .title(discussPost.getTitle())
@@ -219,6 +218,7 @@ public class UserController implements UserInterface {
                     .likeCount(discussPost.getLikeCount())
                     .commentCount(discussPost.getCommentCount())
                     .favoriteCount(discussPost.getFavoriteCount())
+                    .schoolCode(discussPost.getSchoolCode())
                     .createTime(discussPost.getCreateTime())
                     .updateTime(discussPost.getUpdateTime())
                     .build());
@@ -241,7 +241,7 @@ public class UserController implements UserInterface {
         List<QueryMyDiscussPostResponse> responseDTOs = new ArrayList<>();
         for (DiscussPostEntity discussPost : discussPosts) {
             responseDTOs.add(QueryMyDiscussPostResponse.builder()
-                    .discussPostId(discussPost.getDiscussPostId())
+                    .discussPostId(discussPost.getPostId())
                     .userName(discussPost.getUserName())
                     .userAvatar(discussPost.getUserAvatar())
                     .title(discussPost.getTitle())
@@ -250,6 +250,7 @@ public class UserController implements UserInterface {
                     .likeCount(discussPost.getLikeCount())
                     .commentCount(discussPost.getCommentCount())
                     .favoriteCount(discussPost.getFavoriteCount())
+                    .schoolCode(discussPost.getSchoolCode())
                     .createTime(discussPost.getCreateTime())
                     .updateTime(discussPost.getUpdateTime())
                     .build());
@@ -275,7 +276,7 @@ public class UserController implements UserInterface {
         List<QueryMyTradePostResponse> responseDTOs = new ArrayList<>();
         for (TradePostEntity post : discussPosts) {
             responseDTOs.add(QueryMyTradePostResponse.builder()
-                    .tradePostId(post.getTradePostId())
+                    .tradePostId(post.getPostId())
                     .userId(post.getUserId())
                     .userName(post.getUserName())
                     .userAvatar(post.getUserAvatar())
@@ -285,6 +286,7 @@ public class UserController implements UserInterface {
                     .price(post.getPrice())
                     .image(post.getImage())
                     .status(post.getStatus())
+                    .schoolCode(post.getSchoolCode())
                     .createTime(post.getCreateTime())
                     .updateTime(post.getUpdateTime())
                     .build());

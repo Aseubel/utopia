@@ -29,4 +29,9 @@ public class DeletePostRequest implements Serializable {
     @NotBlank(message = "帖子id不能为空")
     private String postId;
 
+    @FieldDesc(name = "学校代码")
+    @NotNull(message = "学校代码不能为空")
+    @NotBlank(message = "学校代码不能为空")
+    private String schoolCode;
+
 }

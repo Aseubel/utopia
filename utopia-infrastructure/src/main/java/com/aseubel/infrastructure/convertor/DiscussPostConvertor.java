@@ -18,7 +18,8 @@ public class DiscussPostConvertor {
 
     public DiscussPostEntity convert(DiscussPost discussPost) {
         return DiscussPostEntity.builder()
-                .discussPostId(discussPost.getDiscussPostId())
+                .id(discussPost.getId())
+                .postId(discussPost.getDiscussPostId())
                 .userId(discussPost.getUserId())
                 .schoolCode(discussPost.getSchoolCode())
                 .title(discussPost.getTitle())
@@ -36,7 +37,7 @@ public class DiscussPostConvertor {
 
     public DiscussPost convert(DiscussPostEntity discussPostEntity) {
         return DiscussPost.builder()
-                .discussPostId(discussPostEntity.getDiscussPostId())
+                .discussPostId(discussPostEntity.getPostId())
                 .userId(discussPostEntity.getUserId())
                 .schoolCode(discussPostEntity.getSchoolCode())
                 .title(discussPostEntity.getTitle())

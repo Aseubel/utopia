@@ -22,4 +22,7 @@ public class DeletePostRequest implements Serializable {
     @FieldDesc(name = "帖子id")
     private String postId;
 
+    @FieldDesc(name = "院校代码")
+    private String schoolCode;
+
 }
