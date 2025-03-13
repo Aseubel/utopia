@@ -442,6 +442,7 @@ public class CommunityController implements CommunityInterface {
                 .favoriteCount(discussPost.getFavoriteCount())
                 .type(discussPost.getType())
                 .status(discussPost.getStatus())
+                .schoolCode(discussPost.getSchoolCode())
                 .createTime(discussPost.getCreateTime())
                 .updateTime(discussPost.getUpdateTime())
                 .images(discussPost.getImages())

@@ -55,6 +55,9 @@ public class QueryPostDetailResponse implements Serializable {
     @FieldDesc(name = "0-普通;1-封禁")
     private Integer status;
 
+    @FieldDesc(name = "院校代码")
+    private String schoolCode;
+
     @FieldDesc(name = "图片列表")
     private List<String> images;
 

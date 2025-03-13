@@ -10,10 +10,7 @@ import com.aseubel.domain.bazaar.model.entity.TradePostEntity;
 import com.aseubel.domain.bazaar.service.IBazaarService;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.types.Response;
-import com.aseubel.types.event.DeleteDiscussPostEvent;
-import com.aseubel.types.event.DeleteTradePostEvent;
-import com.aseubel.types.event.PublishDiscussPostEvent;
-import com.aseubel.types.event.PublishTradePostEvent;
+import com.aseubel.types.event.*;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.CustomMultipartFile;
 import jakarta.validation.Valid;
@@ -210,6 +207,7 @@ public class BazaarController implements BazaarInterface {
                 .postId(requestDTO.getPostId())
                 .build();
         bazaarService.completeTrade(bazaarBO);
+        eventPublisher.publishEvent(new CompleteTradeEvent("completeTrade", requestDTO.getUserId(), requestDTO.getPostId(), requestDTO.getSchoolCode()));
         return Response.SYSTEM_SUCCESS();
     }
 
