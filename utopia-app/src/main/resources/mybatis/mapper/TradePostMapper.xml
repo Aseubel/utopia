@@ -134,7 +134,7 @@
         SELECT id, trade_post_id, user_id, title, content, price, contact, type, school_code
         FROM `trade_post`
         WHERE is_deleted = 0 AND status = 0
-        <if test="postId != null">AND trade_post_id > #{postId}</if>
+        <if test="postId != null">AND id > #{postId}</if>
         limit #{pageSize}
     </select>
 

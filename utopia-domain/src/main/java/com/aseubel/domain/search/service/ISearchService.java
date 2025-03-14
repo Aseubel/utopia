@@ -23,4 +23,9 @@ public interface ISearchService {
      */
     SearchResponse searchTradePost(SearchBO searchBO);
 
+    /**
+     * 搜索文件
+     * @return 搜索结果
+     */
+    SearchResponse searchFile(SearchBO searchBO);
 }

@@ -30,6 +30,9 @@ import static com.aseubel.types.common.Constant.APP;
 @Builder
 public class SFileEntity {
 
+    @FieldDesc(name = "id")
+    private long id;
+
     @FieldDesc(name = "文件本体")
     private MultipartFile sfile;
 
@@ -37,16 +40,16 @@ public class SFileEntity {
     private String uploaderId;
 
     @FieldDesc(name = "文件业务id")
-    private String sfileId;
+    private String fileId;
 
     @FieldDesc(name = "文件名称")
-    private String sfileName;
+    private String fileName;
 
     @FieldDesc(name = "文件路径")
-    private String sfileUrl;
+    private String fileUrl;
 
     @FieldDesc(name = "文件大小")
-    private Long sfileSize;
+    private Long fileSize;
 
     @FieldDesc(name = "课程名称")
     private String courseName;
@@ -64,11 +67,11 @@ public class SFileEntity {
      * 获取在OSS中的文件名称（在类型文件夹下）
      */
     public String generateObjectName() {
-        if (courseName == null || sfileName == null) {
+        if (courseName == null || fileName == null) {
             throw new AppException("课程名称或文件名不能为空");
         }
         StringBuilder objectName = new StringBuilder();
-        objectName.append(APP).append("/").append(courseName).append("/").append(sfileName);
+        objectName.append(APP).append("/").append(courseName).append("/").append(fileName);
         return objectName.toString();
     }
 
@@ -83,17 +86,17 @@ public class SFileEntity {
         this.sfile = file;
         this.uploaderId = userId;
         this.courseName = fileType;
-        this.sfileId = UUID.randomUUID().toString();
-        this.sfileName = StringUtils.isEmpty(fileName) ? file.getOriginalFilename() : (fileName+file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")));
-        this.sfileSize = file.getSize();
+        this.fileId = UUID.randomUUID().toString();
+        this.fileName = StringUtils.isEmpty(fileName) ? file.getOriginalFilename() : (fileName+file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")));
+        this.fileSize = file.getSize();
     }
 
     public SFileEntity(MultipartFile file, String userId, String fileType) {
         this.sfile = file;
         this.uploaderId = userId;
         this.courseName = fileType;
-        this.sfileId = UUID.randomUUID().toString();
-        this.sfileSize = file.getSize();
+        this.fileId = UUID.randomUUID().toString();
+        this.fileSize = file.getSize();
     }
 
 }

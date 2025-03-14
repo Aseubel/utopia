@@ -17,12 +17,19 @@ public interface SearchInterface {
      * 社区搜索讨论帖
      * @return
      */
-    public Response<ApiSearchResponse> communitySearch(@Valid @RequestBody SearchRequest searchRequest);
+    public Response<ApiSearchResponse> communitySearch(SearchRequest searchRequest);
 
     /**
      * 集市搜索交易帖
      * @return
      */
-    public Response<ApiSearchResponse> bazaarSearch(@Valid @RequestBody SearchRequest searchRequest);
+    public Response<ApiSearchResponse> bazaarSearch(SearchRequest searchRequest);
+
+    /**
+     * 文件搜索
+     * @param searchRequest
+     * @return
+     */
+    public Response<ApiSearchResponse> fileSearch(SearchRequest searchRequest);
 
 }

@@ -67,9 +67,15 @@ public class Constant {
         return "tp_" + schoolCode;
     }
 
+    public static final String FILE_SEARCH_INDEX = "file_index";
+
     public static final String[] SEARCH_FIELD = new String[] {"title", "content"};
+
+    public static final String[] FILE_SEARCH_FIELD = new String[] {"fileName", "courseName"};
 
     public static final String[] SEARCH_SORT = new String[] {"likeCount:desc", "commentCount:desc", "favoriteCount:desc"};
 
     public static final String[] SEARCH_SORT_SETTINGS = new String[] {"likeCount", "commentCount", "favoriteCount"};
+
+    public static final String[] FILE_SEARCH_SORT_SETTINGS = new String[] {"downloadCount"};
 }

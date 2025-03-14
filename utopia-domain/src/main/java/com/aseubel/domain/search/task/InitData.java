@@ -2,8 +2,10 @@ package com.aseubel.domain.search.task;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.aseubel.domain.search.adapter.repo.ISearchDiscussPostRepository;
+import com.aseubel.domain.search.adapter.repo.ISearchFileRepository;
 import com.aseubel.domain.search.adapter.repo.ISearchTradePostRepository;
 import com.aseubel.domain.search.model.DiscussPostVO;
+import com.aseubel.domain.search.model.FileVO;
 import com.aseubel.domain.search.model.TradePostVO;
 import com.aseubel.types.common.Constant;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,8 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.aseubel.types.common.Constant.SEARCH_SORT;
-import static com.aseubel.types.common.Constant.SEARCH_SORT_SETTINGS;
+import static com.aseubel.types.common.Constant.*;
 
 @Component
 public class InitData {
@@ -34,6 +35,9 @@ public class InitData {
     private ISearchTradePostRepository tpRepository;
 
     @Resource
+    private ISearchFileRepository fileRepository;
+
+    @Resource
     private ObjectMapper objectMapper;
 
     @PostConstruct
@@ -44,6 +48,7 @@ public class InitData {
             client.deleteIndex(index.getUid());
         }
 
+        // 讨论贴
         int pageSize = 500;
         Long lastPostId = null;
         Set<String> dpIndexSet = new HashSet<>();
@@ -67,6 +72,7 @@ public class InitData {
             client.index(index).updateSortableAttributesSettings(SEARCH_SORT_SETTINGS);
         }
 
+        // 交易贴
         Set<String> tpIndexSet = new HashSet<>();
         lastPostId = null;
         while (true) {
@@ -86,6 +92,28 @@ public class InitData {
         }
         for (String index : tpIndexSet) {
             client.index(index).updateSortableAttributesSettings(SEARCH_SORT_SETTINGS);
+        }
+
+        // 文件
+        Set<String> fileIndexSet = new HashSet<>();
+        long lastFileId = 0;
+        while (true) {
+            String jsonArray = fileRepository.listFileStatistics(lastFileId, pageSize);
+            List<FileVO> batch = objectMapper.readValue(
+                    jsonArray,
+                    objectMapper.getTypeFactory().constructCollectionType(List.class,FileVO.class)
+            );
+            if (CollectionUtil.isEmpty(batch)) break;
+            List<String> fileJsons = batch.stream().map(FileVO::toJsonString).toList();
+            for (String fileJson : fileJsons) {
+                String index = FILE_SEARCH_INDEX;
+                fileIndexSet.add(index);
+                client.index(index).addDocuments(fileJson, "fileId");
+            }
+            lastFileId = batch.get(batch.size()-1).getId();
+        }
+        for (String index : fileIndexSet) {
+            client.index(index).updateSortableAttributesSettings(FILE_SEARCH_SORT_SETTINGS);
         }
     }
 

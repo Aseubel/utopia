@@ -39,7 +39,7 @@ public class FileServiceImpl implements IFileService{
         MultipartFile file = sFileEntity.getSfile();
         // 获取文件名不包含扩展名
         String ossUrl = aliOSSUtil.upload(file, sFileEntity.generateObjectName());
-        sFileEntity.setSfileUrl(ossUrl);
+        sFileEntity.setFileUrl(ossUrl);
 
         fileRepository.saveSFile(sFileEntity);
         log.info("文件上传并保存成功");
@@ -56,7 +56,7 @@ public class FileServiceImpl implements IFileService{
             log.error("文件不存在, fileUrl: {}", fileUrl);
             throw new AppException(OSS_OBJECT_NOT_EXIST.getCode(), "文件不存在或已被删除");
         }
-        fileRepository.incrementDownloadCount("", sFileEntity.getSfileId());
+        fileRepository.incrementDownloadCount("", sFileEntity.getFileId());
         return aliOSSUtil.download(fileUrl.substring(fileUrl.indexOf(APP)));
     }
 

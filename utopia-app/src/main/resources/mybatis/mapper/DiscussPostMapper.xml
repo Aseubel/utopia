@@ -151,7 +151,7 @@
         SELECT id, discuss_post_id, user_id, title, content, tag, like_count, favorite_count, comment_count, school_code
         FROM `discuss_post`
         WHERE is_deleted = 0
-        <if test="postId != null and postId != ''">AND discuss_post_id > #{postId}</if>
+        <if test="postId != null">AND id > #{postId}</if>
         limit #{pageSize}
     </select>
 

@@ -2,15 +2,20 @@ package com.aseubel.infrastructure.adapter.repo;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.aliyuncs.exceptions.ClientException;
+import com.aseubel.domain.community.model.entity.DiscussPostEntity;
+import com.aseubel.domain.search.adapter.repo.ISearchFileRepository;
 import com.aseubel.domain.sfile.adapter.repo.IFileRepository;
 import com.aseubel.domain.sfile.model.entity.SFileEntity;
 import com.aseubel.domain.sfile.model.vo.CourseVO;
 import com.aseubel.infrastructure.convertor.SFileConvertor;
 import com.aseubel.infrastructure.dao.*;
+import com.aseubel.infrastructure.dao.po.DiscussPost;
 import com.aseubel.infrastructure.dao.po.SFile;
 import com.aseubel.infrastructure.redis.IRedisService;
 import com.aseubel.types.util.AliOSSUtil;
 import com.aseubel.types.util.RedisKeyBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
@@ -28,7 +33,7 @@ import static com.aseubel.types.common.Constant.REPEAT_DOWNLOAD_EXPIRE_TIME;
  * @date 2025-01-20 16:22
  */
 @Repository
-public class SFileRepository implements IFileRepository {
+public class SFileRepository implements IFileRepository, ISearchFileRepository {
 
     @Resource
     private UserMapper userMapper;
@@ -53,6 +58,9 @@ public class SFileRepository implements IFileRepository {
 
     @Resource
     private IRedisService redisService;
+
+    @Resource
+    private ObjectMapper objectMapper;
 
     @Override
     public void saveSFile(SFileEntity file) {
@@ -96,8 +104,8 @@ public class SFileRepository implements IFileRepository {
                         .map(p -> p.stream().map(sFileConvertor::convert).collect(Collectors.toList()))
                         .orElse(Collections.emptyList());
         for (SFileEntity file : files) {
-            redisService.setValue(RedisKeyBuilder.fileKey(file.getSfileId()), file, Duration.ofDays(1).toMillis());
-            redisService.addToSortedSet(RedisKeyBuilder.fileScoreKey(), file.getSfileId(), file.getDownloadCount());
+            redisService.setValue(RedisKeyBuilder.fileKey(file.getFileId()), file);
+            redisService.addToSortedSet(RedisKeyBuilder.fileScoreKey(), file.getFileId(), file.getDownloadCount());
         }
         return files;
     }
@@ -171,4 +179,12 @@ public class SFileRepository implements IFileRepository {
         return courseVOS;
     }
 
+    @Override
+    public String listFileStatistics(long fileId, int pageSize) throws JsonProcessingException {
+        List<SFile> files = sFileMapper.listPartialFileBase(fileId, pageSize);
+        List<SFileEntity> fileEntities = files.stream()
+                .map(sFileConvertor::convert)
+                .toList();
+        return objectMapper.writeValueAsString(fileEntities);
+    }
 }

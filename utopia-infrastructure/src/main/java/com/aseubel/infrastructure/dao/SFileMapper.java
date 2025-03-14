@@ -84,4 +84,12 @@ public interface SFileMapper {
      * @param fileId
      */
     void incrementDownloadCount(String fileId);
+
+    /**
+     * 根据主键id分页查询文件
+     * @param fileId
+     * @param pageSize
+     * @return
+     */
+    List<SFile> listPartialFileBase(long fileId, int pageSize);
 }
