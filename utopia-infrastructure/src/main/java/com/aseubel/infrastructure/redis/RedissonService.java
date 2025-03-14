@@ -201,7 +201,7 @@ public class RedissonService implements IRedisService {
         if (CollectionUtil.isEmpty(sortedSet)) {
             return null;
         }
-        int index = (value == null || value.toString().isEmpty() ? -1 :sortedSet.size() - sortedSet.rank(value) - 1);
+        int index = (value == null || value.toString().isEmpty() ? -1 : sortedSet.revRank(value));
         return sortedSet.valueRangeReversed(index + 1, index + limit);
     }
 

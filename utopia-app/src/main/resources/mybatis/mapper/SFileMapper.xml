@@ -46,8 +46,8 @@
         </where>
         order by
         <if test="sortType == 0 or sortType == null">id</if>
-        <if test="sortType == 1">download_count DESC</if>
-        <if test="sortType == 2">download_count</if>
+        <if test="sortType == 1">download_count DESC, id</if>
+        <if test="sortType == 2">download_count, id</if>
         limit #{limit}
     </select>
 
@@ -60,8 +60,8 @@
         </where>
         order by
         <if test="sortType == 0 or sortType == null">id</if>
-        <if test="sortType == 1">download_count DESC</if>
-        <if test="sortType == 2">download_count</if>
+        <if test="sortType == 1">download_count DESC, id</if>
+        <if test="sortType == 2">download_count, id</if>
         limit #{limit}
     </select>
 

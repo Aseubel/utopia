@@ -2,14 +2,12 @@ package com.aseubel.infrastructure.adapter.repo;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.aliyuncs.exceptions.ClientException;
-import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.search.adapter.repo.ISearchFileRepository;
 import com.aseubel.domain.sfile.adapter.repo.IFileRepository;
 import com.aseubel.domain.sfile.model.entity.SFileEntity;
 import com.aseubel.domain.sfile.model.vo.CourseVO;
 import com.aseubel.infrastructure.convertor.SFileConvertor;
 import com.aseubel.infrastructure.dao.*;
-import com.aseubel.infrastructure.dao.po.DiscussPost;
 import com.aseubel.infrastructure.dao.po.SFile;
 import com.aseubel.infrastructure.redis.IRedisService;
 import com.aseubel.types.util.AliOSSUtil;
@@ -20,7 +18,6 @@ import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
-import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -72,35 +69,56 @@ public class SFileRepository implements IFileRepository, ISearchFileRepository {
         sFileMapper.deleteRepeatedSFile();
     }
 
+//    @Override
+//    public List<SFileEntity> listSFile(String fileId, Integer limit, Integer sortType, String courseName) {
+//        sortType = sortType == null ? 0 : sortType;
+//        List<String> fileIds = null;
+//        List<SFileEntity> files = new ArrayList<>();
+//
+//        fileIds = switch (sortType) {
+//            case 1 ->
+//                    (List<String>) redisService.getReverseFromSortedSet(RedisKeyBuilder.fileScoreKey(), fileId, limit);
+//            case 2 ->
+//                    (List<String>) redisService.getFromSortedSet(RedisKeyBuilder.fileScoreKey(), fileId, limit);
+//            default -> fileIds;
+//        };
+//        if (CollectionUtil.isNotEmpty(fileIds)) {
+//            for (String id : fileIds) {
+//                SFileEntity file = redisService.getValue(RedisKeyBuilder.fileKey(id));
+//                if (file == null) {
+//                    files = new ArrayList<>();
+//                    break;
+//                }
+//                files.add(redisService.getValue(RedisKeyBuilder.fileKey(id)));
+//            }
+//        }
+//        if (CollectionUtil.isNotEmpty(files)) {
+//            return files;
+//        }
+//        // 文件本体
+//        files = CollectionUtil.isNotEmpty(files) ? files :
+//                Optional.ofNullable(StringUtils.isEmpty(fileId)
+//                                ? sFileMapper.listSFileAhead(limit, sortType, courseName)
+//                                : sFileMapper.listSFile(fileId, limit, sortType, courseName))
+//                        .map(p -> p.stream().map(sFileConvertor::convert).collect(Collectors.toList()))
+//                        .orElse(Collections.emptyList());
+//        for (SFileEntity file : files) {
+//            redisService.setValue(RedisKeyBuilder.fileKey(file.getFileId()), file);
+//            redisService.addToSortedSet(RedisKeyBuilder.fileScoreKey(), file.getFileId(), file.getDownloadCount());
+//        }
+//        return files;
+//    }
+
     @Override
     public List<SFileEntity> listSFile(String fileId, Integer limit, Integer sortType, String courseName) {
         sortType = sortType == null ? 0 : sortType;
-        List<String> fileIds = null;
         List<SFileEntity> files = new ArrayList<>();
 
-        fileIds = switch (sortType) {
-            case 1 ->
-                    (List<String>) redisService.getReverseFromSortedSet(RedisKeyBuilder.fileScoreKey(), fileId, limit);
-            case 2 ->
-                    (List<String>) redisService.getFromSortedSet(RedisKeyBuilder.fileScoreKey(), fileId, limit);
-            default -> fileIds;
-        };
-        if (fileIds != null) {
-            if (fileIds.isEmpty()) {
-                return files;
-            }
-            for (String id : fileIds) {
-                files.add(redisService.getValue(RedisKeyBuilder.fileKey(id)));
-            }
-        }
-        if (CollectionUtil.isNotEmpty(files)) {
-            return files;
-        }
         // 文件本体
         files = CollectionUtil.isNotEmpty(files) ? files :
                 Optional.ofNullable(StringUtils.isEmpty(fileId)
-                                ? sFileMapper.listSFileByTypeIdAhead(courseName, limit)
-                                : sFileMapper.listSFileByTypeId(fileId, courseName, limit))
+                                ? sFileMapper.listSFileAhead(limit, sortType, courseName)
+                                : sFileMapper.listSFile(fileId, limit, sortType, courseName))
                         .map(p -> p.stream().map(sFileConvertor::convert).collect(Collectors.toList()))
                         .orElse(Collections.emptyList());
         for (SFileEntity file : files) {
