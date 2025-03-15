@@ -170,6 +170,20 @@
                 <artifactId>meilisearch-java</artifactId>
                 <version>0.14.2</version>
             </dependency>
+            <!-- https://mvnrepository.com/artifact/com.alibaba.otter/canal.client -->
+            <dependency>
+                <groupId>com.alibaba.otter</groupId>
+                <artifactId>canal.client</artifactId>
+                <version>1.1.4</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/com.alibaba.otter/canal.protocol -->
+            <dependency>
+                <groupId>com.alibaba.otter</groupId>
+                <artifactId>canal.protocol</artifactId>
+                <version>1.1.4</version>
+            </dependency>
+
+
 
             <dependency>
                 <groupId>com.aseubel</groupId>

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @author Aseubel
  * @date 2025-03-11 23:06
  */
-@Component
+//@Component
 public class DeleteDiscussPostEventListener implements ApplicationListener<DeleteDiscussPostEvent> {
 
     @Resource

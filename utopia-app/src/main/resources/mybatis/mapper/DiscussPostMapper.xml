@@ -83,6 +83,11 @@
             and discuss_post_id != #{postId}
             <if test="schoolCode != null and schoolCode != ''">and school_code = #{schoolCode}</if>
             <if test="tag != null and tag != ''">and tag = #{tag}</if>
+            <if test="type != null">and type = #{type}</if>
+            <if test="lastUpdateTime != null and lastId != null">
+                and (update_time &lt; #{lastUpdateTime}
+                or (update_time = #{lastUpdateTime} and id &lt; #{postId}))
+            </if>
             and is_deleted = 0
         </where>
         order by update_time DESC, id DESC
@@ -93,8 +98,13 @@
         select id, discuss_post_id, user_id, school_code, title, content, tag, like_count, favorite_count, comment_count, type, status, create_time, update_time
         from `discuss_post`
         <where>
-            <if test="schoolCode != null and schoolCode != ''">school_code = #{schoolCode}</if>
+            <if test="schoolCode != null and schoolCode != ''">and school_code = #{schoolCode}</if>
             <if test="tag != null and tag != ''">and tag = #{tag}</if>
+            <if test="type != null">and type = #{type}</if>
+            <if test="lastUpdateTime != null and lastId != null">
+                and (update_time &lt; #{lastUpdateTime}
+                or (update_time = #{lastUpdateTime} and id &lt; #{postId}))
+            </if>
             and is_deleted = 0
         </where>
         order by update_time DESC
@@ -142,13 +152,13 @@
     </select>
 
     <select id="listPostBase" resultType="com.aseubel.infrastructure.dao.po.DiscussPost">
-        SELECT id, discuss_post_id, user_id, title, content, tag, like_count, favorite_count, comment_count, school_code
+        SELECT id, discuss_post_id, user_id, title, content, tag, like_count, favorite_count, comment_count, school_code, create_time
         FROM `discuss_post`
         WHERE is_deleted = 0
     </select>
 
     <select id="listPartialPostBase" resultType="com.aseubel.infrastructure.dao.po.DiscussPost">
-        SELECT id, discuss_post_id, user_id, title, content, tag, like_count, favorite_count, comment_count, school_code
+        SELECT id, discuss_post_id, user_id, title, content, tag, like_count, favorite_count, comment_count, school_code, create_time
         FROM `discuss_post`
         WHERE is_deleted = 0
         <if test="postId != null">AND id > #{postId}</if>

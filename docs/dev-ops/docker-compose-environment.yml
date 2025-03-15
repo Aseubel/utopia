@@ -9,6 +9,9 @@ services:
     environment:
       TZ: Asia/Shanghai
       MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_LOG_BIN: 1
+      MYSQL_BINLOG_FORMAT: ROW
+      MYSQL_SERVER_ID: 1
     ports:
       - "13306:3306"
     volumes:
@@ -20,6 +23,23 @@ services:
       retries: 10
     networks:
       - my-network
+
+  canal-server:
+    image: canal/canal-server:v1.1.4
+    container_name: canal-server
+    restart: always
+    environment:
+      canal.serverMode: spring
+      canal.instance.mysql.slaveId: 1234
+      canal.instance.filter.regex: utopia\\..*
+    ports:
+      - "11111:11111"
+    volumes:
+      - ./canal/conf:/home/admin/canal-server/conf
+    networks:
+      - my-network
+    depends_on:
+      - mysql
 
   # phpmyadmin https://hub.docker.com/_/phpmyadmin
   phpmyadmin:

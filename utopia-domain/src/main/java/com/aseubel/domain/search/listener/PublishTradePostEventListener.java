@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * @author Aseubel
  * @date 2025-03-11 23:07
  */
-@Component
+//@Component
 public class PublishTradePostEventListener implements ApplicationListener<PublishTradePostEvent> {
 
     @Resource

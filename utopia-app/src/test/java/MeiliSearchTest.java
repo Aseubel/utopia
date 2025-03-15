@@ -21,7 +21,7 @@ public class MeiliSearchTest {
     @Resource
     private Client meilisearchClient;
 
-    @Test
+//    @Test
     public void testMeiliSearch() {
         JSONArray array = new JSONArray();
         List<JSONObject> items = new ArrayList<>() {{

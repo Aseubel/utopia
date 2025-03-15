@@ -61,4 +61,10 @@ public class CommunityBO {
     @FieldDesc(name = "点赞数量")
     private int likeCount;
 
+    @FieldDesc(name = "是否置顶")
+    private Integer type;
+
+    @FieldDesc(name = "更新时间")
+    private LocalDateTime updateTime;
+
 }

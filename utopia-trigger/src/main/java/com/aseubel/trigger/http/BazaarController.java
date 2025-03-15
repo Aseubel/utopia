@@ -147,9 +147,9 @@ public class BazaarController implements BazaarInterface {
                 .build();
 
         String postId = bazaarService.publishTradePost(post);
-        eventPublisher.publishEvent(new PublishTradePostEvent("publishDiscussPost",
-                post.getUserId(), postId, post.getPrice(), post.getTitle(),
-                post.getContent(), getFirstImage(post), post.getType(), post.getSchoolCode()));
+//        eventPublisher.publishEvent(new PublishTradePostEvent("publishDiscussPost",
+//                post.getUserId(), postId, post.getPrice(), post.getTitle(),
+//                post.getContent(), getFirstImage(post), post.getType(), post.getSchoolCode()));
 
         return Response.SYSTEM_SUCCESS(new PublishPostResponse(postId));
     }
@@ -192,7 +192,7 @@ public class BazaarController implements BazaarInterface {
                 .postId(requestDTO.getPostId())
                 .build();
         bazaarService.deletePost(bazaarBO);
-        eventPublisher.publishEvent(new DeleteTradePostEvent("deleteTradePost", requestDTO.getUserId(), requestDTO.getPostId(), requestDTO.getSchoolCode()));
+//        eventPublisher.publishEvent(new DeleteTradePostEvent("deleteTradePost", requestDTO.getUserId(), requestDTO.getPostId(), requestDTO.getSchoolCode()));
         return Response.SYSTEM_SUCCESS();
     }
 
@@ -207,7 +207,7 @@ public class BazaarController implements BazaarInterface {
                 .postId(requestDTO.getPostId())
                 .build();
         bazaarService.completeTrade(bazaarBO);
-        eventPublisher.publishEvent(new CompleteTradeEvent("completeTrade", requestDTO.getUserId(), requestDTO.getPostId(), requestDTO.getSchoolCode()));
+//        eventPublisher.publishEvent(new CompleteTradeEvent("completeTrade", requestDTO.getUserId(), requestDTO.getPostId(), requestDTO.getSchoolCode()));
         return Response.SYSTEM_SUCCESS();
     }
 

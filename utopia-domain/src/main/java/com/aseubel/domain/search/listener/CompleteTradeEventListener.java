@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @author Aseubel
  * @date 2025-03-13 12:27
  */
-@Component
+//@Component
 public class CompleteTradeEventListener implements ApplicationListener<CompleteTradeEvent> {
 
     @Resource

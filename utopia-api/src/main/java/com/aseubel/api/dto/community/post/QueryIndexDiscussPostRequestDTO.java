@@ -1,12 +1,18 @@
 package com.aseubel.api.dto.community.post;
 
 import com.aseubel.types.annotation.FieldDesc;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.*;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @author Aseubel
@@ -38,5 +44,14 @@ public class QueryIndexDiscussPostRequestDTO implements Serializable {
 
     @FieldDesc(name = "标签")
     private String tag;
+
+    @FieldDesc(name = "是否置顶")
+    private Integer type;
+
+    @FieldDesc(name = "上次更新时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime lastUpdateTime;
 
 }

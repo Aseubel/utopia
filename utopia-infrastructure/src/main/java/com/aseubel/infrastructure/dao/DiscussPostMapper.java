@@ -5,6 +5,7 @@ import com.aseubel.infrastructure.dao.po.Image;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -54,7 +55,7 @@ public interface DiscussPostMapper {
      * @param schoolCode 院校代码
      * @return
      */
-    List<DiscussPost> listDiscussPost(String postId, Integer limit, String schoolCode, String tag);
+    List<DiscussPost> listDiscussPost(String postId, Integer limit, String schoolCode, String tag, Integer type, LocalDateTime lastUpdateTime);
 
     /**
      * 获取所有帖子信息，分页查询
@@ -62,7 +63,7 @@ public interface DiscussPostMapper {
      * @param schoolCode 院校代码
      * @return
      */
-    List<DiscussPost> listDiscussPostAhead(Integer limit, String schoolCode, String tag);
+    List<DiscussPost> listDiscussPostAhead(Integer limit, String schoolCode, String tag, Integer type, LocalDateTime lastUpdateTime);
 
     /**
      * 获取用户发布的帖子

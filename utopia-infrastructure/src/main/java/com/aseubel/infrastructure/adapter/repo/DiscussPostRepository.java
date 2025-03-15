@@ -78,10 +78,12 @@ public class DiscussPostRepository implements IDiscussPostRepository, ISearchDis
         Integer limit = communityBO.getLimit();
         String schoolCode = communityBO.getSchoolCode();
         String tag = communityBO.getTag();
+        Integer type = communityBO.getType();
+        LocalDateTime lastUpdateTime = communityBO.getUpdateTime();
 
         List<DiscussPostEntity> posts = Optional.ofNullable(StringUtils.isEmpty(postId)
-                        ? discussPostMapper.listDiscussPostAhead(limit, schoolCode, tag)
-                        : discussPostMapper.listDiscussPost(postId, limit, schoolCode, tag))
+                        ? discussPostMapper.listDiscussPostAhead(limit, schoolCode, tag, type, lastUpdateTime)
+                        : discussPostMapper.listDiscussPost(postId, limit, schoolCode, tag, type, lastUpdateTime))
                 .map(p -> p.stream()
                         .map(discussPostConvertor::convert)
                         .peek(d -> d.setIsFavorite(favoriteMapper.getFavoriteStatus(userId, d.getPostId()).orElse(false)))

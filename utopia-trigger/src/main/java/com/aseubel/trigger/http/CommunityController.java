@@ -60,6 +60,8 @@ public class CommunityController implements CommunityInterface {
                 .limit(requestDTO.getLimit())
                 .schoolCode(requestDTO.getSchoolCode())
                 .tag(requestDTO.getTag())
+                .type(requestDTO.getType())
+                .updateTime(requestDTO.getLastUpdateTime())
                 .build();
 
         List<DiscussPostEntity> discussPosts = communityService.listDiscussPost(communityBO);
@@ -150,9 +152,9 @@ public class CommunityController implements CommunityInterface {
                 .build();
         communityService.publishDiscussPost(post);
 
-        eventPublisher.publishEvent(new PublishDiscussPostEvent("publishDiscussPost",
-                post.getUserId(), post.getPostId(), post.getTitle(),
-                post.getContent(), getFirstImage(post), post.getTag(), post.getSchoolCode()));
+//        eventPublisher.publishEvent(new PublishDiscussPostEvent("publishDiscussPost",
+//                post.getUserId(), post.getPostId(), post.getTitle(),
+//                post.getContent(), getFirstImage(post), post.getTag(), post.getSchoolCode()));
         return Response.SYSTEM_SUCCESS(PublishDiscussPostResponse.builder()
                         .userId(post.getUserId())
                         .postId(post.getPostId())
