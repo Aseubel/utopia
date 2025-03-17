@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @date 2025-03-14 18:54
  */
 @Data
-@ConfigurationProperties(prefix = "canal.client")
+//@ConfigurationProperties(prefix = "canal.client")
 public class CanalClientConfigProperties {
 
     /** 目标数据库名称 */

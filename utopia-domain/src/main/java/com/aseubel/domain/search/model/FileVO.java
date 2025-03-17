@@ -1,5 +1,6 @@
 package com.aseubel.domain.search.model;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.otter.canal.protocol.CanalEntry;
 import com.aseubel.types.annotation.FieldDesc;
 import lombok.AllArgsConstructor;
@@ -7,11 +8,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -48,6 +50,26 @@ public class FileVO {
     @FieldDesc(name = "is_deleted")
     private int isDeleted;
 
+    /**
+     * 从binlog获取数据
+     */
+    public static FileVO parseFrom(Serializable[] afterRowData) {
+        List<Serializable> list = Arrays.stream(afterRowData).toList();
+        FileVO vo = new FileVO();
+        vo.setId((Long) list.get(0));
+        vo.setFileId((String) list.get(1));
+        vo.setFileName((String) list.get(2));
+        vo.setFileUrl((String) list.get(3));
+        vo.setFileSize((Integer) list.get(4));
+        vo.setDownloadCount((Integer) list.get(5));
+        vo.setCourseName((String) list.get(6));
+        vo.setIsDeleted((Integer) list.get(11));
+        return vo;
+    }
+
+    /**
+     * 从canal的afterColumns中解析出TradePostVO对象
+     */
     public static FileVO parseFrom(List<CanalEntry.Column> afterColumns) {
         FileVO vo = new FileVO();
         Map<String, String> columnMap = afterColumns.stream()

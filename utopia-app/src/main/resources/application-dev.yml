@@ -76,15 +76,15 @@ spring:
 #      web-context-unify: false
 #      block-page: /blocked
 
-canal:
-  client:
-    host: 127.0.0.1
-    port: 11111
-    destination: example
-    username: root
-    password: root
-    batch-size: 100  # 每批获取数量
-    interval: 1000  # 获取间隔(ms) 默认1000ms
+#canal:
+#  client:
+#    host: 127.0.0.1
+#    port: 11111
+#    destination: example
+#    username: root
+#    password: root
+#    batch-size: 100  # 每批获取数量
+#    interval: 1000  # 获取间隔(ms) 默认1000ms
 
 # Redis【如需使用请打开】
 redis:

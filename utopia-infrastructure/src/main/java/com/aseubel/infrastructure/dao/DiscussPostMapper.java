@@ -63,7 +63,7 @@ public interface DiscussPostMapper {
      * @param schoolCode 院校代码
      * @return
      */
-    List<DiscussPost> listDiscussPostAhead(Integer limit, String schoolCode, String tag, Integer type, LocalDateTime lastUpdateTime);
+    List<DiscussPost> listDiscussPostAhead(Integer limit, String schoolCode, String tag, Integer type);
 
     /**
      * 获取用户发布的帖子

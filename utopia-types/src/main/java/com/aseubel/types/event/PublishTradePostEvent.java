@@ -6,6 +6,10 @@ import lombok.Setter;
 import org.springframework.context.ApplicationEvent;
 
 import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import static com.aseubel.types.common.Constant.DATE_TIME_FORMATTER;
 
 /**
  * @author Aseubel
@@ -42,6 +46,9 @@ public class PublishTradePostEvent extends ApplicationEvent {
     @FieldDesc(name = "学校代号")
     private String schoolCode;
 
+    @FieldDesc(name = "发布时间")
+    private LocalDateTime createTime;
+
     public PublishTradePostEvent(Object source) {
         super(source);
     }
@@ -66,6 +73,7 @@ public class PublishTradePostEvent extends ApplicationEvent {
         this.image = image;
         this.type = type;
         this.schoolCode = schoolCode;
+        this.createTime = LocalDateTime.now();
     }
 
     public Object getSource() {
@@ -76,14 +84,16 @@ public class PublishTradePostEvent extends ApplicationEvent {
      * 转换成json字符串
      */
     public String toJsonString() {
-        return "[{" +
-                "\"userId\":\"" + userId + '\"' +
-                ", \"postId\":\"" + postId + '\"' +
-                ", \"title\":\"" + title + '\"' +
-                ", \"content\":\"" + content + '\"' +
-                ", \"image\":\"" + image + '\"' +
-                ", \"price\":\"" + price + '\"' +
-                ", \"type\":\"" + type + '\"' +
-                "}]";
+        StringBuilder sb = new StringBuilder();
+        sb.append("[{\"userId\":\"").append(userId).append("\"")
+                .append(", \"postId\":\"").append(postId).append("\"")
+                .append(", \"title\":\"").append(title).append("\"")
+                .append(", \"content\":\"").append(content).append("\"")
+                .append(", \"image\":\"").append(image).append("\"")
+                .append(", \"price\":\"").append(price).append("\"")
+                .append(", \"type\":\"").append(type).append("\"")
+                .append(", \"createTime\":\"").append(createTime.format(DATE_TIME_FORMATTER)).append("\"")
+                .append("}]");
+        return sb.toString();
     }
 }

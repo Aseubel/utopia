@@ -53,7 +53,7 @@ public class CommunityController implements CommunityInterface {
      */
     @Override
     @GetMapping("/post")
-    public Response<List<QueryIndexDiscussPostResponseDTO>> queryIndexDiscussPost(@Valid QueryIndexDiscussPostRequestDTO requestDTO) {
+    public Response<List<QueryIndexDiscussPostResponseDTO>> queryIndexDiscussPost(QueryIndexDiscussPostRequestDTO requestDTO) {
         CommunityBO communityBO = CommunityBO.builder()
                 .userId(requestDTO.getUserId())
                 .postId(requestDTO.getPostId())
@@ -152,9 +152,9 @@ public class CommunityController implements CommunityInterface {
                 .build();
         communityService.publishDiscussPost(post);
 
-//        eventPublisher.publishEvent(new PublishDiscussPostEvent("publishDiscussPost",
-//                post.getUserId(), post.getPostId(), post.getTitle(),
-//                post.getContent(), getFirstImage(post), post.getTag(), post.getSchoolCode()));
+        eventPublisher.publishEvent(new PublishDiscussPostEvent("publishDiscussPost",
+                post.getUserId(), post.getPostId(), post.getTitle(),
+                post.getContent(), getFirstImage(post), post.getTag(), post.getSchoolCode()));
         return Response.SYSTEM_SUCCESS(PublishDiscussPostResponse.builder()
                         .userId(post.getUserId())
                         .postId(post.getPostId())

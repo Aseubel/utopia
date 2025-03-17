@@ -2,6 +2,8 @@ package com.aseubel.types.common;
 
 import io.netty.util.AttributeKey;
 
+import java.time.format.DateTimeFormatter;
+
 public class Constant {
 
     public static final String APP = "utopia";
@@ -78,4 +80,6 @@ public class Constant {
     public static final String[] SEARCH_SORT_SETTINGS = new String[] {"likeCount", "commentCount", "favoriteCount"};
 
     public static final String[] FILE_SEARCH_SORT_SETTINGS = new String[] {"downloadCount"};
+
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 }

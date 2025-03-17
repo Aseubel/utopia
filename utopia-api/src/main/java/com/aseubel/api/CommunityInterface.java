@@ -21,7 +21,7 @@ public interface CommunityInterface {
      * @param queryIndexDiscussPostRequestDTO
      * @return
      */
-    Response<List<QueryIndexDiscussPostResponseDTO>> queryIndexDiscussPost(@Valid QueryIndexDiscussPostRequestDTO queryIndexDiscussPostRequestDTO);
+    Response<List<QueryIndexDiscussPostResponseDTO>> queryIndexDiscussPost(QueryIndexDiscussPostRequestDTO queryIndexDiscussPostRequestDTO);
 
     /**
      * 上传帖子图片

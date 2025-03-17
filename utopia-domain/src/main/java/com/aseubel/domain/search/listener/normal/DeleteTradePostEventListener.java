@@ -1,4 +1,4 @@
-package com.aseubel.domain.search.listener;
+package com.aseubel.domain.search.listener.normal;
 
 import com.aseubel.types.common.Constant;
 import com.aseubel.types.event.DeleteTradePostEvent;

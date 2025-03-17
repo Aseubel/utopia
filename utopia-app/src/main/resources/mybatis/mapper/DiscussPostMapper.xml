@@ -84,7 +84,7 @@
             <if test="schoolCode != null and schoolCode != ''">and school_code = #{schoolCode}</if>
             <if test="tag != null and tag != ''">and tag = #{tag}</if>
             <if test="type != null">and type = #{type}</if>
-            <if test="lastUpdateTime != null and lastId != null">
+            <if test="lastUpdateTime != null and postId != null">
                 and (update_time &lt; #{lastUpdateTime}
                 or (update_time = #{lastUpdateTime} and id &lt; #{postId}))
             </if>
@@ -101,10 +101,6 @@
             <if test="schoolCode != null and schoolCode != ''">and school_code = #{schoolCode}</if>
             <if test="tag != null and tag != ''">and tag = #{tag}</if>
             <if test="type != null">and type = #{type}</if>
-            <if test="lastUpdateTime != null and lastId != null">
-                and (update_time &lt; #{lastUpdateTime}
-                or (update_time = #{lastUpdateTime} and id &lt; #{postId}))
-            </if>
             and is_deleted = 0
         </where>
         order by update_time DESC

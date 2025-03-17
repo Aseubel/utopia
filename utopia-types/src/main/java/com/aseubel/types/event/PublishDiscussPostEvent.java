@@ -6,6 +6,10 @@ import lombok.Setter;
 import org.springframework.context.ApplicationEvent;
 
 import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import static com.aseubel.types.common.Constant.DATE_TIME_FORMATTER;
 
 /**
  * @author Aseubel
@@ -45,6 +49,9 @@ public class PublishDiscussPostEvent extends ApplicationEvent {
     @FieldDesc(name = "学校代码")
     private String schoolCode;
 
+    @FieldDesc(name = "发布时间")
+    private LocalDateTime createTime;
+
     public PublishDiscussPostEvent(Object source) {
         super(source);
     }
@@ -68,6 +75,7 @@ public class PublishDiscussPostEvent extends ApplicationEvent {
         this.postId = postId;
         this.tag = tag;
         this.schoolCode = schoolCode;
+        this.createTime = LocalDateTime.now();
     }
 
     public Object getSource() {
@@ -78,16 +86,19 @@ public class PublishDiscussPostEvent extends ApplicationEvent {
      * 转换成json字符串
      */
     public String toJsonString() {
-        return "[{" +
-                "\"userId\":\"" + userId + '\"' +
-                ", \"postId\":\"" + postId + '\"' +
-                ", \"title\":\"" + title + '\"' +
-                ", \"content\":\"" + content + '\"' +
-                ", \"image\":\"" + image + '\"' +
-                ", \"tag\":\"" + tag + '\"' +
-                ", \"likeCount\":\"" + likeCount + '\"' +
-                ", \"commentCount\":\"" + commentCount + '\"' +
-                ", \"favoriteCount\":\"" + favoriteCount + '\"' +
-                "}]";
+        StringBuilder sb = new StringBuilder();
+        sb.append("[{")
+                .append("\"userId\":\"").append(userId).append("\"")
+                .append(", \"postId\":\"").append(postId).append("\"")
+                .append(", \"title\":\"").append(title).append("\"")
+                .append(", \"content\":\"").append(content).append("\"")
+                .append(", \"image\":\"").append(image).append("\"")
+                .append(", \"tag\":\"").append(tag).append("\"")
+                .append(", \"likeCount\":\"").append(likeCount).append("\"")
+                .append(", \"commentCount\":\"").append(commentCount).append("\"")
+                .append(", \"favoriteCount\":\"").append(favoriteCount).append("\"")
+                .append(", \"createTime\":\"").append(createTime.format(DATE_TIME_FORMATTER)).append("\"")
+                .append("}]");
+        return sb.toString();
     }
 }

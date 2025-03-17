@@ -182,7 +182,12 @@
                 <artifactId>canal.protocol</artifactId>
                 <version>1.1.4</version>
             </dependency>
-
+            <!-- https://mvnrepository.com/artifact/com.zendesk/mysql-binlog-connector-java -->
+            <dependency>
+                <groupId>com.zendesk</groupId>
+                <artifactId>mysql-binlog-connector-java</artifactId>
+                <version>0.30.1</version>
+            </dependency>
 
 
             <dependency>

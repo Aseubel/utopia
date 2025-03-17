@@ -51,7 +51,7 @@ thread:
 spring:
   datasource:
     username: root
-    password: root
+    password: 123456
     url: jdbc:mysql://127.0.0.1:3306/utopia?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useSSL=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
@@ -75,6 +75,16 @@ spring:
 #        dashboard: 127.0.0.1:22611
 #      web-context-unify: false
 #      block-page: /blocked
+
+#canal:
+#  client:
+#    host: canal
+#    port: 11111
+#    destination: example
+#    username: root
+#    password: 123456
+#    batch-size: 100  # 每批获取数量
+#    interval: 1000  # 获取间隔(ms) 默认1000ms
 
 # Redis【如需使用请打开】
 redis:

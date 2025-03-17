@@ -1,4 +1,4 @@
-package com.aseubel.domain.search.listener;
+package com.aseubel.domain.search.listener.normal;
 
 import com.aseubel.domain.search.adapter.repo.ISearchRepository;
 import com.aseubel.types.common.Constant;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * @author Aseubel
  * @date 2025-03-11 23:07
  */
-//@Component
+@Component
 public class PublishTradePostEventListener implements ApplicationListener<PublishTradePostEvent> {
 
     @Resource

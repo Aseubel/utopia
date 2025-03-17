@@ -82,7 +82,7 @@ public class DiscussPostRepository implements IDiscussPostRepository, ISearchDis
         LocalDateTime lastUpdateTime = communityBO.getUpdateTime();
 
         List<DiscussPostEntity> posts = Optional.ofNullable(StringUtils.isEmpty(postId)
-                        ? discussPostMapper.listDiscussPostAhead(limit, schoolCode, tag, type, lastUpdateTime)
+                        ? discussPostMapper.listDiscussPostAhead(limit, schoolCode, tag, type)
                         : discussPostMapper.listDiscussPost(postId, limit, schoolCode, tag, type, lastUpdateTime))
                 .map(p -> p.stream()
                         .map(discussPostConvertor::convert)

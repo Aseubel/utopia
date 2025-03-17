@@ -24,22 +24,31 @@ services:
     networks:
       - my-network
 
-  canal-server:
-    image: canal/canal-server:v1.1.4
-    container_name: canal-server
-    restart: always
-    environment:
-      canal.serverMode: spring
-      canal.instance.mysql.slaveId: 1234
-      canal.instance.filter.regex: utopia\\..*
-    ports:
-      - "11111:11111"
-    volumes:
-      - ./canal/conf:/home/admin/canal-server/conf
-    networks:
-      - my-network
-    depends_on:
-      - mysql
+#  canal:
+#    image: canal/canal-server:v1.1.4
+#    container_name: canal
+#    restart: unless-stopped
+#    ports:
+#      - "11111:11111"
+#    environment:
+#      - canal.auto.scan=false
+#      - canal.instance.master.address=mysql:3306
+#      - canal.instance.dbUsername=canal
+#      - canal.instance.dbPassword=canal
+#      - canal.instance.filter.regex=utopia\\..*
+#      - canal.destinations=example
+#      - canal.instance.connectionCharset=UTF-8
+#      - canal.instance.tsdb.enable=false
+#      - canal.instance.gtidon=false
+#      - canal.instance.memory.batch.mode=MEMSIZE
+#      - canal.instance.memory.buffer.size=32
+#      - JAVA_OPTS=-Xmx256m -Xms128m -XX:MaxMetaspaceSize=128m -XX:+UseSerialGC
+#    volumes:
+#      - ./canal/logs:/home/admin/canal-server/logs
+#    networks:
+#      - my-network
+#    depends_on:
+#      - mysql
 
   # phpmyadmin https://hub.docker.com/_/phpmyadmin
   phpmyadmin:

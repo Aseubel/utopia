@@ -138,6 +138,7 @@ public class CommunityService implements ICommunityService {
         if (!CollectionUtil.isEmpty(discussPostEntity.getImages())) {
             List<CommunityImage> images = discussPostRepository.listPostImagesByImageIds(discussPostEntity.getImages());
             if (!CollectionUtil.isEmpty(images)) {
+                discussPostEntity.setImage(images.get(0).getImageUrl());
                 discussPostRepository.relateNewPostImage(discussPostEntity.getPostId(), images);
             }
         }
