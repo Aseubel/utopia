@@ -5,10 +5,12 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.community.adapter.repo.ICommentRepository;
 import com.aseubel.domain.community.adapter.repo.ICommunityUserRepository;
 import com.aseubel.domain.community.adapter.repo.IDiscussPostRepository;
+import com.aseubel.domain.community.adapter.repo.INoticeRepository;
 import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
+import com.aseubel.domain.community.model.entity.NoticeEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.AliOSSUtil;
@@ -43,6 +45,8 @@ public class CommunityService implements ICommunityService {
     private final ICommunityUserRepository communityUserRepository;
 
     private final ICommentRepository commentRepository;
+
+    private final INoticeRepository noticeRepository;
 
     private final AliOSSUtil aliOSSUtil;
 
@@ -421,6 +425,14 @@ public class CommunityService implements ICommunityService {
         // 顺序不能调换
         commentRepository.deleteComment(communityBO);
         commentRepository.decreaseRootCommentReplyCount(communityBO.getCommentId());
+    }
+
+    @Override
+    public List<NoticeEntity> queryNotices(CommunityBO communityBO) {
+        log.info("获取通知列表服务开始执行, userId:{}", communityBO.getUserId());
+        List<NoticeEntity> notices = noticeRepository.listNotices(communityBO);
+        log.info("获取通知列表服务结束执行, userId:{}", communityBO.getUserId());
+        return notices;
     }
 
     private void verifyPostAuth(String userId, String postId) {

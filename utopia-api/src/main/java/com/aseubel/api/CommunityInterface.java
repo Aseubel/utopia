@@ -1,5 +1,7 @@
 package com.aseubel.api;
 
+import com.aseubel.api.dto.community.QueryNoticeRequest;
+import com.aseubel.api.dto.community.QueryNoticeResponse;
 import com.aseubel.api.dto.community.comment.*;
 import com.aseubel.api.dto.community.post.*;
 import com.aseubel.types.Response;
@@ -113,4 +115,11 @@ public interface CommunityInterface {
      * @return
      */
     Response deleteComment(@Valid @RequestBody DeleteCommentRequest deleteCommentRequest);
+
+    /**
+     * 查询社区通知列表
+     * @param queryNoticeRequest
+     * @return
+     */
+    Response<List<QueryNoticeResponse>> queryNotice(QueryNoticeRequest queryNoticeRequest);
 }

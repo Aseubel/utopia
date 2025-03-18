@@ -30,6 +30,6 @@ public class ReplyCommentEventListener implements ApplicationListener<ReplyComme
         log.info("监听到回复评论事件");
         CommunityBO communityBO = (CommunityBO) event.getSource();
         discussPostRepository.increaseCommentCount(communityBO.getPostId());
-        commentRepository.increaseCommentCount(communityBO.getCommentId());
+        commentRepository.increaseCommentCount(communityBO.getRootId());
     }
 }

@@ -3,12 +3,15 @@ package com.aseubel.trigger.http;
 import cn.hutool.core.collection.CollectionUtil;
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.api.CommunityInterface;
+import com.aseubel.api.dto.community.QueryNoticeRequest;
+import com.aseubel.api.dto.community.QueryNoticeResponse;
 import com.aseubel.api.dto.community.comment.*;
 import com.aseubel.api.dto.community.post.*;
 import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
+import com.aseubel.domain.community.model.entity.NoticeEntity;
 import com.aseubel.domain.community.service.ICommunityService;
 import com.aseubel.types.Response;
 import com.aseubel.types.event.*;
@@ -212,7 +215,9 @@ public class CommunityController implements CommunityInterface {
                 .commentEntity(commentEntity)
                 .build());
         eventPublisher.publishEvent(new CommentPostEvent(CommunityBO.builder()
+                .userId(requestDTO.getUserId())
                 .postId(requestDTO.getPostId())
+                .commentId(commentEntity.getCommentId())
                 .build()));
         return Response.SYSTEM_SUCCESS(CommentPostResponse.builder()
                 .commentId(commentEntity.getCommentId())
@@ -237,8 +242,11 @@ public class CommunityController implements CommunityInterface {
                 .commentEntity(commentEntity)
                 .build());
         eventPublisher.publishEvent(new ReplyCommentEvent(CommunityBO.builder()
+                .userId(requestDTO.getUserId())
                 .postId(requestDTO.getPostId())
-                .commentId(requestDTO.getRootId())
+                .rootId(requestDTO.getRootId())
+                .replyTo(requestDTO.getReplyTo())
+                .commentId(commentEntity.getCommentId())
                 .build()));
         return Response.SYSTEM_SUCCESS(ReplyCommentResponse.builder()
                 .commentId(commentEntity.getCommentId())
@@ -431,6 +439,40 @@ public class CommunityController implements CommunityInterface {
         communityService.deleteComment(communityBO);
         eventPublisher.publishEvent(new DeleteCommentEvent(communityBO));
         return Response.SYSTEM_SUCCESS();
+    }
+
+    /**
+     * 查询社区通知消息
+     */
+    @Override
+    @GetMapping("/notice")
+    public Response<List<QueryNoticeResponse>> queryNotice(QueryNoticeRequest request) {
+        CommunityBO communityBO = CommunityBO.builder()
+                .userId(request.getUserId())
+                .noticeId(request.getNoticeId())
+                .limit(Optional.ofNullable(request.getLimit()).orElse(5))
+                .build();
+        List<NoticeEntity> noticeEntities = communityService.queryNotices(communityBO);
+        List<QueryNoticeResponse> responseDTOs = new ArrayList<>();
+        for (NoticeEntity notice : noticeEntities) {
+            responseDTOs.add(QueryNoticeResponse.builder()
+                         .noticeId(notice.getNoticeId())
+                        .type(notice.getType())
+                        .status(notice.getStatus())
+                        .userId(notice.getUserId())
+                        .userName(notice.getUserName())
+                        .userAvatar(notice.getUserAvatar())
+                        .time(notice.getTime())
+                        .commentContent(notice.getCommentContent())
+                        .myCommentContent(notice.getMyCommentContent())
+                        .postId(notice.getPostId())
+                        .postTitle(notice.getPostTitle())
+                        .postUserName(notice.getPostUserName())
+                        .postImage(notice.getPostImage())
+                        .schoolCode(notice.getSchoolCode())
+                        .build());
+        }
+        return Response.SYSTEM_SUCCESS(responseDTOs);
     }
 
     private QueryPostDetailResponse buildPostDetail(DiscussPostEntity discussPost) {

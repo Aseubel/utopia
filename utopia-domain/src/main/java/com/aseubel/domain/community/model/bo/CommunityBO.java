@@ -31,8 +31,17 @@ public class CommunityBO {
     @FieldDesc(name = "评论id")
     private String commentId;
 
+    @FieldDesc(name = "通知id")
+    private String noticeId;
+
+    @FieldDesc(name = "回复id")
+    private String replyTo;
+
     @FieldDesc(name = "根评论id")
     private String rootId;
+
+    @FieldDesc(name = "内容")
+    private String content;
 
     @FieldDesc(name = "标签")
     private String tag;

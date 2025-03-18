@@ -182,4 +182,11 @@ public interface CommentMapper {
      * @param commentId
      */
     void decreaseReplyCount(String commentId);
+
+    /**
+     * 根据评论id查询评论内容
+     * @param commentIds
+     * @return
+     */
+    List<Comment> listCommentContentByCommentIds(List<String> commentIds);
 }

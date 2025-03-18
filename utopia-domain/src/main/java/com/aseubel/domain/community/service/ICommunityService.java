@@ -5,6 +5,7 @@ import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
+import com.aseubel.domain.community.model.entity.NoticeEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -126,4 +127,11 @@ public interface ICommunityService {
      * @param communityBO
      */
     void deleteComment(CommunityBO communityBO);
+
+    /**
+     * 获取通知列表
+     * @param communityBO
+     * @return
+     */
+    List<NoticeEntity> queryNotices(CommunityBO communityBO);
 }

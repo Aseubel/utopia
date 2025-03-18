@@ -214,4 +214,14 @@
         where user_id = #{userId} and post_id = #{postId} and is_deleted = 0
     </select>
 
+    <select id="listCommentContentByCommentIds" resultType="com.aseubel.infrastructure.dao.po.Comment">
+        SELECT comment_id, content
+        FROM `comment`
+        WHERE comment_id IN
+        <foreach collection="commentIds" item="commentId" open="(" separator="," close=")">
+            #{commentId}
+        </foreach>
+        AND is_deleted = 0
+    </select>
+
 </mapper>

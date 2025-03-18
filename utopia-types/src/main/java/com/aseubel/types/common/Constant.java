@@ -82,4 +82,8 @@ public class Constant {
     public static final String[] FILE_SEARCH_SORT_SETTINGS = new String[] {"downloadCount"};
 
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    public static final int NOTICE_TYPE_COMMENT_POST = 0;
+
+    public static final int NOTICE_TYPE_COMMENT_REPLY = 1;
 }
