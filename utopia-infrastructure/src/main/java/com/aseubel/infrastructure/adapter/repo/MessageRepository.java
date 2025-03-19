@@ -1,12 +1,15 @@
 package com.aseubel.infrastructure.adapter.repo;
 
 import com.aseubel.domain.message.adapter.repo.IMessageRepository;
+import com.aseubel.domain.message.model.MessageBO;
 import com.aseubel.domain.message.model.MessageEntity;
 import com.aseubel.infrastructure.convertor.MessageConvertor;
 import com.aseubel.infrastructure.dao.MessageMapper;
 import org.springframework.stereotype.Repository;
 
 import jakarta.annotation.Resource;
+
+import java.util.List;
 
 /**
  * @author Aseubel
@@ -21,6 +24,27 @@ public class MessageRepository implements IMessageRepository {
 
     @Override
     public void saveMessage(MessageEntity message) {
+        message.generateMessageId();
         messageMapper.saveMessage(MessageConvertor.convert(message));
+    }
+
+    @Override
+    public List<MessageEntity> listMessage(MessageBO messageBO) {
+        String userId = messageBO.getUserId();
+        String otherId = messageBO.getOtherId();
+        String messageId = messageBO.getMessageId();
+        Integer limit = messageBO.getLimit();
+
+        List<MessageEntity> messages = MessageConvertor.convert(messageMapper.listMessage(userId, otherId, messageId, limit), MessageConvertor::convert);
+        return messages;
+    }
+
+    @Override
+    public void readMessage(MessageBO messageBO) {
+        String userId = messageBO.getUserId();
+        String otherId = messageBO.getOtherId();
+        String messageId = messageBO.getMessageId();
+
+        messageMapper.readMessage(userId, otherId, messageId);
     }
 }

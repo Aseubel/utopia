@@ -5,9 +5,12 @@
     <select id="listNotices" resultType="com.aseubel.infrastructure.dao.po.Notice">
         SELECT * FROM `notice`
         WHERE receiver_id = #{userId}
-        <if test="noticeId != null and noticeId != ''">AND id &lt; (SELECT id FROM `notice` WHERE notice_id = #{noticeId})</if>
+        <if test="noticeId != null and noticeId != ''">
+          AND id &lt; (SELECT id FROM `notice` WHERE notice_id = #{noticeId})
+        </if>
           AND is_deleted = 0
-        ORDER BY id DESC LIMIT #{limit}
+        ORDER BY id DESC
+        <if test="limit != null">LIMIT #{limit}</if>
     </select>
 
 </mapper>

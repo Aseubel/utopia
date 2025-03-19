@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aseubel.infrastructure.dao.MessageMapper">
+
+    <update id="readMessage">
+        UPDATE `message` m1
+            JOIN (SELECT id FROM `message` WHERE message_id = #{messageId}) m2
+            ON m1.id &lt;= m2.id
+        SET m1.status = 1
+        WHERE m1.user_id = #{otherId}
+          AND m1.to_user_id = #{userId}
+          AND m1.is_deleted = 0
+          AND m1.status = 0;
+    </update>
+
+    <select id="listMessage" resultType="com.aseubel.infrastructure.dao.po.Message">
+        SELECT * FROM `message`
+        WHERE (
+        (user_id = #{userId} AND to_user_id = #{otherId})
+        OR
+        (user_id = #{otherId} AND to_user_id = #{userId})
+        )
+        <if test="messageId != null and messageId != ''">
+          AND id &lt; (SELECT id FROM `message` WHERE message_id = #{messageId})
+        </if>
+          AND is_deleted = 0
+        ORDER BY id DESC
+        <if test="limit != null">LIMIT #{limit}</if>
+    </select>
+
+</mapper>

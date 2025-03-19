@@ -151,7 +151,7 @@ public class NoticeRepository implements INoticeRepository {
     }
 
     private String getPostFirstImage(String postId) {
-        return Optional.ofNullable(discussPostMapper.getPostFirstImage(postId)).map(imageMapper::getImageUrl).orElse(null);
+        return Optional.ofNullable(discussPostMapper.getPostFirstImage(postId)).map(imageMapper::getImageUrl).orElse("");
     }
 
 }

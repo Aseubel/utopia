@@ -16,6 +16,12 @@ import java.time.LocalDateTime;
 @Builder
 public class Message {
 
+    @FieldDesc(name = "id")
+    private Long id;
+
+    @FieldDesc(name = "消息id")
+    private String messageId;
+
     @FieldDesc(name = "用户id")
     private String userId;
 
@@ -30,5 +36,8 @@ public class Message {
 
     @FieldDesc(name = "发送时间")
     private LocalDateTime createTime;
+
+    @FieldDesc(name = "是否已读")
+    private Integer status;
 
 }

@@ -452,7 +452,7 @@ public class CommunityController implements CommunityInterface {
         CommunityBO communityBO = CommunityBO.builder()
                 .userId(request.getUserId())
                 .noticeId(request.getNoticeId())
-                .limit(Optional.ofNullable(request.getLimit()).orElse(5))
+                .limit(request.getLimit())
                 .build();
         List<NoticeEntity> noticeEntities = communityService.queryNotices(communityBO);
         List<QueryNoticeResponse> responseDTOs = new ArrayList<>();
