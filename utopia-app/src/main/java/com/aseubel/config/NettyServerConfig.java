@@ -14,9 +14,13 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.handler.timeout.IdleStateHandler;
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import javax.net.ssl.SSLContext;
@@ -41,7 +45,16 @@ public class NettyServerConfig {
     private final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
     private final EventLoopGroup workerGroup = new NioEventLoopGroup();
 
-//    @PostConstruct
+    private final NettyServerConfigProperties properties;
+
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    public NettyServerConfig(NettyServerConfigProperties properties) {
+        this.properties = properties;
+    }
+
+    @PostConstruct
     public void startNettyServer() {
         // 使用独立线程启动Netty服务
         new Thread(() -> {
@@ -55,7 +68,7 @@ public class NettyServerConfig {
                                 ChannelPipeline pipeline = ch.pipeline();
 
                                 SSLContext sslContext = SslUtil.createSSLContext("PKCS12",
-                                        "D:\\develop\\mystore.p12", "wobushiyaoshen");
+                                        properties.getSslPath(), properties.getSslPassword());
                                 // SSLEngine 此类允许使用ssl安全套接层协议进行安全通信
                                 SSLEngine engine = sslContext.createSSLEngine();
                                 engine.setUseClientMode(false);
@@ -68,7 +81,7 @@ public class NettyServerConfig {
                                 pipeline.addLast(new IdleStateHandler(READ_TIMEOUT, 0, 0, TimeUnit.SECONDS));
                                 pipeline.addLast(new HeartbeatHandler());
                                 pipeline.addLast(new WebSocketServerProtocolHandler("/ws", null, true, 10 * 1024 * 1024));
-                                pipeline.addLast(new MessageHandler());
+                                pipeline.addLast(applicationContext.getBean(MessageHandler.class));
                                 pipeline.addLast(new ChannelInboundHandlerAdapter() {
                                     @Override
                                     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
@@ -80,7 +93,7 @@ public class NettyServerConfig {
                             }
                         });
 
-                serverChannelFuture = bootstrap.bind(NETTY_PORT).sync();
+                serverChannelFuture = bootstrap.bind(properties.getPort()).sync();
 
                 // 保持通道开放
                 serverChannelFuture.channel().closeFuture().sync();
@@ -99,18 +112,6 @@ public class NettyServerConfig {
         bossGroup.shutdownGracefully();
         workerGroup.shutdownGracefully();
     }
-
-    // 新增SSL配置
-//    @Bean
-//    public SslContext sslContext() throws Exception {
-//        KeyStore keyStore = KeyStore.getInstance("PKCS12");
-//        try (InputStream in = getClass().getResourceAsStream("/keystore.pfx")) {
-//            keyStore.load(in, "password".toCharArray());
-//        }
-//        return SslContextBuilder.forServer(keyStore.getCertificate("alias"),
-//                        keyStore.getKey("alias", "password".toCharArray()))
-//                .build();
-//    }
 
 }
 

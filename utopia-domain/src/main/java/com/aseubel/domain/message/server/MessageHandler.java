@@ -10,6 +10,8 @@ import com.aseubel.types.util.HttpClientUtil;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -37,6 +39,7 @@ import static com.aseubel.types.common.Constant.*;
  */
 @Component
 @Slf4j
+@Sharable
 public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
 
     private static final Map<String, Queue<WebSocketFrame>> OFFLINE_MSGS = new ConcurrentHashMap<>();
@@ -45,6 +48,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
 
     @Autowired
     private ThreadPoolTaskExecutor threadPoolExecutor;
+
     @Resource
     private IMessageRepository messageRepository;
 
@@ -185,10 +189,12 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        if (cause instanceof AppException) {
-            log.error("AppException caught: {}", ((AppException) cause).getInfo());
-        } else if (cause instanceof WxException) {
-            log.error("WxException caught: {}", ((WxException) cause).getMessage());
+        if (cause instanceof AppException appCause) {
+            log.error("AppException caught: {}", appCause.getInfo());
+        } else if (cause instanceof WxException wxCause) {
+            log.error("WxException caught: {}", wxCause.getMessage());
+        } else {
+            log.error("Exception caught: {}", cause.getMessage(), cause);
         }
         ctx.close(); // 建议关闭发生异常的连接
     }
