@@ -134,4 +134,16 @@ public interface ICommunityService {
      * @return
      */
     List<NoticeEntity> queryNotices(CommunityBO communityBO);
+
+    /**
+     * 标记通知为已读
+     * @param communityBO
+     */
+    void readNotice(CommunityBO communityBO);
+
+    /**
+     * 删除通知
+     * @param communityBO
+     */
+    void deleteNotice(CommunityBO communityBO);
 }

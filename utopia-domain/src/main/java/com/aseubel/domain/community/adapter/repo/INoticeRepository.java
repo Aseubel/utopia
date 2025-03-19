@@ -24,4 +24,16 @@ public interface INoticeRepository {
      * @param type
      */
     void addNotice(CommunityBO bo, int type);
+
+    /**
+     * 标记通知已读
+     * @param communityBO
+     */
+    void readNotice(CommunityBO communityBO);
+
+    /**
+     * 删除通知
+     * @param communityBO
+     */
+    void deleteNotice(CommunityBO communityBO);
 }

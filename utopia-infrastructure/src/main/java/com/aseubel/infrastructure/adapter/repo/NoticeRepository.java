@@ -140,6 +140,16 @@ public class NoticeRepository implements INoticeRepository {
         }
     }
 
+    @Override
+    public void readNotice(CommunityBO communityBO) {
+        noticeMapper.readNotice(communityBO.getUserId(), communityBO.getEventTime());
+    }
+
+    @Override
+    public void deleteNotice(CommunityBO communityBO) {
+        noticeMapper.deleteNotices(communityBO.getUserId(), communityBO.getEventTime());
+    }
+
     private String getPostFirstImage(String postId) {
         return Optional.ofNullable(discussPostMapper.getPostFirstImage(postId)).map(imageMapper::getImageUrl).orElse(null);
     }

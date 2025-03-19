@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -50,5 +51,21 @@ public interface NoticeMapper {
      */
     @Update("UPDATE `notice` set is_deleted = 1 WHERE notice_id = #{noticeId}")
     void deleteNotice(String noticeId);
+
+    /**
+     * 删除用户的所有通知
+     * @param receiverId 受信人id
+     * @param time 应为用户能看见的最晚通知的创建时间
+     */
+    @Update("UPDATE `notice` set is_deleted = 1 WHERE receiver_id = #{receiverId} AND create_time <= #{time} AND is_deleted = 0")
+    void deleteNotices(String receiverId, LocalDateTime time);
+
+    /**
+     * 更新通知状态为已读
+     * @param receiverId 受信人id
+     * @param time 应为用户能看见的最晚通知的创建时间
+     */
+    @Update("UPDATE `notice` set status = 1 WHERE receiver_id = #{receiverId} AND create_time <= #{time} AND status = 0")
+    void readNotice(String receiverId, LocalDateTime time);
 
 }

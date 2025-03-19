@@ -3,9 +3,11 @@ package com.aseubel.trigger.http;
 import cn.hutool.core.collection.CollectionUtil;
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.api.CommunityInterface;
-import com.aseubel.api.dto.community.QueryNoticeRequest;
-import com.aseubel.api.dto.community.QueryNoticeResponse;
+import com.aseubel.api.dto.community.notice.DeleteNoticeRequest;
+import com.aseubel.api.dto.community.notice.QueryNoticeRequest;
+import com.aseubel.api.dto.community.notice.QueryNoticeResponse;
 import com.aseubel.api.dto.community.comment.*;
+import com.aseubel.api.dto.community.notice.ReadNoticeRequest;
 import com.aseubel.api.dto.community.post.*;
 import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.community.model.entity.CommentEntity;
@@ -474,6 +476,35 @@ public class CommunityController implements CommunityInterface {
         }
         return Response.SYSTEM_SUCCESS(responseDTOs);
     }
+
+    /**
+     * 标记通知消息为已读
+     */
+    @Override
+    @PutMapping("/notice")
+    public Response readNotice(@Valid @RequestBody ReadNoticeRequest readNoticeRequest) {
+        CommunityBO communityBO = CommunityBO.builder()
+                .userId(readNoticeRequest.getUserId())
+                .eventTime(readNoticeRequest.getTime())
+                .build();
+        communityService.readNotice(communityBO);
+        return Response.SYSTEM_SUCCESS();
+    }
+
+    /**
+     * 删除通知消息
+     */
+    @Override
+    @DeleteMapping("/notice")
+    public Response deleteNotice(@Valid @RequestBody DeleteNoticeRequest deleteNoticeRequest) {
+        CommunityBO communityBO = CommunityBO.builder()
+                .userId(deleteNoticeRequest.getUserId())
+                .eventTime(deleteNoticeRequest.getTime())
+                .build();
+        communityService.deleteNotice(communityBO);
+        return Response.SYSTEM_SUCCESS();
+    }
+
 
     private QueryPostDetailResponse buildPostDetail(DiscussPostEntity discussPost) {
         return QueryPostDetailResponse.builder()

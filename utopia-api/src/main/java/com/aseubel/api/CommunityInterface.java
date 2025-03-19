@@ -1,8 +1,10 @@
 package com.aseubel.api;
 
-import com.aseubel.api.dto.community.QueryNoticeRequest;
-import com.aseubel.api.dto.community.QueryNoticeResponse;
+import com.aseubel.api.dto.community.notice.DeleteNoticeRequest;
+import com.aseubel.api.dto.community.notice.QueryNoticeRequest;
+import com.aseubel.api.dto.community.notice.QueryNoticeResponse;
 import com.aseubel.api.dto.community.comment.*;
+import com.aseubel.api.dto.community.notice.ReadNoticeRequest;
 import com.aseubel.api.dto.community.post.*;
 import com.aseubel.types.Response;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -90,36 +92,42 @@ public interface CommunityInterface {
 
     /**
      * 查询子评论列表
-     * @param requestDTO
-     * @return
+     * @param requestDTO 查询子评论请求DTO
      */
     Response<List<QuerySubCommentResponse>> querySubComment(QuerySubCommentRequest requestDTO);
 
     /**
      * 点赞评论
-     * @param requestDTO
-     * @return
+     * @param requestDTO 点赞评论请求DTO
      */
     Response likeComment(@Valid @RequestBody LikeCommentRequest requestDTO);
 
     /**
      * 删除帖子
-     * @param deletePostRequest
-     * @return
+     * @param deletePostRequest 删除帖子请求DTO
      */
     Response deletePost(@Valid @RequestBody DeletePostRequest deletePostRequest);
 
     /**
      * 删除评论
-     * @param deleteCommentRequest
-     * @return
+     * @param deleteCommentRequest 删除评论请求DTO
      */
     Response deleteComment(@Valid @RequestBody DeleteCommentRequest deleteCommentRequest);
 
     /**
      * 查询社区通知列表
-     * @param queryNoticeRequest
-     * @return
+     * @param queryNoticeRequest 查询社区通知请求DTO
+     * @return 社区通知列表
      */
     Response<List<QueryNoticeResponse>> queryNotice(QueryNoticeRequest queryNoticeRequest);
+
+    /**
+     * 标记通知为已读
+     */
+    Response readNotice(@Valid @RequestBody ReadNoticeRequest readNoticeRequest);
+
+    /**
+     * 删除通知
+     */
+    Response deleteNotice(@Valid @RequestBody DeleteNoticeRequest deleteNoticeRequest);
 }

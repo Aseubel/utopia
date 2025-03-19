@@ -435,6 +435,16 @@ public class CommunityService implements ICommunityService {
         return notices;
     }
 
+    @Override
+    public void readNotice(CommunityBO communityBO) {
+        noticeRepository.readNotice(communityBO);
+    }
+
+    @Override
+    public void deleteNotice(CommunityBO communityBO) {
+        noticeRepository.deleteNotice(communityBO);
+    }
+
     private void verifyPostAuth(String userId, String postId) {
         if (!userId.equals(discussPostRepository.getUserIdByPostId(postId))) {
             log.error("用户无权删除帖子！, user={}, post={}", userId, postId);

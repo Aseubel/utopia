@@ -1,4 +1,4 @@
-package com.aseubel.api.dto.community;
+package com.aseubel.api.dto.community.notice;
 
 import com.aseubel.types.annotation.FieldDesc;
 import jakarta.validation.constraints.NotNull;
