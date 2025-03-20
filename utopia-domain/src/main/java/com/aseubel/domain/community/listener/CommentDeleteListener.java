@@ -26,7 +26,6 @@ public class CommentDeleteListener implements ApplicationListener<DeleteCommentE
 
     @Override
     public void onApplicationEvent(DeleteCommentEvent event) {
-        log.info("监听到删除评论事件");
         CommunityBO communityBO = (CommunityBO) event.getSource();
         commentRepository.deleteSubComment(communityBO.getCommentId());
         discussPostRepository.decreaseCommentCount(communityBO.getPostId());

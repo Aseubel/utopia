@@ -27,7 +27,6 @@ public class ReplyCommentEventListener implements ApplicationListener<ReplyComme
 
     @Override
     public void onApplicationEvent(ReplyCommentEvent event) {
-        log.info("监听到回复评论事件");
         CommunityBO communityBO = (CommunityBO) event.getSource();
         discussPostRepository.increaseCommentCount(communityBO.getPostId());
         commentRepository.increaseCommentCount(communityBO.getRootId());

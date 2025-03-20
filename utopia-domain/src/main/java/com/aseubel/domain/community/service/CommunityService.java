@@ -54,7 +54,6 @@ public class CommunityService implements ICommunityService {
     public List<DiscussPostEntity> listDiscussPost(CommunityBO communityBO) {
         Integer limit = communityBO.getLimit();
         String schoolCode = communityBO.getSchoolCode();
-        log.info("获取帖子列表服务开始执行");
         checkSchoolCodeValid(schoolCode);
         // 限制每页显示的帖子数量
         communityBO.setLimit(limit == null ? PER_PAGE_DISCUSS_POST_SIZE : limit);
@@ -96,7 +95,6 @@ public class CommunityService implements ICommunityService {
                     }
                 }
         );
-        log.info("获取帖子列表服务结束执行");
         return discussPostEntities;
     }
 
@@ -104,18 +102,15 @@ public class CommunityService implements ICommunityService {
     public DiscussPostEntity getDiscussPost(CommunityBO communityBO) {
         String userId = communityBO.getUserId();
         String postId = communityBO.getPostId();
-        log.info("获取帖子详情服务开始执行, userId:{}, postId:{}", userId, postId);
         // 查询帖子
         DiscussPostEntity postEntity = discussPostRepository.getDiscussPost(communityBO);
         // 获取帖子的图片
         postEntity.setImages(discussPostRepository.listPostImages(postId));
-        log.info("获取帖子详情服务结束执行, userId:{}, postId:{}", userId, postId);
         return postEntity;
     }
 
     @Override
     public CommunityImage uploadPostImage(CommunityImage postImage) throws ClientException {
-        log.info("上传帖子图片服务开始执行，userId:{}", postImage.getUserId());
         if (ObjectUtils.isEmpty(communityUserRepository.queryUserStatus(postImage.getUserId()))) {
             throw new AppException("用户状态异常，请联系管理员");
         }
@@ -125,14 +120,12 @@ public class CommunityService implements ICommunityService {
         postImage.setImageUrl(imageUrl);
         // 保存图片信息到数据库
         discussPostRepository.savePostImage(postImage);
-        log.info("上传帖子图片服务结束执行，userId:{}", postImage.getUserId());
         return postImage;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void publishDiscussPost(DiscussPostEntity discussPostEntity) {
-        log.info("发布帖子服务开始执行，userId:{}", discussPostEntity.getUserId());
         checkUserStatus(discussPostEntity.getUserId());
         checkSchoolCodeValid(discussPostEntity.getSchoolCode());
 
@@ -147,7 +140,6 @@ public class CommunityService implements ICommunityService {
             }
         }
 
-        log.info("发布帖子服务结束执行，userId:{}", discussPostEntity.getUserId());
     }
 
     @Override
@@ -157,7 +149,6 @@ public class CommunityService implements ICommunityService {
         Integer limit = communityBO.getLimit();
         communityBO.setLimit(limit == null ? PER_PAGE_DISCUSS_POST_SIZE : limit);
 
-        log.info("查询用户收藏帖子服务开始执行，userId:{}", userId);
         checkUserIdValid(userId);
         // 查询帖子列表
         List<DiscussPostEntity> discussPostEntities = discussPostRepository.queryUserFavoritePosts(communityBO);
@@ -178,7 +169,6 @@ public class CommunityService implements ICommunityService {
                 d.setUserAvatar(users.get(d.getUserId()).getAvatar());
             });
         }
-        log.info("查询用户收藏帖子服务结束执行，userId:{}", userId);
         return discussPostEntities;
     }
 
@@ -189,7 +179,6 @@ public class CommunityService implements ICommunityService {
         Integer limit = communityBO.getLimit();
         communityBO.setLimit(limit == null ? PER_PAGE_DISCUSS_POST_SIZE : limit);
 
-        log.info("查询用户发布的讨论帖子服务开始执行，userId:{}", userId);
         checkUserIdValid(userId);
         // 查询帖子列表
         List<DiscussPostEntity> discussPostEntities = discussPostRepository.queryUserDiscussPosts(communityBO);
@@ -210,20 +199,17 @@ public class CommunityService implements ICommunityService {
                 d.setUserAvatar(users.get(d.getUserId()).getAvatar());
             });
         }
-        log.info("查询用户发布的讨论帖子服务结束执行，userId:{}", userId);
         return discussPostEntities;
     }
 
     @Override
     public void favoriteDiscussPost(String userId, String postId) {
-        log.info("用户收藏帖子服务开始，userId: {}, postId: {}", userId, postId);
         checkUserIdValid(userId);
         if (discussPostRepository.favoritePost(userId, postId)) {
             discussPostRepository.increaseFavoriteCount(postId);
         } else {
             discussPostRepository.decreaseFavoriteCount(postId);
         }
-        log.info("用户收藏帖子服务开始，userId: {}, postId: {}", userId, postId);
     }
 
     @Override
@@ -232,13 +218,11 @@ public class CommunityService implements ICommunityService {
         String userId = communityBO.getUserId();
         String postId = communityBO.getPostId();
 
-        log.info("用户点赞帖子服务开始，userId: {}, postId: {}", userId, postId);
         if (discussPostRepository.likePost(userId, postId, communityBO.getEventTime())) {
             discussPostRepository.increaseLikeCount(postId);
         } else {
             discussPostRepository.decreaseLikeCount(postId);
         }
-        log.info("用户点赞帖子服务结束，userId: {}, postId: {}", userId, communityBO.getPostId());
     }
 
     @Override
@@ -250,7 +234,7 @@ public class CommunityService implements ICommunityService {
     @Transactional(rollbackFor = Exception.class)
     public void commentDiscussPost(CommunityBO communityBO) {
         CommentEntity commentEntity = communityBO.getCommentEntity();
-        log.info("评论帖子服务开始执行，userId:{}", commentEntity.getUserId());
+
         checkUserStatus(commentEntity.getUserId());
         checkPostIdValid(commentEntity.getPostId());
 
@@ -265,14 +249,12 @@ public class CommunityService implements ICommunityService {
             }
         }
 
-        log.info("评论帖子服务结束执行，userId:{}", commentEntity.getUserId());
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void replyComment(CommunityBO communityBO) {
         CommentEntity commentEntity = communityBO.getCommentEntity();
-        log.info("回复评论服务开始执行，userId:{}", commentEntity.getUserId());
         checkUserStatus(commentEntity.getUserId());
 
         commentEntity.generateCommentId();
@@ -285,12 +267,10 @@ public class CommunityService implements ICommunityService {
             }
         }
 
-        log.info("回复评论服务结束执行，userId:{}", commentEntity.getUserId());
     }
 
     @Override
     public CommunityImage uploadCommentImage(CommunityImage commentImage) throws ClientException {
-        log.info("上传评论图片服务开始执行，userId:{}", commentImage.getUserId());
         if (ObjectUtils.isEmpty(communityUserRepository.queryUserStatus(commentImage.getUserId()))) {
             throw new AppException("用户状态异常，请联系管理员");
         }
@@ -300,7 +280,6 @@ public class CommunityService implements ICommunityService {
         commentImage.setImageUrl(imageUrl);
         // 保存图片信息到数据库
         commentRepository.saveCommentImage(commentImage);
-        log.info("上传帖子评论服务结束执行，userId:{}", commentImage.getUserId());
         return commentImage;
     }
 
@@ -309,7 +288,6 @@ public class CommunityService implements ICommunityService {
         String userId = communityBO.getUserId();
         String postId = communityBO.getPostId();
         Integer limit = communityBO.getLimit();
-        log.info("获取帖子评论列表服务开始执行, userId:{}, postId:{}", userId, postId);
         // 限制每页显示的帖子数量
         communityBO.setLimit(limit == null ? PER_PAGE_COMMENT_SIZE : limit);
         // 查询评论列表
@@ -354,7 +332,6 @@ public class CommunityService implements ICommunityService {
         if (!CollectionUtil.isEmpty(comments)) {
             comments.forEach(d -> d.setImages(commentRepository.listCommentImages(d.getCommentId())));
         }
-        log.info("获取帖子评论列表服务结束执行, userId:{}, postId:{}", userId, postId);
         return comments;
     }
 
@@ -363,7 +340,6 @@ public class CommunityService implements ICommunityService {
         String userId = communityBO.getUserId();
         String commentId = communityBO.getCommentId();
         Integer limit = communityBO.getLimit();
-        log.info("获取子评论服务开始执行, userId:{}, commentId:{}", userId, commentId);
         // 限制每页显示的帖子数量
         communityBO.setLimit(limit == null ? PER_PAGE_SUB_COMMENT_SIZE : limit);
         // 查询评论列表
@@ -393,7 +369,6 @@ public class CommunityService implements ICommunityService {
                 c.setUserAvatar(users.get(c.getUserId()).getAvatar());
             });
         }
-        log.info("获取子评论服务结束执行, userId:{}, commentId:{}", userId, commentId);
         return comments;
     }
 
@@ -402,13 +377,11 @@ public class CommunityService implements ICommunityService {
         String userId = communityBO.getUserId();
         String commentId = communityBO.getCommentId();
 
-        log.info("用户点赞评论服务开始，userId: {}, commentId: {}", userId, commentId);
         if (commentRepository.likeComment(communityBO)) {
             commentRepository.increaseLikeCount(commentId);
         } else {
             commentRepository.decreaseLikeCount(commentId);
         }
-        log.info("用户点赞评论服务结束，userId: {}, commentId: {}", userId, commentId);
     }
 
     @Override
@@ -429,9 +402,7 @@ public class CommunityService implements ICommunityService {
 
     @Override
     public List<NoticeEntity> queryNotices(CommunityBO communityBO) {
-        log.info("获取通知列表服务开始执行, userId:{}", communityBO.getUserId());
         List<NoticeEntity> notices = noticeRepository.listNotices(communityBO);
-        log.info("获取通知列表服务结束执行, userId:{}", communityBO.getUserId());
         return notices;
     }
 

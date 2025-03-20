@@ -55,13 +55,9 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserEntity login(String code) {
-        log.info("登录服务开始执行，code={}", code);
-
-        log.info("获取微信用户的openid");
         String openid = wxService.getOpenid(appid, secret, code);
 
         //当前用户为新用户,完成自动注册
-        log.info("查询用户信息, openid={}", openid);
         UserEntity user = userRepository.queryUserInfo(openid);
         if (user == null) {
             user = UserEntity.builder().openid(openid).build();
@@ -76,36 +72,28 @@ public class UserServiceImpl implements IUserService {
         // 记录token
         userRepository.saveUserToken(user);
 
-        log.info("登录服务结束执行，user={}", openid);
         return user;
     }
 
     @Override
     public void logout(String openid) {
-        log.info("登出服务开始执行，openid={}", openid);
         userRepository.cleanUserToken(openid);
-        log.info("登出服务结束执行，openid={}", openid);
     }
 
     @Override
     public UserEntity queryUserInfo(String openid) {
-        log.info("查询个人信息服务开始执行，openid={}", openid);
         UserEntity user = userRepository.queryUserInfo(openid);
-        log.info("查询个人信息服务结束执行，user={}", user);
         return user;
     }
 
     @Override
     public UserEntity queryOtherInfo(String userId, String targetId) {
-        log.info("查询个人信息服务开始执行，userId={}, targetId={}", userId, targetId);
         UserEntity user = userRepository.queryOtherInfo(targetId);
-        log.info("查询个人信息服务结束执行，userId={}, targetId={}", userId, targetId);
         return user;
     }
 
     @Override
     public UserEntity refreshToken(UserEntity user) {
-        log.info("刷新token服务开始执行，user={}", user);
         if (!userRepository.checkRefreshToken(user, secretKey)) {
             log.error("refreshToken无效！, user={}", user);
             throw new AppException("refreshToken无效！");
@@ -115,22 +103,18 @@ public class UserServiceImpl implements IUserService {
         // 记录token
         userRepository.saveUserToken(user);
 
-        log.info("刷新token服务结束执行，user={}", user);
         return user;
     }
 
     @Override
     public void updateUserInfo(UserEntity user) {
-        log.info("更新个人信息服务开始执行，user={}", user);
         checkUserIdValid(user.getOpenid());
         checkSchoolCodeValid(user.getSchool().getSchoolCode());
         userRepository.saveUserInfo(user);
-        log.info("更新个人信息服务结束执行，user={}", user);
     }
 
     @Override
     public String uploadAvatar(AvatarEntity avatar) throws ClientException {
-        log.info("开始上传头像, userId={}", avatar.getUserId());
         avatar.generateAvatarId();
         MultipartFile file = avatar.getAvatar();
         // 获取文件名不包含扩展名
@@ -138,7 +122,6 @@ public class UserServiceImpl implements IUserService {
         avatar.setAvatarUrl(ossUrl);
 
         avatarRepository.saveAvatar(avatar);
-        log.info("头像上传并保存成功, ossUrl={}", avatar.getAvatarUrl());
         return ossUrl;
     }
 

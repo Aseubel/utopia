@@ -26,7 +26,6 @@ public class FavoriteEventListener implements ApplicationListener<FavoriteEvent>
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void onApplicationEvent(FavoriteEvent event) {
-        log.info("监听到收藏事件");
         CommunityBO communityBO = (CommunityBO) event.getSource();
         if (discussPostRepository.favoritePost(communityBO.getUserId(), communityBO.getPostId())) {
             discussPostRepository.increaseFavoriteCount(communityBO.getPostId());

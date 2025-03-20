@@ -35,14 +35,12 @@ public class FileServiceImpl implements IFileService{
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String upload(SFileEntity sFileEntity) throws ClientException {
-        log.info("开始上传文件");
         MultipartFile file = sFileEntity.getSfile();
         // 获取文件名不包含扩展名
         String ossUrl = aliOSSUtil.upload(file, sFileEntity.generateObjectName());
         sFileEntity.setFileUrl(ossUrl);
 
         fileRepository.saveSFile(sFileEntity);
-        log.info("文件上传并保存成功");
         return ossUrl;
     }
 
@@ -50,7 +48,6 @@ public class FileServiceImpl implements IFileService{
     @Transactional(rollbackFor = Exception.class)
     public byte[] download(String fileUrl) throws ClientException {
         // 取到object name
-        log.info("开始下载文件, fileUrl: {}", fileUrl);
         SFileEntity sFileEntity = fileRepository.getSFileByUrl(fileUrl);
         if (sFileEntity == null) {
             log.error("文件不存在, fileUrl: {}", fileUrl);
@@ -62,20 +59,17 @@ public class FileServiceImpl implements IFileService{
 
     @Override
     public List<SFileEntity> listSFile(String fileId, Integer limit, Integer sortType, String courseName) {
-        log.info("开始获取文件列表服务");
         limit = limit == null ? PER_PAGE_FILE_SIZE : limit;
         return fileRepository.listSFile(fileId, limit, sortType, courseName);
     }
 
     @Override
     public List<SFileEntity> listSFileByTypeId(String fileId, String courseName, Integer limit) {
-        log.info("开始获取指定类型文件列表服务");
         return fileRepository.listSFileByTypeId(fileId, courseName, limit);
     }
 
     @Override
     public List<CourseVO> queryCourses() {
-        log.info("开始获取课程列表服务");
         return fileRepository.queryCourses();
     }
 

@@ -23,7 +23,6 @@ public class CommentPostEventListener implements ApplicationListener<CommentPost
 
     @Override
     public void onApplicationEvent(CommentPostEvent event) {
-        log.info("监听到评论帖子事件");
         CommunityBO communityBO = (CommunityBO) event.getSource();
         discussPostRepository.increaseCommentCount(communityBO.getPostId());
     }
