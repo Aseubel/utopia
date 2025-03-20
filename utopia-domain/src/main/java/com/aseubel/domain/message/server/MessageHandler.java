@@ -63,7 +63,6 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("客户端连接：" + ctx.channel());
         super.channelActive(ctx);
     }
 
@@ -71,10 +70,11 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     public void channelRead(ChannelHandlerContext ctx, Object req) throws Exception {
         if (req instanceof FullHttpRequest) {
             String code = getCodeFromRequest(ctx); // 从请求中提取 code
-            String userId = code;// validateCode(code);    // 验证 code 获取 openid
+            String userId = code;// getOpenid(code);    // 验证 code 获取 openid
 
             userChannels.put(userId, ctx.channel());
             ctx.channel().attr(WS_USER_ID_KEY).set(userId);
+            System.out.println("客户端连接成功，用户id：" + userId);
             // 由于这里还在处理握手请求也就是建立连接，所以需要延迟发送离线消息
             new Thread(() -> {
                 try {
@@ -107,7 +107,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     // 处理连接断开
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        System.out.println("客户端断开连接：" + ctx.channel());
+        System.out.println("客户端断开连接，用户id：" + ctx.channel().attr(WS_USER_ID_KEY).get());
         Channel channel = ctx.channel();
         for (Map.Entry<String, Channel> entry : userChannels.entrySet()) {
             if (entry.getValue() == channel) {

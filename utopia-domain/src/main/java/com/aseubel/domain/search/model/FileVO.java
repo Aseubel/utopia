@@ -60,7 +60,7 @@ public class FileVO {
         vo.setFileId((String) list.get(1));
         vo.setFileName((String) list.get(2));
         vo.setFileUrl((String) list.get(3));
-        vo.setFileSize((Integer) list.get(4));
+        vo.setFileSize((Long) list.get(4));
         vo.setDownloadCount((Integer) list.get(5));
         vo.setCourseName((String) list.get(6));
         vo.setIsDeleted((Integer) list.get(11));
