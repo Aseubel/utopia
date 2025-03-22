@@ -1,4 +1,4 @@
-package com.aseubel.domain.message.server;
+package com.aseubel.infrastructure.netty;
 
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
@@ -12,9 +12,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author Aseubel
+ */
 public class HeartbeatHandler extends ChannelInboundHandlerAdapter {
     private static final int HEARTBEAT_INTERVAL = 15; // 心跳间隔(秒)
     private static final int MAX_MISSED_HEARTBEATS = 2; // 允许丢失的心跳次数
+    // 记录每个连接的丢失心跳次数
     private final Map<ChannelId, Integer> missedHeartbeats = new ConcurrentHashMap<>();
 
     @Override

@@ -1,9 +1,12 @@
 package com.aseubel.infrastructure.redis;
 
 import org.redisson.api.*;
-import org.redisson.client.protocol.ScoredEntry;
 
-import java.util.*;
+import java.time.Duration;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -180,6 +183,16 @@ public interface IRedisService {
      * @param value 值
      */
     void addToList(String key, String value);
+
+    /**
+     * 获取列表中的所有值
+     */
+    List<String> getListValuesAndRemove(String key);
+
+    /**
+     * 设置列表的过期时间
+     */
+    void setListExpired(String key, Duration expired);
 
     /**
      * 获取列表中指定索引的值

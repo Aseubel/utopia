@@ -1,4 +1,4 @@
-package com.aseubel.domain.message.server;
+package com.aseubel.infrastructure.netty;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

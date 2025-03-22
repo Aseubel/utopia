@@ -1,8 +1,8 @@
 package com.aseubel.config;
 
-import com.aseubel.domain.message.server.HeartbeatHandler;
-import com.aseubel.domain.message.server.HttpHandler;
-import com.aseubel.domain.message.server.MessageHandler;
+import com.aseubel.infrastructure.netty.HeartbeatHandler;
+import com.aseubel.infrastructure.netty.HttpHandler;
+import com.aseubel.infrastructure.netty.MessageHandler;
 import com.aseubel.types.util.SslUtil;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -20,15 +20,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 import java.util.concurrent.TimeUnit;
 
-import static com.aseubel.types.common.Constant.NETTY_PORT;
-
+/**
+ * @author Aseubel
+ */
 @Component
 @Slf4j
 @EnableConfigurationProperties(NettyServerConfigProperties.class)
@@ -47,6 +47,7 @@ public class NettyServerConfig {
 
     private final NettyServerConfigProperties properties;
 
+    // 由于在后面的handler中有依赖注入类，所以要通过springboot的ApplicationContext来获取Bean实例
     @Autowired
     private ApplicationContext applicationContext;
 

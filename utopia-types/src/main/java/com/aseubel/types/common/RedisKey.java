@@ -29,4 +29,6 @@ public class RedisKey {
 
     public static final String FAVORITE_STATUS = "fs";
 
+    public static final String REDIS_OFFLINE_KEY = "offline:msgs:";
+
 }

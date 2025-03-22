@@ -11,7 +11,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 //@ConfigurationProperties(prefix = "canal.client")
 public class CanalClientConfigProperties {
 
-    /** 目标数据库名称 */
+    /** 目标canal实例名称 */
     private String destination = "example";
     /** 用户名 */
     private String username = "canal";

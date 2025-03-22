@@ -1,16 +1,16 @@
-package com.aseubel.domain.message.server;
+package com.aseubel.infrastructure.netty;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.aseubel.domain.message.adapter.repo.IMessageRepository;
 import com.aseubel.domain.message.model.MessageEntity;
+import com.aseubel.infrastructure.redis.IRedisService;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.exception.WxException;
 import com.aseubel.types.util.HttpClientUtil;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -24,13 +24,14 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.Resource;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+
+import java.time.Duration;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import static com.aseubel.types.common.Constant.*;
+import static com.aseubel.types.common.RedisKey.REDIS_OFFLINE_KEY;
 
 /**
  * @author Aseubel
@@ -51,6 +52,8 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
 
     @Resource
     private IMessageRepository messageRepository;
+    @Resource
+    private IRedisService redisService;
 
     // 提供受控的访问方法
     public static void removeUserChannel(Channel channel) {
@@ -79,9 +82,15 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
             new Thread(() -> {
                 try {
                     Thread.sleep(50);
-                    OFFLINE_MSGS.getOrDefault(userId, new LinkedList<>())
-                            .forEach(ctx::writeAndFlush);
-                    OFFLINE_MSGS.remove(userId);
+                    List<String> offlineMsgs = redisService.getListValuesAndRemove(REDIS_OFFLINE_KEY + userId);
+                    if (offlineMsgs!= null &&!offlineMsgs.isEmpty()) {
+                        offlineMsgs.forEach(msg -> {
+                            ctx.writeAndFlush(new TextWebSocketFrame(msg));
+                        });
+                    }
+//                    OFFLINE_MSGS.getOrDefault(userId, new LinkedList<>())
+//                            .forEach(ctx::writeAndFlush);
+//                    OFFLINE_MSGS.remove(userId);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
@@ -98,7 +107,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
         if (frame instanceof TextWebSocketFrame) {
             MessageEntity message = validateMessage(ctx.channel().attr(WS_USER_ID_KEY).get(), (TextWebSocketFrame) frame);
             saveMessage(message);
-            sendOrStoreMessage(message.getToUserId(), frame);
+            sendOrStoreMessage(message.getToUserId(), (TextWebSocketFrame) frame);
         } else {
             ctx.close();
         }
@@ -136,17 +145,27 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
         }
     }
 
-    private void sendOrStoreMessage(String toUserId, WebSocketFrame message) {
+    private void sendOrStoreMessage(String toUserId, TextWebSocketFrame message) {
         if (isUserOnline(toUserId)) {
-            Channel targetChannel = userChannels.get(toUserId);
-            if (targetChannel != null && targetChannel.isActive()) {
-                targetChannel.writeAndFlush(message.retain());
-            }
+            sendMessage(toUserId, message);
         } else {
+            storeOfflineMessage(toUserId, message.text());
             // 存储原始WebSocketFrame（需保留引用）
-            OFFLINE_MSGS.computeIfAbsent(toUserId, k -> new LinkedList<>())
-                    .add(message.retain());
+//            OFFLINE_MSGS.computeIfAbsent(toUserId, k -> new LinkedList<>())
+//                    .add(message.retain());
         }
+    }
+
+    private void sendMessage(String userId, WebSocketFrame message) {
+        Channel targetChannel = userChannels.get(userId);
+        if (targetChannel != null && targetChannel.isActive()) {
+            targetChannel.writeAndFlush(message.retain());
+        }
+    }
+
+    private void storeOfflineMessage(String userId, String content) {
+        redisService.addToList(REDIS_OFFLINE_KEY + userId, content);
+        redisService.setListExpired(REDIS_OFFLINE_KEY + userId, Duration.ofDays(1));
     }
 
     private void saveMessage(MessageEntity message) {
