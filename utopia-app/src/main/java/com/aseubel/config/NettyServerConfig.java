@@ -18,12 +18,16 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -33,6 +37,13 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @EnableConfigurationProperties(NettyServerConfigProperties.class)
 public class NettyServerConfig {
+
+    @Value("${server.ssl.key-store-type}")
+    private String sslType;
+    @Value("${server.ssl.key-store}")
+    private String sslPath;
+    @Value("${server.ssl.key-store-password}")
+    private String sslPassword;
 
     private ChannelFuture serverChannelFuture;
 
@@ -56,7 +67,10 @@ public class NettyServerConfig {
     }
 
     @PostConstruct
-    public void startNettyServer() {
+    public void startNettyServer() throws IOException {
+        ClassPathResource resource = new ClassPathResource(sslPath.substring(10));  // 去掉classpath:前缀
+        sslPath = resource.getFile().getAbsolutePath();
+
         // 使用独立线程启动Netty服务
         new Thread(() -> {
             try {
@@ -68,8 +82,8 @@ public class NettyServerConfig {
                             protected void initChannel(Channel ch) throws Exception {
                                 ChannelPipeline pipeline = ch.pipeline();
 
-                                SSLContext sslContext = SslUtil.createSSLContext("PKCS12",
-                                        properties.getSslPath(), properties.getSslPassword());
+                                System.out.println("sslType: " + sslType + ", sslPath: " + sslPath + ", sslPassword: " + sslPassword);
+                                SSLContext sslContext = SslUtil.createSSLContext(sslType, sslPath, sslPassword);
                                 // SSLEngine 此类允许使用ssl安全套接层协议进行安全通信
                                 SSLEngine engine = sslContext.createSSLEngine();
                                 engine.setUseClientMode(false);

@@ -9,7 +9,4 @@ public class NettyServerConfigProperties {
 
     private int port = 8080;
 
-    private String sslPath = "./etc/ssl/certs/mystore.p12";
-
-    private String sslPassword = "password";
 }

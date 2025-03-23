@@ -26,9 +26,9 @@ services:
       - UTOPIA_APPID=YOUR_APP_ID
       - OSS_ACCESS_KEY_ID=YOUR_ACCESS_KEY_ID
       - OSS_ACCESS_KEY_SECRET=YOUR_ACCESS_KEY_SECRET
+      - SERVER_SSL_KEY-STORE-PASSWORD=YOUR_SSL_KEY_STORE_PASSWORD
     volumes:
       - ./log:/data/log
-      - ./etc/ssl/certs/mystore.p12:/etc/ssl/certs/mystore.p12
     logging:
       driver: "json-file"
       options:
