@@ -12,4 +12,6 @@ public class NettyServerConfigProperties {
     private String sslPath = "./etc/ssl/certs/mystore.p12";
 
     private String sslPassword = "password";
+
+    private String sslType = "PKCS12";
 }
