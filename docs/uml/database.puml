@@ -1,0 +1,260 @@
+@startuml
+
+' 用户表
+class User {
+  id: BIGINT UNSIGNED
+  user_id: VARCHAR(45)
+  user_name: VARCHAR(64)
+  school_code: VARCHAR(8)
+  real_name: VARCHAR(12)
+  phone: VARCHAR(13)
+  gender: TINYINT UNSIGNED
+  avatar: VARCHAR(500)
+  signature: VARCHAR(128)
+  create_time: DATETIME
+  update_time: DATETIME
+  is_deleted: TINYINT UNSIGNED
+}
+
+' 头像表
+class Avatar {
+  id: BIGINT UNSIGNED
+  user_id: VARCHAR(45)
+  avatar_id: VARCHAR(64)
+  avatar_url: VARCHAR(255)
+  create_time: DATETIME
+  is_deleted: TINYINT UNSIGNED
+}
+
+' 申请表
+class Application {
+  id: BIGINT UNSIGNED
+  user_id: VARCHAR(45)
+  type: TINYINT
+  content: TEXT
+  status: TINYINT
+  admin_id: VARCHAR(64)
+  reject_reason: VARCHAR(255)
+  create_time: DATETIME
+  update_time: DATETIME
+  is_deleted: TINYINT UNSIGNED
+}
+
+' 消息表
+class Message {
+  id: BIGINT UNSIGNED
+  message_id: VARCHAR(45)
+  user_id: VARCHAR(45)
+  to_user_id: VARCHAR(45)
+  content: LONGTEXT
+  type: VARCHAR(45)
+  status: TINYINT
+  create_time: DATETIME
+  is_deleted: TINYINT UNSIGNED
+}
+
+' 评论表
+class Comment {
+  id: BIGINT UNSIGNED
+  root_id: VARCHAR(64)
+  reply_to: VARCHAR(64)
+  comment_id: VARCHAR(64)
+  post_id: VARCHAR(64)
+  user_id: VARCHAR(36)
+  content: TEXT
+  like_count: INT UNSIGNED
+  unlike_count: INT UNSIGNED
+  reply_count: INT UNSIGNED
+  comment_time: DATETIME
+  update_time: DATETIME
+  is_deleted: TINYINT UNSIGNED
+}
+
+' 评论-图片中间表
+class CommentImage {
+  id: BIGINT UNSIGNED
+  comment_id: VARCHAR(64)
+  image_id: VARCHAR(64)
+  create_time: DATETIME
+  update_time: DATETIME
+  is_deleted: TINYINT UNSIGNED
+}
+
+' 课程表
+class Course {
+  id: BIGINT UNSIGNED
+  course_name: VARCHAR(64)
+  major_name: VARCHAR(36)
+  create_time: DATETIME
+  update_time: DATETIME
+  is_deleted: TINYINT UNSIGNED
+}
+
+' 帖子表
+class DiscussPost {
+  id: BIGINT UNSIGNED
+  discuss_post_id: VARCHAR(64)
+  user_id: VARCHAR(45)
+  school_code: VARCHAR(10)
+  title: VARCHAR(36)
+  content: TEXT
+  tag: VARCHAR(36)
+  like_count: INT UNSIGNED
+  favorite_count: INT UNSIGNED
+  comment_count: INT UNSIGNED
+  type: TINYINT UNSIGNED
+  status: TINYINT UNSIGNED
+  create_time: DATETIME
+  update_time: DATETIME
+  is_deleted: TINYINT UNSIGNED
+}
+
+' 共享文件下载记录表
+class DownloadRecord {
+  id: BIGINT UNSIGNED
+  user_id: VARCHAR(45)
+  sfile_id: VARCHAR(64)
+  create_time: DATETIME
+  is_deleted: TINYINT UNSIGNED
+}
+
+' 收藏表
+class Favorite {
+  id: BIGINT UNSIGNED
+  user_id: VARCHAR(45)
+  post_id: VARCHAR(64)
+  status: TINYINT UNSIGNED
+  create_time: DATETIME
+  update_time: DATETIME
+  is_deleted: TINYINT UNSIGNED
+}
+
+' 评论帖子图片表
+class Image {
+  id: BIGINT UNSIGNED
+  user_id: VARCHAR(45)
+  image_id: VARCHAR(64)
+  image_url: VARCHAR(255)
+  create_time: DATETIME
+  is_deleted: TINYINT UNSIGNED
+}
+
+' 点赞表
+class Like {
+  id: BIGINT UNSIGNED
+  user_id: VARCHAR(45)
+  to_id: VARCHAR(64)
+  status: TINYINT UNSIGNED
+  create_time: DATETIME
+  update_time: DATETIME
+  is_deleted: TINYINT UNSIGNED
+}
+
+' 学科门类表
+class Major {
+  id: BIGINT UNSIGNED
+  major_name: VARCHAR(64)
+  create_time: DATETIME
+  update_time: DATETIME
+  is_deleted: TINYINT UNSIGNED
+}
+
+' 通知表
+class Notice {
+  id: BIGINT UNSIGNED
+  notice_id: VARCHAR(64)
+  user_id: VARCHAR(64)
+  receiver_id: VARCHAR(64)
+  post_id: VARCHAR(64)
+  comment_id: VARCHAR(64)
+  my_comment_id: VARCHAR(64)
+  type: TINYINT
+  status: TINYINT
+  create_time: DATETIME
+  is_deleted: TINYINT UNSIGNED
+}
+
+' 帖子-图片中间表
+class PostImage {
+  id: BIGINT UNSIGNED
+  post_id: VARCHAR(36)
+  image_id: VARCHAR(36)
+  create_time: DATETIME
+  update_time: DATETIME
+  is_deleted: TINYINT UNSIGNED
+}
+
+' 学校表
+class School {
+  id: BIGINT UNSIGNED
+  school_code: VARCHAR(10)
+  school_name: VARCHAR(64)
+  discuss_post_count: INT UNSIGNED
+  trade_post_count: INT UNSIGNED
+  student_count: INT UNSIGNED
+  is_deleted: TINYINT UNSIGNED
+}
+
+' 文件表
+class SFile {
+  id: BIGINT UNSIGNED
+  sfile_id: VARCHAR(64)
+  sfile_name: VARCHAR(64)
+  sfile_url: VARCHAR(255)
+  sfile_size: BIGINT UNSIGNED
+  download_count: INT UNSIGNED
+  course_name: VARCHAR(32)
+  create_by: VARCHAR(36)
+  update_by: VARCHAR(36)
+  create_time: DATETIME
+  update_time: DATETIME
+  is_deleted: TINYINT UNSIGNED
+}
+
+' 交易帖子表
+class TradePost {
+  id: BIGINT UNSIGNED
+  trade_post_id: VARCHAR(64)
+  user_id: VARCHAR(45)
+  title: VARCHAR(36)
+  content: TEXT
+  price: FLOAT
+  contact: VARCHAR(32)
+  school_code: VARCHAR(10)
+  type: TINYINT UNSIGNED
+  status: TINYINT UNSIGNED
+  create_time: DATETIME
+  update_time: DATETIME
+  is_deleted: TINYINT UNSIGNED
+}
+
+' 关系定义
+User "1" -- "0..*" Avatar : 用户头像
+User "1" -- "0..*" Application : 用户申请
+User "1" -- "0..*" Message : 发送消息
+User "1" -- "0..*" Comment : 发表评论
+User "1" -- "0..*" DiscussPost : 发布帖子
+User "1" -- "0..*" DownloadRecord : 下载记录
+User "1" -- "0..*" Favorite : 收藏
+User "1" -- "0..*" Image : 上传图片
+User "1" -- "0..*" Like : 点赞
+User "1" -- "0..*" Notice : 接收通知
+User "1" -- "0..*" PostImage : 帖子图片
+User "1" -- "0..*" TradePost : 交易帖子
+
+DiscussPost "1" -- "0..*" Comment : 帖子评论
+DiscussPost "1" -- "0..*" PostImage : 帖子图片
+DiscussPost "1" -- "0..*" Favorite : 被收藏
+DiscussPost "1" -- "0..*" Like : 被点赞
+
+Comment "1" -- "0..*" CommentImage : 评论图片
+Comment "1" -- "0..*" Like : 被点赞
+Comment "1" -- "0..*" Notice : 评论通知
+
+SFile "1" -- "0..*" DownloadRecord : 文件下载记录
+SFile "1" -- "1" Course : 所属课程
+
+TradePost "1" -- "1" School : 所属学校
+
+
+@enduml
