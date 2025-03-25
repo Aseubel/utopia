@@ -117,19 +117,27 @@ public class NoticeRepository implements INoticeRepository {
     @Override
     public void addNotice(CommunityBO bo, int type) {
         if (type == NOTICE_TYPE_COMMENT_POST) {
+            String receiverId = discussPostMapper.getUserIdByPostId(bo.getPostId());
+            if (receiverId.equals(bo.getUserId())) {
+                return;
+            }
             NoticeEntity notice = NoticeEntity.builder()
                     .userId(bo.getUserId())
                     .postId(bo.getPostId())
                     .commentId(bo.getCommentId())
-                    .receiverId(discussPostMapper.getUserIdByPostId(bo.getPostId()))
+                    .receiverId(receiverId)
                     .type(NOTICE_TYPE_COMMENT_POST)
                     .build();
             notice.generateId();
             noticeMapper.InsertNoticeComment(noticeConvertor.convert(notice));
         } else if (type == NOTICE_TYPE_COMMENT_REPLY) {
+            String receiverId = commentMapper.getUserIdByCommentId(bo.getReplyTo());
+            if (receiverId.equals(bo.getUserId())) {
+                return;
+            }
             NoticeEntity notice = NoticeEntity.builder()
                     .userId(bo.getUserId())
-                    .receiverId(commentMapper.getUserIdByCommentId(bo.getReplyTo()))
+                    .receiverId(receiverId)
                     .postId(bo.getPostId())
                     .commentId(bo.getCommentId())
                     .myCommentId(bo.getReplyTo())

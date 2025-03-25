@@ -8,6 +8,7 @@ import com.aseubel.infrastructure.redis.IRedisService;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.exception.WxException;
 import com.aseubel.types.util.HttpClientUtil;
+import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.netty.channel.Channel;
@@ -107,7 +108,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
         if (frame instanceof TextWebSocketFrame) {
             MessageEntity message = validateMessage(ctx.channel().attr(WS_USER_ID_KEY).get(), (TextWebSocketFrame) frame);
             saveMessage(message);
-            sendOrStoreMessage(message.getToUserId(), (TextWebSocketFrame) frame);
+            sendOrStoreMessage(message.getToUserId(), message);
         } else {
             ctx.close();
         }
@@ -135,6 +136,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
             String type = json.get("type").getAsString();
 
             if (type.equals("text") || type.equals("image")) {
+                content = SensitiveWordHelper.replace(content, '*');
                 return new MessageEntity(userId, toUserId, content, type);
             } else {
                 throw new AppException("非法的消息类型！");
@@ -142,14 +144,17 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
 
         } catch (Exception e) {
             throw new AppException("非法的消息格式！");
+        } finally {
+            textFrame.release();
         }
     }
 
-    private void sendOrStoreMessage(String toUserId, TextWebSocketFrame message) {
+    private void sendOrStoreMessage(String toUserId, MessageEntity message) {
+        String text = buildMessageJson(message);
         if (isUserOnline(toUserId)) {
-            sendMessage(toUserId, message);
+            sendMessage(toUserId, new TextWebSocketFrame(text));
         } else {
-            storeOfflineMessage(toUserId, message.text());
+            storeOfflineMessage(toUserId, text);
             // 存储原始WebSocketFrame（需保留引用）
 //            OFFLINE_MSGS.computeIfAbsent(toUserId, k -> new LinkedList<>())
 //                    .add(message.retain());
@@ -204,6 +209,15 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
         }
 
         return openid;
+    }
+
+    private String buildMessageJson(MessageEntity message) {
+        return new JSONObject()
+                .fluentPut("userId", message.getUserId())
+                .fluentPut("toUserId", message.getToUserId())
+                .fluentPut("content", message.getContent())
+                .fluentPut("type", message.getType())
+                .toJSONString();
     }
 
     @Override

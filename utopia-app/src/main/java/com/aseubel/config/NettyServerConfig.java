@@ -83,7 +83,6 @@ public class NettyServerConfig {
                             protected void initChannel(Channel ch) throws Exception {
                                 ChannelPipeline pipeline = ch.pipeline();
 
-                                System.out.println("sslType: " + sslType + ", sslPath: " + sslPath + ", sslPassword: " + sslPassword);
                                 SSLContext sslContext = SslUtil.createSSLContext(sslType, sslPath, sslPassword);
                                 // SSLEngine 此类允许使用ssl安全套接层协议进行安全通信
                                 SSLEngine engine = sslContext.createSSLEngine();

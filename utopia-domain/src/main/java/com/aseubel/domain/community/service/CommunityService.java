@@ -14,6 +14,7 @@ import com.aseubel.domain.community.model.entity.NoticeEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.AliOSSUtil;
+import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -125,18 +126,19 @@ public class CommunityService implements ICommunityService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void publishDiscussPost(DiscussPostEntity discussPostEntity) {
-        checkUserStatus(discussPostEntity.getUserId());
-        checkSchoolCodeValid(discussPostEntity.getSchoolCode());
+    public void publishDiscussPost(DiscussPostEntity post) {
+        checkUserStatus(post.getUserId());
+        checkSchoolCodeValid(post.getSchoolCode());
 
-        discussPostEntity.generatePostId();
-        discussPostRepository.saveNewDiscussPost(discussPostEntity);
+        post.setContent(SensitiveWordHelper.replace(post.getContent(), '*'));
+        post.generatePostId();
+        discussPostRepository.saveNewDiscussPost(post);
 
-        if (!CollectionUtil.isEmpty(discussPostEntity.getImages())) {
-            List<CommunityImage> images = discussPostRepository.listPostImagesByImageIds(discussPostEntity.getImages());
+        if (!CollectionUtil.isEmpty(post.getImages())) {
+            List<CommunityImage> images = discussPostRepository.listPostImagesByImageIds(post.getImages());
             if (!CollectionUtil.isEmpty(images)) {
-                discussPostEntity.setImage(images.get(0).getImageUrl());
-                discussPostRepository.relateNewPostImage(discussPostEntity.getPostId(), images);
+                post.setImage(images.get(0).getImageUrl());
+                discussPostRepository.relateNewPostImage(post.getPostId(), images);
             }
         }
 
@@ -233,19 +235,20 @@ public class CommunityService implements ICommunityService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void commentDiscussPost(CommunityBO communityBO) {
-        CommentEntity commentEntity = communityBO.getCommentEntity();
+        CommentEntity comment = communityBO.getCommentEntity();
 
-        checkUserStatus(commentEntity.getUserId());
-        checkPostIdValid(commentEntity.getPostId());
+        checkUserStatus(comment.getUserId());
+        checkPostIdValid(comment.getPostId());
 
-        commentEntity.generateCommentId();
-        commentEntity.setRootId(commentEntity.getCommentId());
-        commentRepository.saveRootComment(commentEntity);
+        comment.setContent(SensitiveWordHelper.replace(comment.getContent(), '*'));
+        comment.generateCommentId();
+        comment.setRootId(comment.getCommentId());
+        commentRepository.saveRootComment(comment);
 
-        if (!CollectionUtil.isEmpty(commentEntity.getImages())) {
-            List<CommunityImage> images = commentRepository.listCommentImagesByImageIds(commentEntity.getImages());
+        if (!CollectionUtil.isEmpty(comment.getImages())) {
+            List<CommunityImage> images = commentRepository.listCommentImagesByImageIds(comment.getImages());
             if (!CollectionUtil.isEmpty(images)) {
-                commentRepository.relateNewCommentImage(commentEntity.getCommentId(), images);
+                commentRepository.relateNewCommentImage(comment.getCommentId(), images);
             }
         }
 
@@ -254,16 +257,17 @@ public class CommunityService implements ICommunityService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void replyComment(CommunityBO communityBO) {
-        CommentEntity commentEntity = communityBO.getCommentEntity();
-        checkUserStatus(commentEntity.getUserId());
+        CommentEntity comment = communityBO.getCommentEntity();
+        checkUserStatus(comment.getUserId());
 
-        commentEntity.generateCommentId();
-        commentRepository.saveReplyComment(commentEntity);
+        comment.setContent(SensitiveWordHelper.replace(comment.getContent(), '*'));
+        comment.generateCommentId();
+        commentRepository.saveReplyComment(comment);
 
-        if (!CollectionUtil.isEmpty(commentEntity.getImages())) {
-            List<CommunityImage> images = commentRepository.listCommentImagesByImageIds(commentEntity.getImages());
+        if (!CollectionUtil.isEmpty(comment.getImages())) {
+            List<CommunityImage> images = commentRepository.listCommentImagesByImageIds(comment.getImages());
             if (!CollectionUtil.isEmpty(images)) {
-                commentRepository.relateNewCommentImage(commentEntity.getCommentId(), images);
+                commentRepository.relateNewCommentImage(comment.getCommentId(), images);
             }
         }
 

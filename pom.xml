@@ -166,6 +166,11 @@
                 <version>4.1.100.Final</version>
             </dependency>
             <dependency>
+                <groupId>com.github.houbb</groupId>
+                <artifactId>sensitive-word</artifactId>
+                <version>0.25.0</version>
+            </dependency>
+            <dependency>
                 <groupId>com.meilisearch.sdk</groupId>
                 <artifactId>meilisearch-java</artifactId>
                 <version>0.14.2</version>

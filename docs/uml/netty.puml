@@ -1,0 +1,63 @@
+@startuml
+' 类图
+
+class NettyServerConfig {
+  - sslType: String
+  - sslPath: String
+  - sslPassword: String
+  - serverChannelFuture: ChannelFuture
+  - bossGroup: EventLoopGroup
+  - workerGroup: EventLoopGroup
+  + startNettyServer()
+  + stopNettyServer()
+}
+
+class HttpHandler {
+  + channelRead()
+}
+
+class HeartbeatHandler {
+  - HEARTBEAT_INTERVAL: int
+  - MAX_MISSED_HEARTBEATS: int
+  - missedHeartbeats: Map<ChannelId, Integer>
+  + channelActive()
+  + channelRead()
+  + userEventTriggered()
+  - scheduleHeartbeat()
+  - cleanOfflineResources()
+}
+
+class MessageHandler {
+  - OFFLINE_MSGS: Map<String, Queue<WebSocketFrame>>
+  - userChannels: Map<String, Channel>
+  + channelRead()
+  + channelRead0()
+  + channelInactive()
+  - validateMessage()
+  - sendOrStoreMessage()
+  - sendMessage()
+  - storeOfflineMessage()
+  - saveMessage()
+}
+
+class NettyServerConfigProperties {
+  - port: int
+  + getPort()
+}
+
+' 依赖关系
+NettyServerConfig --> NettyServerConfigProperties : 配置参数
+NettyServerConfig --> HttpHandler : 创建
+NettyServerConfig --> HeartbeatHandler : 创建
+NettyServerConfig --> MessageHandler : 注入Bean
+
+' 处理器链顺序
+HttpHandler --> HeartbeatHandler : 前置处理器
+HeartbeatHandler --> MessageHandler : 后续处理器
+
+' 协作关系
+HeartbeatHandler --> MessageHandler : 调用removeUserChannel()
+MessageHandler --> IRedisService : 依赖
+MessageHandler --> IMessageRepository : 依赖
+
+@enduml

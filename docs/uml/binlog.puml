@@ -1,0 +1,13 @@
+@startuml
+start
+:帖子状态变更;
+:触发MySQL数据变更;
+:MySQL数据变更完成;
+:canal监听到binlog变更;
+:canal将变更数据发送给同步服务;
+:同步服务接收变更数据;
+:同步服务向Meilisearch发送更新请求;
+:Meilisearch接收并处理更新请求;
+:Meilisearch更新完成;
+stop
+@enduml
