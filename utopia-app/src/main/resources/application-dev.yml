@@ -19,9 +19,6 @@ meilisearch:
 netty:
   server:
     port: 21611
-    ssl-path: classpath:aseubel.xyz.jks
-    ssl-password: YOUR_SSL_KEY_STORE_PASSWORD
-    ssl-type: 'JKS'
 
 # 微信小程序配置
 wechat:
