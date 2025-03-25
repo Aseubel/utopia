@@ -36,7 +36,6 @@ public class CommentPostRequest implements Serializable {
     private String postId;
 
     @NotNull(message = "评论内容不能为空")
-    @NotBlank(message = "评论内容不能为空")
     @FieldDesc(name = "评论内容")
     private String content;
 

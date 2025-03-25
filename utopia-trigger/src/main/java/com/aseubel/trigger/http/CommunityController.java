@@ -206,6 +206,7 @@ public class CommunityController implements CommunityInterface {
     @Override
     @PostMapping("/comment/post")
     public Response<CommentPostResponse> commentDiscussPost(@Valid @RequestBody CommentPostRequest requestDTO) {
+        validateContent(requestDTO.getContent());
         CommentEntity commentEntity = CommentEntity.builder()
                 .userId(requestDTO.getUserId())
                 .postId(requestDTO.getPostId())
@@ -232,6 +233,7 @@ public class CommunityController implements CommunityInterface {
     @Override
     @PostMapping("/comment/reply")
     public Response<ReplyCommentResponse> replyComment(@Valid @RequestBody ReplyCommentRequest requestDTO) {
+        validateContent(requestDTO.getContent());
         CommentEntity commentEntity = CommentEntity.builder()
                 .userId(requestDTO.getUserId())
                 .postId(requestDTO.getPostId())
@@ -549,6 +551,12 @@ public class CommunityController implements CommunityInterface {
     private void validateCommentId(String postId) {
         if (StringUtils.isEmpty(postId)) {
             throw new AppException(400, "评论id不能为空!");
+        }
+    }
+
+    private void validateContent(String content) {
+        if (StringUtils.isEmpty(content)) {
+            throw new AppException(400, "评论内容不能为空!");
         }
     }
 
