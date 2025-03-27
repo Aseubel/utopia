@@ -79,4 +79,10 @@ public interface IFileRepository {
      * @return
      */
     List<CourseVO> queryCourses();
+
+    /**
+     * 根据文件url删除文件
+     * @param fileUrl
+     */
+    void deleteSFileByUrl(String fileUrl);
 }

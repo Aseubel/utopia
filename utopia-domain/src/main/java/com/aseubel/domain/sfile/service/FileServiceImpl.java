@@ -45,6 +45,11 @@ public class FileServiceImpl implements IFileService{
     }
 
     @Override
+    public void delete(String fileUrl) {
+        fileRepository.deleteSFileByUrl(fileUrl);
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public byte[] download(String fileUrl) throws ClientException {
         // 取到object name

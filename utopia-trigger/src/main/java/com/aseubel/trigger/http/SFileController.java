@@ -100,6 +100,7 @@ public class SFileController implements SFileInterface {
                 throw new AppException("文件路径不能为空");
             }
             String fileName = aliOSSUtil.getFileName(filePath);
+            fileService.delete(filePath);
             aliOSSUtil.remove(fileName);
             log.info("删除文件成功, 文件名: {}", fileName);
             return Response.SYSTEM_SUCCESS(fileName);

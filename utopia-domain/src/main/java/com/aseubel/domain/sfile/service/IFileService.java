@@ -22,6 +22,12 @@ public interface IFileService {
     String upload(SFileEntity sFileEntity) throws ClientException;
 
     /**
+     * 删除文件服务
+     * @param fileUrl
+     */
+    void delete(String fileUrl);
+
+    /**
      * 下载文件服务
      * @param fileUrl
      * @return

@@ -92,4 +92,10 @@ public interface SFileMapper {
      * @return
      */
     List<SFile> listPartialFileBase(long fileId, int pageSize);
+
+    /**
+     * 根据文件url删除文件
+     * @param fileUrl
+     */
+    void deleteByUrl(String fileUrl);
 }

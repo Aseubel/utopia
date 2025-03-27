@@ -82,19 +82,19 @@ public class SFileEntity {
 //        this.sfileSize = file.getSize();
 //    }
 
-    public SFileEntity(MultipartFile file, String fileName, String userId, String fileType) {
+    public SFileEntity(MultipartFile file, String fileName, String userId, String courseName) {
         this.sfile = file;
         this.uploaderId = userId;
-        this.courseName = fileType;
+        this.courseName = courseName;
         this.fileId = UUID.randomUUID().toString();
         this.fileName = StringUtils.isEmpty(fileName) ? file.getOriginalFilename() : (fileName+file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")));
         this.fileSize = file.getSize();
     }
 
-    public SFileEntity(MultipartFile file, String userId, String fileType) {
+    public SFileEntity(MultipartFile file, String userId, String courseName) {
         this.sfile = file;
         this.uploaderId = userId;
-        this.courseName = fileType;
+        this.courseName = courseName;
         this.fileId = UUID.randomUUID().toString();
         this.fileSize = file.getSize();
     }

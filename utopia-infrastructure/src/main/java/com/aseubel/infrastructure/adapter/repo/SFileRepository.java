@@ -198,6 +198,11 @@ public class SFileRepository implements IFileRepository, ISearchFileRepository {
     }
 
     @Override
+    public void deleteSFileByUrl(String fileUrl) {
+        sFileMapper.deleteByUrl(fileUrl);
+    }
+
+    @Override
     public String listFileStatistics(long fileId, int pageSize) throws JsonProcessingException {
         List<SFile> files = sFileMapper.listPartialFileBase(fileId, pageSize);
         List<SFileEntity> fileEntities = files.stream()

@@ -23,6 +23,11 @@
         )
     </delete>
 
+    <update id="deleteByUrl">
+        update `sfile` set is_deleted = 1
+        where sfile_url = #{fileUrl}
+    </update>
+
     <update id="deleteMissingSFile">
         update `sfile` set is_deleted = 1
         where id in
