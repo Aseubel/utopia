@@ -9,7 +9,7 @@ import com.aseubel.domain.search.adapter.repo.ISearchTradePostRepository;
 import com.aseubel.infrastructure.convertor.TradeImageConvertor;
 import com.aseubel.infrastructure.convertor.TradePostConvertor;
 import com.aseubel.infrastructure.dao.ImageMapper;
-import com.aseubel.infrastructure.dao.TradePostMapper;
+import com.aseubel.infrastructure.dao.bazaar.TradePostMapper;
 import com.aseubel.infrastructure.dao.po.TradePost;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

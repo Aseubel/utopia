@@ -1,4 +1,4 @@
-package com.aseubel.infrastructure.dao;
+package com.aseubel.infrastructure.dao.bazaar;
 
 import com.aseubel.infrastructure.dao.po.Image;
 import com.aseubel.infrastructure.dao.po.TradePost;

@@ -1,4 +1,4 @@
-package com.aseubel.infrastructure.dao;
+package com.aseubel.infrastructure.dao.community;
 
 import com.aseubel.infrastructure.dao.po.DiscussPost;
 import com.aseubel.infrastructure.dao.po.Image;

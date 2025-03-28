@@ -1,4 +1,4 @@
-package com.aseubel.infrastructure.dao;
+package com.aseubel.infrastructure.dao.file;
 
 import com.aseubel.infrastructure.dao.po.Course;
 import org.apache.ibatis.annotations.Mapper;

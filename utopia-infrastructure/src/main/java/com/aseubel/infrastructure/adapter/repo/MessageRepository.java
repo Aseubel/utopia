@@ -4,7 +4,7 @@ import com.aseubel.domain.message.adapter.repo.IMessageRepository;
 import com.aseubel.domain.message.model.MessageBO;
 import com.aseubel.domain.message.model.MessageEntity;
 import com.aseubel.infrastructure.convertor.MessageConvertor;
-import com.aseubel.infrastructure.dao.MessageMapper;
+import com.aseubel.infrastructure.dao.bazaar.MessageMapper;
 import org.springframework.stereotype.Repository;
 
 import jakarta.annotation.Resource;

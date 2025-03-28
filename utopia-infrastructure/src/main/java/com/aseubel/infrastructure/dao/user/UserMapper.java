@@ -1,4 +1,4 @@
-package com.aseubel.infrastructure.dao;
+package com.aseubel.infrastructure.dao.user;
 
 import com.aseubel.infrastructure.dao.po.User;
 import org.apache.ibatis.annotations.Mapper;

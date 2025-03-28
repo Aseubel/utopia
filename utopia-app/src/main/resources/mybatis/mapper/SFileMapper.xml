@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.aseubel.infrastructure.dao.SFileMapper">
+<mapper namespace="com.aseubel.infrastructure.dao.file.SFileMapper">
 
     <insert id="addSFile">
         insert into `sfile` (sfile_id, sfile_name, sfile_url, sfile_size, course_name, create_by, update_by)
@@ -79,7 +79,7 @@
             and is_deleted = 0
         </where>
         order by id DESC
-        limit #{limit}
+        `limit` #{limit}
     </select>
 
     <select id="listSFileByTypeIdAhead" resultType="com.aseubel.infrastructure.dao.po.SFile">

@@ -19,6 +19,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -96,7 +97,7 @@ public class LoginVerifyAspect {
                 // 不通过，响应401状态码
                 log.error("用户进行jwt校验失败！id:{}，token:{}", userId, token);;
                 if (response != null) {
-                    response.setStatus(401);
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 }
                 return Response.CUSTOMIZE_ERROR(GlobalServiceStatusCode.USER_TOKEN_ERROR);
             }

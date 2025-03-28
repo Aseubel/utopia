@@ -16,6 +16,7 @@ import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.community.model.entity.NoticeEntity;
 import com.aseubel.domain.community.service.ICommunityService;
 import com.aseubel.types.Response;
+import com.aseubel.types.constraint.Auth;
 import com.aseubel.types.event.*;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.CustomMultipartFile;
@@ -415,6 +416,7 @@ public class CommunityController implements CommunityInterface {
     /**
      * 删除帖子
      */
+    @Auth
     @Override
     @DeleteMapping("/post")
     public Response deletePost(@Valid @RequestBody DeletePostRequest requestDTO) {
@@ -431,6 +433,7 @@ public class CommunityController implements CommunityInterface {
     /**
      * 删除评论
      */
+    @Auth
     @Override
     @DeleteMapping("/comment")
     public Response deleteComment(@Valid @RequestBody DeleteCommentRequest requestDTO) {
@@ -439,6 +442,7 @@ public class CommunityController implements CommunityInterface {
                 .commentId(requestDTO.getCommentId())
                 .postId(requestDTO.getPostId())
                 .rootId(requestDTO.getRootId())
+                .schoolCode(requestDTO.getSchoolCode())
                 .build();
         communityService.deleteComment(communityBO);
         eventPublisher.publishEvent(new DeleteCommentEvent(communityBO));

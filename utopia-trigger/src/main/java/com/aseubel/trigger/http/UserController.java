@@ -71,6 +71,7 @@ public class UserController implements UserInterface {
                         .school(user.getSchool())
                         .refreshToken(user.getRefreshToken())
                         .accessToken(user.getAccessToken())
+                        .isAdmin(user.getIsAdmin())
                         .build());
     }
 
@@ -122,6 +123,7 @@ public class UserController implements UserInterface {
                         .avatar(user.getAvatar())
                         .signature(user.getSignature())
                         .school(user.getSchool())
+                        .isAdmin(user.getIsAdmin())
                         .build());
     }
 

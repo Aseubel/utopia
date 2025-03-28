@@ -160,7 +160,6 @@ public class BazaarService implements IBazaarService{
 
     @Override
     public void deletePost(BazaarBO bazaarBO) {
-        verifyPostAuth(bazaarBO.getUserId(), bazaarBO.getPostId());
         tradePostRepository.deletePost(bazaarBO.getPostId());
     }
 

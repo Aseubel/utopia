@@ -42,4 +42,6 @@ public class LoginResponseDTO implements Serializable {
     @FieldDesc(name = "access_token")
     private String accessToken;
 
+    @FieldDesc(name = "是否为管理员")
+    private Boolean isAdmin;
 }

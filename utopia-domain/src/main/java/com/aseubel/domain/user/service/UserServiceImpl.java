@@ -1,6 +1,7 @@
 package com.aseubel.domain.user.service;
 
 import com.aliyuncs.exceptions.ClientException;
+import com.aseubel.domain.user.adapter.repo.IAdminRepository;
 import com.aseubel.domain.user.adapter.repo.IAvatarRepository;
 import com.aseubel.domain.user.adapter.repo.IUserRepository;
 import com.aseubel.domain.user.adapter.wx.WxService;
@@ -36,6 +37,8 @@ public class UserServiceImpl implements IUserService {
 
     private final IAvatarRepository avatarRepository;
 
+    private final IAdminRepository adminRepository;
+
     private final WxService wxService;
 
     @Value("${jwt.config.secret-key:aseubel-secret-key}")
@@ -63,6 +66,9 @@ public class UserServiceImpl implements IUserService {
             user = UserEntity.builder().openid(openid).build();
             userRepository.addUser(user);
         }
+        if (user.getSchool() != null) {
+            user.setIsAdmin(adminRepository.isAdmin(user.getOpenid(), user.getSchool().getSchoolCode()));
+        }
 
         //生成JWT令牌
         Map<String, Object> claims=new HashMap<>();
@@ -83,6 +89,9 @@ public class UserServiceImpl implements IUserService {
     @Override
     public UserEntity queryUserInfo(String openid) {
         UserEntity user = userRepository.queryUserInfo(openid);
+        if (user.getSchool() != null) {
+            user.setIsAdmin(adminRepository.isAdmin(user.getOpenid(), user.getSchool().getSchoolCode()));
+        }
         return user;
     }
 

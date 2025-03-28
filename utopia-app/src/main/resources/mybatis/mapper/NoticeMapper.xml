@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.aseubel.infrastructure.dao.NoticeMapper">
+<mapper namespace="com.aseubel.infrastructure.dao.community.NoticeMapper">
 
     <select id="listNotices" resultType="com.aseubel.infrastructure.dao.po.Notice">
         SELECT * FROM `notice`

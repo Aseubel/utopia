@@ -51,6 +51,9 @@ public class UserEntity {
     @FieldDesc(name = "access_token")
     private String accessToken;
 
+    @FieldDesc(name = "是否管理员")
+    private Boolean isAdmin;
+    
     /**
      * 生成token
      */

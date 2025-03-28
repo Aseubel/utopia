@@ -7,10 +7,13 @@ import com.aseubel.domain.community.model.entity.NoticeEntity;
 import com.aseubel.infrastructure.convertor.DiscussPostConvertor;
 import com.aseubel.infrastructure.convertor.NoticeConvertor;
 import com.aseubel.infrastructure.dao.*;
+import com.aseubel.infrastructure.dao.community.CommentMapper;
+import com.aseubel.infrastructure.dao.community.DiscussPostMapper;
+import com.aseubel.infrastructure.dao.community.NoticeMapper;
 import com.aseubel.infrastructure.dao.po.Comment;
 import com.aseubel.infrastructure.dao.po.DiscussPost;
-import com.aseubel.infrastructure.dao.po.Notice;
 import com.aseubel.infrastructure.dao.po.User;
+import com.aseubel.infrastructure.dao.user.UserMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Repository;
 

@@ -3,8 +3,7 @@ package com.aseubel.infrastructure.adapter.repo;
 import com.aseubel.domain.user.adapter.repo.IAvatarRepository;
 import com.aseubel.domain.user.model.entity.AvatarEntity;
 import com.aseubel.infrastructure.convertor.AvatarConvertor;
-import com.aseubel.infrastructure.dao.AvatarMapper;
-import com.aseubel.infrastructure.dao.po.Avatar;
+import com.aseubel.infrastructure.dao.user.AvatarMapper;
 import org.springframework.stereotype.Repository;
 
 import jakarta.annotation.Resource;

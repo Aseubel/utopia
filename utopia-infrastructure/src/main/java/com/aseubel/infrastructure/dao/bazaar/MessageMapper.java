@@ -1,11 +1,9 @@
-package com.aseubel.infrastructure.dao;
+package com.aseubel.infrastructure.dao.bazaar;
 
 import com.aseubel.infrastructure.dao.po.Message;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Update;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**

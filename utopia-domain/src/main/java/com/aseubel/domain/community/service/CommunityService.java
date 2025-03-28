@@ -391,14 +391,12 @@ public class CommunityService implements ICommunityService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deletePost(CommunityBO communityBO) {
-        verifyPostAuth(communityBO.getUserId(), communityBO.getPostId());
         discussPostRepository.deletePost(communityBO.getPostId());
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteComment(CommunityBO communityBO) {
-        verifyCommentAuth(communityBO.getUserId(), communityBO.getCommentId());
         // 顺序不能调换
         commentRepository.deleteComment(communityBO);
         commentRepository.decreaseRootCommentReplyCount(communityBO.getCommentId());

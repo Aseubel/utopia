@@ -34,4 +34,9 @@ public class DeleteCommentRequest implements Serializable {
     @FieldDesc(name = "根评论id")
     private String rootId;
 
+    @FieldDesc(name = "学校代码")
+    @NotNull(message = "学校代码不能为空")
+    @NotBlank(message = "学校代码不能为空")
+    private String schoolCode;
+
 }

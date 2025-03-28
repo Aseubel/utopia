@@ -1,6 +1,8 @@
 package com.aseubel.api.dto.bazaar;
 
 import com.aseubel.types.annotation.FieldDesc;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.io.Serializable;
@@ -17,12 +19,18 @@ import java.io.Serializable;
 public class DeletePostRequest implements Serializable {
 
     @FieldDesc(name = "用户id")
+    @NotNull(message = "用户id不能为空")
+    @NotBlank(message = "用户id不能为空")
     private String userId;
 
     @FieldDesc(name = "帖子id")
+    @NotNull(message = "帖子id不能为空")
+    @NotBlank(message = "帖子id不能为空")
     private String postId;
 
     @FieldDesc(name = "院校代码")
+    @NotNull(message = "院校代码不能为空")
+    @NotBlank(message = "院校代码不能为空")
     private String schoolCode;
 
 }

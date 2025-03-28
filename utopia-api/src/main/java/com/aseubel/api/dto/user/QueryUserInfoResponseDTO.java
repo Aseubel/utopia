@@ -36,4 +36,7 @@ public class QueryUserInfoResponseDTO implements Serializable {
     @FieldDesc(name = "个性签名")
     private String signature;
 
+    @FieldDesc(name = "是否为管理员")
+    private Boolean isAdmin;
+
 }
