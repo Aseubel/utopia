@@ -28,6 +28,7 @@ services:
       - OSS_ACCESS_KEY_SECRET=YOUR_ACCESS_KEY_SECRET
       - SERVER_SSL_KEY-STORE-PASSWORD=YOUR_SSL_KEY_STORE_PASSWORD
       - SERVER_SSL_KEY-STORE=YOUR_SSL_KEY_STORE_PATH
+      - DIFY_CONFIG_PROJECT-ANALYST-TOKEN=YOUR_PROJECT_ANALYST_TOKEN
     volumes:
       - ./log:/data/log
       - ./ssl/aseubel.xyz.jks:/etc/ssl/certs/aseubel.xyz.jks

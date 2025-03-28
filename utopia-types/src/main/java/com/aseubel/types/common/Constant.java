@@ -86,4 +86,6 @@ public class Constant {
     public static final int NOTICE_TYPE_COMMENT_POST = 0;
 
     public static final int NOTICE_TYPE_COMMENT_REPLY = 1;
+
+    public static final String DIFY_WORK_FLOW_RESPONSE_MODE = "streaming";
 }
