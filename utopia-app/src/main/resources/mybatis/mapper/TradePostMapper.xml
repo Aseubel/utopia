@@ -67,7 +67,7 @@
             and is_deleted = 0
         </where>
         order by update_time DESC
-        `limit` #{limit}
+        limit #{limit}
     </select>
 
     <select id="getPostFirstImage" resultType="java.lang.String">
@@ -88,7 +88,7 @@
             and is_deleted = 0 and trade_post_id != #{postId}
         </where>
         order by id DESC
-        `limit` #{limit}
+        limit #{limit}
     </select>
 
     <select id="listUserTradePostAheadId" resultType="java.lang.String">
@@ -101,7 +101,7 @@
             and is_deleted = 0
         </where>
         order by id DESC
-        `limit` #{limit}
+        limit #{limit}
     </select>
 
     <select id="listDiscussPostByPostIds" resultType="com.aseubel.infrastructure.dao.po.TradePost">

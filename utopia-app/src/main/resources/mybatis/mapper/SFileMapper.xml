@@ -79,7 +79,7 @@
             and is_deleted = 0
         </where>
         order by id DESC
-        `limit` #{limit}
+        limit #{limit}
     </select>
 
     <select id="listSFileByTypeIdAhead" resultType="com.aseubel.infrastructure.dao.po.SFile">
