@@ -15,5 +15,5 @@ public class JwtProperties {
 
     private Long access_ttl = 7200000L;    // access token 过期时间，默认两小时
 
-    private String tokenName = "Authorization";
+    private String tokenName = "AccessToken";
 }

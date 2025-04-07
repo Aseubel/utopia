@@ -12,13 +12,23 @@ import static com.aseubel.types.common.RedisKey.*;
 public class RedisKeyBuilder {
 
     /**
-     * 构造用户token的redis key
-     * utopia:user:token:{userId}
+     * 构造用户accessToken的redis key
+     * utopia:user:access_token:{userId}
      * @param userId 用户id
      * @return redis key
      */
-    public static String UserTokenKey(String userId) {
-        return PREFIX + SPLIT + USER_TOKEN + SPLIT + userId;
+    public static String userAccessTokenKey(String userId) {
+        return PREFIX + SPLIT + USER + SPLIT + ACCESS_TOKEN + SPLIT + userId;
+    }
+
+    /**
+     * 构造用户refreshToken的redis key
+     * utopia:user:refresh_token:{userId}
+     * @param userId 用户id
+     * @return redis key
+     */
+    public static String userRefreshTokenKey(String userId) {
+        return PREFIX + SPLIT + USER + SPLIT + REFRESH_TOKEN + SPLIT + userId;
     }
 
     /**

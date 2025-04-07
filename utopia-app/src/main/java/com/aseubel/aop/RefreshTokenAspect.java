@@ -16,7 +16,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -24,7 +23,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
-import static com.aseubel.types.common.Constant.ACCESS_TOKEN;
+import static com.aseubel.types.common.Constant.ACCESS_EXPIRE_TIME;
 import static com.aseubel.types.common.Constant.USER_ID_KEY;
 
 /**
@@ -71,8 +70,7 @@ public class RefreshTokenAspect {
 
         try {
             log.info("RefreshTokenAspect：redis校验accessToken，id:{}，token:{}", userId, token);
-            String accessToken = redisService.getFromMap(
-                    RedisKeyBuilder.UserTokenKey(userId), ACCESS_TOKEN);
+            String accessToken = redisService.getValue(RedisKeyBuilder.userRefreshTokenKey(userId));
             // token为空或与redis中不匹配
             if (accessToken == null || !accessToken.equals(token)) {
                 return point.proceed();
@@ -96,7 +94,7 @@ public class RefreshTokenAspect {
         String newToken = userRepository.generateUserToken(
                 userId, jwtProperties.getSecretKey(), jwtProperties.getAccess_ttl());
         // 更新redis中token
-        redisService.addToMap(RedisKeyBuilder.UserTokenKey(userId), ACCESS_TOKEN, newToken);
+        redisService.setValue(RedisKeyBuilder.userRefreshTokenKey(userId), newToken, ACCESS_EXPIRE_TIME);
         // 设置token到响应头
         Optional.ofNullable(response)
                 .ifPresent(r -> r.setHeader(jwtProperties.getTokenName(), newToken));

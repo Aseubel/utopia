@@ -17,6 +17,7 @@ import com.aseubel.domain.community.model.entity.NoticeEntity;
 import com.aseubel.domain.community.service.ICommunityService;
 import com.aseubel.types.Response;
 import com.aseubel.types.constraint.Auth;
+import com.aseubel.types.constraint.Refresh;
 import com.aseubel.types.event.*;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.CustomMultipartFile;
@@ -59,6 +60,7 @@ public class CommunityController implements CommunityInterface {
      */
     @Override
     @GetMapping("/post")
+    @Refresh
     public Response<List<QueryIndexDiscussPostResponseDTO>> queryIndexDiscussPost(QueryIndexDiscussPostRequestDTO requestDTO) {
         CommunityBO communityBO = CommunityBO.builder()
                 .userId(requestDTO.getUserId())

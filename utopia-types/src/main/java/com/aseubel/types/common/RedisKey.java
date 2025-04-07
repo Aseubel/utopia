@@ -11,7 +11,13 @@ public class RedisKey {
 
     public static final String PREFIX = "utopia";
 
+    public static final String USER = "user";
+
     public static final String USER_TOKEN = "user:token";
+
+    public static final String ACCESS_TOKEN = "access_token";
+
+    public static final String REFRESH_TOKEN = "refresh_token";
 
     public static final String USER_INFO = "user:info";
 

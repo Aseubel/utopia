@@ -16,15 +16,13 @@ public class Constant {
 
     public static final String COMMENT_IMAGE = "comment_image";
     // 过期时间，单位毫秒
-    public static final Long EXPIRE_TIME = 30 * 24 * 3600 * 1000L; // 一个月
+    public static final long REFRESH_EXPIRE_TIME = 30 * 24 * 3600 * 1000L; // 一个月
+
+    public static final long ACCESS_EXPIRE_TIME = 2 * 3600 * 1000L; // 2小时
 
     public static final String WX_LOGIN = "https://api.weixin.qq.com/sns/jscode2session";
 
     public static final String USER_ID_KEY = "openid";
-
-    public static final String ACCESS_TOKEN = "access_token";
-
-    public static final String REFRESH_TOKEN = "refresh_token";
 
     public static final String ENDPOINT = "oss-cn-guangzhou.aliyuncs.com";
 

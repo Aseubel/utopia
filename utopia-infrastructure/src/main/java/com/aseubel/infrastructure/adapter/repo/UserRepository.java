@@ -5,7 +5,7 @@ import com.aseubel.domain.community.adapter.repo.ICommunityUserRepository;
 import com.aseubel.domain.user.adapter.repo.IUserRepository;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.infrastructure.convertor.UserConvertor;
-import com.aseubel.infrastructure.dao.*;
+import com.aseubel.infrastructure.dao.SchoolMapper;
 import com.aseubel.infrastructure.dao.community.CommentMapper;
 import com.aseubel.infrastructure.dao.community.FavoriteMapper;
 import com.aseubel.infrastructure.dao.community.LikeMapper;
@@ -17,11 +17,11 @@ import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.JwtUtil;
 import com.aseubel.types.util.RedisKeyBuilder;
 import io.jsonwebtoken.Claims;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import jakarta.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -98,14 +98,20 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
 
     @Override
     public void saveUserToken(UserEntity user) {
-        String tokenKey = RedisKeyBuilder.UserTokenKey(user.getOpenid());
-        redisService.addToMap(tokenKey, ACCESS_TOKEN, user.getAccessToken());
-        redisService.addToMap(tokenKey, REFRESH_TOKEN, user.getRefreshToken());
+        redisService.setValue(
+                RedisKeyBuilder.userAccessTokenKey(user.getOpenid()),
+                user.getAccessToken(),
+                ACCESS_EXPIRE_TIME);
+        redisService.setValue(
+                RedisKeyBuilder.userRefreshTokenKey(user.getOpenid()),
+                user.getRefreshToken(),
+                REFRESH_EXPIRE_TIME);
     }
 
     @Override
     public void cleanUserToken(String openid) {
-        redisService.remove(RedisKeyBuilder.UserTokenKey(openid));
+        redisService.remove(RedisKeyBuilder.userAccessTokenKey(openid));
+        redisService.remove(RedisKeyBuilder.userRefreshTokenKey(openid));
     }
 
     @Override
@@ -116,8 +122,7 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
         try {
             // 校验redis中是否有token，没有就是过期
             log.info("redis校验fresh_token，id:{}，refreshToken:{}", userId, refreshToken);
-            token = redisService.getFromMap(
-                    RedisKeyBuilder.UserTokenKey(userId), REFRESH_TOKEN);
+            token = redisService.getValue(RedisKeyBuilder.userRefreshTokenKey(userId));
             // token为空过期，不等于refreshToken，校验失败
             if (refreshToken == null || !refreshToken.equals(token)) {
                 return false;

@@ -15,6 +15,7 @@ import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.domain.user.model.vo.School;
 import com.aseubel.domain.user.service.IUserService;
 import com.aseubel.types.Response;
+import com.aseubel.types.constraint.Login;
 import com.aseubel.types.event.CancelAccountEvent;
 import com.aseubel.types.exception.AppException;
 import jakarta.validation.Valid;
@@ -110,6 +111,7 @@ public class UserController implements UserInterface {
      */
     @Override
     @GetMapping("/info")
+    @Login
     public Response<QueryUserInfoResponseDTO> queryUserInfo(@Valid QueryUserInfoRequestDTO queryUserInfoRequestDTO) {
         UserEntity user = userService.queryUserInfo(queryUserInfoRequestDTO.getUserId());
 
