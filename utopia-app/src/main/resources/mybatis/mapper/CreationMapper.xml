@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aseubel.infrastructure.dao.creation.CreationMapper">
+
+    <select id="getCreationsByTopicId" resultType="com.aseubel.infrastructure.dao.po.Creation">
+        SELECT `creation_id`, `topic_id`, `rank`, `content`, `vote_count`, `create_time` FROM `creation`
+        WHERE `topic_id` = #{topicId}
+            <if test="lastId != null and lastId != ''">AND id &lt; (SELECT id FROM `creation` WHERE creation_id = #{lastId})</if>
+        ORDER BY
+            <if test="sortType == 0 or sortType == null">id</if>
+            <if test="sortType == 1">id DESC</if>
+            <if test="sortType == 2">vote_count DESC, id</if>
+        limit #{limit}
+    </select>
+
+</mapper>

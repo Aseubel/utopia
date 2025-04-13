@@ -185,7 +185,6 @@ public class BazaarController implements BazaarInterface {
     /**
      * 删除帖子
      */
-    @Auth
     @Override
     @DeleteMapping("/post")
     public Response deleteTradePost(@Valid @RequestBody DeletePostRequest requestDTO) {

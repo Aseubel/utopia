@@ -69,7 +69,7 @@ public class RefreshTokenAspect {
         }
 
         try {
-            log.info("RefreshTokenAspect：redis校验accessToken，id:{}，token:{}", userId, token);
+//            log.info("RefreshTokenAspect：redis校验accessToken，id:{}，token:{}", userId, token);
             String accessToken = redisService.getValue(RedisKeyBuilder.userRefreshTokenKey(userId));
             // token为空或与redis中不匹配
             if (accessToken == null || !accessToken.equals(token)) {
@@ -98,7 +98,7 @@ public class RefreshTokenAspect {
         // 设置token到响应头
         Optional.ofNullable(response)
                 .ifPresent(r -> r.setHeader(jwtProperties.getTokenName(), newToken));
-        log.info("RefreshTokenAspect：用户进行登录校验通过，id:{}，token:{}", userId, newToken);
+//        log.info("RefreshTokenAspect：用户进行登录校验通过，id:{}，token:{}", userId, newToken);
         return point.proceed();
     }
 

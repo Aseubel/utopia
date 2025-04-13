@@ -35,9 +35,6 @@ public class UtilService implements IUtilService{
     @Value("${dify.config.project-analyst-token}")
     private String projectToken;
 
-//    @Value("${dify.config.file-convert-token}")
-//    private String convertToken;
-
     @Qualifier("threadPoolExecutor")
     @Autowired
     private ThreadPoolTaskExecutor executor;

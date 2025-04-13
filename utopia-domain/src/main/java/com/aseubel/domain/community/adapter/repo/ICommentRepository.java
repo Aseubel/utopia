@@ -129,4 +129,12 @@ public interface ICommentRepository {
      * @param commentId
      */
     void decreaseRootCommentReplyCount(String commentId);
+
+    /**
+     * 判断用户是否是评论作者
+     * @param userId
+     * @param commentId
+     * @return
+     */
+    boolean isCommenter(String userId, String commentId);
 }

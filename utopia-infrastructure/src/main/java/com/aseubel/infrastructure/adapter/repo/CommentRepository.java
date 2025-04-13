@@ -434,6 +434,12 @@ public class CommentRepository implements ICommentRepository {
         commentMapper.decreaseReplyCount(commentId);
     }
 
+    @Override
+    public boolean isCommenter(String userId, String commentId) {
+        String commenterId = commentMapper.getUserIdByCommentId(commentId);
+        return userId.equals(commenterId);
+    }
+
     /**
      * 计算评论的热度得分
      * 6位存储点赞数，10位存储评论时间

@@ -58,7 +58,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserEntity login(String code) {
-        String openid = code; // wxService.getOpenid(appid, secret, code);
+        String openid = wxService.getOpenid(appid, secret, code);
 
         //当前用户为新用户,完成自动注册
         UserEntity user = userRepository.queryUserInfo(openid);

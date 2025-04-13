@@ -2,6 +2,7 @@ package com.aseubel.types.common;
 
 import io.netty.util.AttributeKey;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Constant {
@@ -86,4 +87,6 @@ public class Constant {
     public static final int NOTICE_TYPE_COMMENT_REPLY = 1;
 
     public static final String DIFY_WORK_FLOW_RESPONSE_MODE = "streaming";
+
+    public static final LocalDateTime START_CREATION_TIME = LocalDateTime.of(2025, 4, 13, 0, 0, 0);
 }

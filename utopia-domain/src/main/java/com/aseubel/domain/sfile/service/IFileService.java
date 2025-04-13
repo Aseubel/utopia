@@ -36,6 +36,13 @@ public interface IFileService {
     byte[] download(String fileUrl) throws ClientException;
 
     /**
+     * 简单下载文件服务
+     * @param fileUrl
+     * @return
+     */
+    byte[] simpleDownload(String fileUrl) throws ClientException;
+
+    /**
      * 分页查询文件
      * @param fileId
      * @param limit

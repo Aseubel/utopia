@@ -323,6 +323,14 @@ public class DiscussPostRepository implements IDiscussPostRepository, ISearchDis
     }
 
     @Override
+    public boolean isPoster(String userId, String postId) {
+        String posterId = discussPostMapper.getUserIdByPostId(postId);
+        return posterId.equals(userId);
+    }
+
+
+
+    @Override
     public String listDiscussPostStatistics() throws JsonProcessingException {
         List<DiscussPost> discussPosts = discussPostMapper.listPostBase();
         List<DiscussPostEntity> discussPostEntities = discussPosts.stream()
@@ -360,4 +368,6 @@ public class DiscussPostRepository implements IDiscussPostRepository, ISearchDis
     public Map<String, String> listRecentPost() {
         return Map.of();
     }
+
+
 }

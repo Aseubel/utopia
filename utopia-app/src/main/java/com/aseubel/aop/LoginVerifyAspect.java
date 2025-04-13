@@ -69,7 +69,7 @@ public class LoginVerifyAspect {
 
         try {
             // 校验redis中是否有token，没有就是过期
-            log.info("redis校验accessToken，id:{}，token:{}", userId, token);
+//            log.info("redis校验accessToken，id:{}，token:{}", userId, token);
             String accessToken = redisService.getValue(RedisKeyBuilder.userAccessTokenKey(userId));
             // token为空过期
             if (accessToken == null) {
@@ -90,7 +90,7 @@ public class LoginVerifyAspect {
                 if (!claims.get(USER_ID_KEY).equals(userId)) {
                     throw new AppException("用户id与accessToken不匹配！");
                 }
-                log.info("用户进行jwt校验通过，id:{}，token:{}", userId, token);
+//                log.info("用户进行jwt校验通过，id:{}，token:{}", userId, token);
             } catch (AppException ae) {
                 throw ae;
             } catch (Exception ex) {
@@ -109,7 +109,7 @@ public class LoginVerifyAspect {
         // 设置token到响应头
         Optional.ofNullable(response)
                 .ifPresent(r -> r.setHeader(jwtProperties.getTokenName(), newToken));
-        log.info("用户进行登录校验通过，id:{}，token:{}", userId, newToken);
+//        log.info("用户进行登录校验通过，id:{}，token:{}", userId, newToken);
         return point.proceed();
     }
 

@@ -63,6 +63,11 @@ public class FileServiceImpl implements IFileService{
     }
 
     @Override
+    public byte[] simpleDownload(String fileUrl) throws ClientException {
+        return aliOSSUtil.download(fileUrl.substring(fileUrl.indexOf(APP)));
+    }
+
+    @Override
     public List<SFileEntity> listSFile(String fileId, Integer limit, Integer sortType, String courseName) {
         limit = limit == null ? PER_PAGE_FILE_SIZE : limit;
         return fileRepository.listSFile(fileId, limit, sortType, courseName);

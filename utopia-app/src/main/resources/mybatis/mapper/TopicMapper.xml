@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aseubel.infrastructure.dao.creation.TopicMapper">
+
+    <insert id="addTopics">
+        INSERT INTO `topic` (topic_id, topic_name, topic_desc, phrase, type, example)
+        VALUES
+            <foreach collection="topics" item="topic" separator=",">
+                (#{topic.topicId}, #{topic.topicName}, #{topic.topicDesc}, #{topic.phrase}, #{topic.type}, #{topic.example})
+            </foreach>
+    </insert>
+
+</mapper>

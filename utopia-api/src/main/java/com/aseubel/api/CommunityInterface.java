@@ -74,7 +74,7 @@ public interface CommunityInterface {
      * @param requestDTO
      * @return
      */
-    Response<UploadCommentImageResponse> uploadDiscussPostImage(@ModelAttribute UploadCommentImageRequest requestDTO);
+    Response<UploadCommentImageResponse> uploadCommentImage(@ModelAttribute UploadCommentImageRequest requestDTO);
 
     /**
      * 查询帖子详情

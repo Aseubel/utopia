@@ -1,7 +1,10 @@
 package com.aseubel.api;
 
+import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.api.dto.file.*;
 import com.aseubel.types.Response;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -27,7 +30,15 @@ public interface SFileInterface {
      * @param filePath
      * @return
      */
-    Response<byte[]> download(String filePath);
+    void download(String filePath, HttpServletResponse response);
+
+    /**
+     * 查看图片
+     * @param filePath
+     * @param response
+     * @throws ClientException
+     */
+    void picture(String filePath, HttpServletResponse response) throws ClientException;
 
     /**
      * 删除文件

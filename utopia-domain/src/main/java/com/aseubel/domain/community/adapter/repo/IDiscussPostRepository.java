@@ -188,4 +188,12 @@ public interface IDiscussPostRepository {
      * @param postId
      */
     void deletePost(String postId);
+
+    /**
+     * 判断用户是否是帖子作者
+     * @param userId
+     * @param postId
+     * @return
+     */
+    boolean isPoster(String userId, String postId);
 }

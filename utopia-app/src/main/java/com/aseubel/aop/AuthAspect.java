@@ -1,5 +1,6 @@
 package com.aseubel.aop;
 
+import com.aseubel.domain.community.adapter.repo.IDiscussPostRepository;
 import com.aseubel.domain.user.adapter.repo.IAdminRepository;
 import com.aseubel.types.Response;
 import jakarta.annotation.Resource;
@@ -26,6 +27,9 @@ public class AuthAspect {
 
     @Resource
     private IAdminRepository adminRepository;
+
+    @Resource
+    private IDiscussPostRepository discussPostRepository;
 
     /**
      * 拦截入口

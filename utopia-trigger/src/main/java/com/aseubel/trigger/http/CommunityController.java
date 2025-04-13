@@ -265,7 +265,7 @@ public class CommunityController implements CommunityInterface {
      */
     @Override
     @PostMapping("/comment/image")
-    public Response<UploadCommentImageResponse> uploadDiscussPostImage(@ModelAttribute UploadCommentImageRequest requestDTO) {
+    public Response<UploadCommentImageResponse> uploadCommentImage(@ModelAttribute UploadCommentImageRequest requestDTO) {
         if (imageOrUserIdIsBlank(requestDTO)) {
             throw new AppException(PARAM_NOT_COMPLETE);
         }
@@ -274,8 +274,11 @@ public class CommunityController implements CommunityInterface {
         try (InputStream inputStream = file.getInputStream();
              ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             Thumbnails.of(inputStream)
-                    .scale(1.0) // 设置压缩比例
-                    .outputQuality(0.15) // 设置输出质量（0.0到1.0之间）
+                    .useExifOrientation(true) // 避免额外旋转计算
+                    .size(1024, 1024) // 设置压缩尺寸
+                    .keepAspectRatio(true) // 保持纵横比
+                    .outputQuality(0.2) // 设置输出质量（0.0到1.0之间）
+                    .outputFormat("JPEG") // 设置输出格式
                     .toOutputStream(outputStream);
             // 将压缩后的图片转换为Base64字符串
             byte[] compressedBytes = outputStream.toByteArray();
@@ -418,7 +421,6 @@ public class CommunityController implements CommunityInterface {
     /**
      * 删除帖子
      */
-    @Auth
     @Override
     @DeleteMapping("/post")
     public Response deletePost(@Valid @RequestBody DeletePostRequest requestDTO) {
@@ -435,7 +437,6 @@ public class CommunityController implements CommunityInterface {
     /**
      * 删除评论
      */
-    @Auth
     @Override
     @DeleteMapping("/comment")
     public Response deleteComment(@Valid @RequestBody DeleteCommentRequest requestDTO) {
