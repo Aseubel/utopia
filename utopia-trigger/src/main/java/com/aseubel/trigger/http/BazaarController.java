@@ -151,7 +151,7 @@ public class BazaarController implements BazaarInterface {
         eventPublisher.publishEvent(new PublishTradePostEvent("publishDiscussPost",
                 post.getUserId(), postId, post.getPrice(), post.getTitle(),
                 post.getContent(), getFirstImage(post), post.getType(), post.getSchoolCode()));
-
+        eventPublisher.publishEvent(new PostAuditEvent("bazaarPostAudit", post.getUserId(), post.getPostId(), post.getSchoolCode(), post.getTitle(), post.getContent(), post.getImages()));
         return Response.SYSTEM_SUCCESS(new PublishPostResponse(postId));
     }
 

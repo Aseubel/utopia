@@ -2,11 +2,13 @@ package com.aseubel.domain.bazaar.service;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.aliyuncs.exceptions.ClientException;
+import com.aseubel.domain.bazaar.adapter.repo.IAIBazaarRepository;
 import com.aseubel.domain.bazaar.adapter.repo.IBazaarUserRepository;
 import com.aseubel.domain.bazaar.adapter.repo.ITradePostRepository;
 import com.aseubel.domain.bazaar.model.bo.BazaarBO;
 import com.aseubel.domain.bazaar.model.entity.TradeImage;
 import com.aseubel.domain.bazaar.model.entity.TradePostEntity;
+import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.AliOSSUtil;
@@ -37,6 +39,8 @@ public class BazaarService implements IBazaarService{
     private final ITradePostRepository tradePostRepository;
 
     private final IBazaarUserRepository bazaarUserRepository;
+
+    private final IAIBazaarRepository aiRepository;
 
     private final AliOSSUtil aliOSSUtil;
 
@@ -167,6 +171,15 @@ public class BazaarService implements IBazaarService{
     public void completeTrade(BazaarBO bazaarBO) {
         verifyPostAuth(bazaarBO.getUserId(), bazaarBO.getPostId());
         tradePostRepository.completeTrade(bazaarBO.getPostId());
+    }
+
+    @Override
+    public boolean auditPost(TradePostEntity post) {
+        List<String> imageUrls = post.getImages();
+        if (CollectionUtil.isNotEmpty(imageUrls)) {
+            imageUrls.forEach(aiRepository::ImgCensor);
+        }
+        return aiRepository.TextCensor(post.getTitle() + ":" + post.getContent(), post.getUserId());
     }
 
     private void verifyPostAuth(String userId, String postId) {

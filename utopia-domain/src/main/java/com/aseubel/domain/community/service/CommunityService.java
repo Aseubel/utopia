@@ -2,10 +2,7 @@ package com.aseubel.domain.community.service;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.aliyuncs.exceptions.ClientException;
-import com.aseubel.domain.community.adapter.repo.ICommentRepository;
-import com.aseubel.domain.community.adapter.repo.ICommunityUserRepository;
-import com.aseubel.domain.community.adapter.repo.IDiscussPostRepository;
-import com.aseubel.domain.community.adapter.repo.INoticeRepository;
+import com.aseubel.domain.community.adapter.repo.*;
 import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.community.model.entity.CommentEntity;
 import com.aseubel.domain.community.model.entity.CommunityImage;
@@ -48,6 +45,8 @@ public class CommunityService implements ICommunityService {
     private final ICommentRepository commentRepository;
 
     private final INoticeRepository noticeRepository;
+
+    private final IAICommunityRepository aiRepository;
 
     private final AliOSSUtil aliOSSUtil;
 
@@ -416,6 +415,15 @@ public class CommunityService implements ICommunityService {
     @Override
     public void deleteNotice(CommunityBO communityBO) {
         noticeRepository.deleteNotice(communityBO);
+    }
+
+    @Override
+    public boolean auditPost(DiscussPostEntity post) {
+        List<String> imageUrls = post.getImages();
+        if (CollectionUtil.isNotEmpty(imageUrls)) {
+            imageUrls.forEach(aiRepository::ImgCensor);
+        }
+        return aiRepository.TextCensor(post.getTitle() + ":" + post.getContent(), post.getUserId());
     }
 
     private void verifyPostAuth(String userId, String postId) {

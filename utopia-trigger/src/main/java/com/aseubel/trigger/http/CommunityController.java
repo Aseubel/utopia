@@ -163,6 +163,7 @@ public class CommunityController implements CommunityInterface {
         eventPublisher.publishEvent(new PublishDiscussPostEvent("publishDiscussPost",
                 post.getUserId(), post.getPostId(), post.getTitle(),
                 post.getContent(), getFirstImage(post), post.getTag(), post.getSchoolCode()));
+        eventPublisher.publishEvent(new PostAuditEvent("communityPostAudit", post.getUserId(), post.getPostId(), post.getSchoolCode(), post.getTitle(), post.getContent(), post.getImages()));
         return Response.SYSTEM_SUCCESS(PublishDiscussPostResponse.builder()
                         .userId(post.getUserId())
                         .postId(post.getPostId())

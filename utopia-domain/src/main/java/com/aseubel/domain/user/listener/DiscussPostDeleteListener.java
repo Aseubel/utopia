@@ -24,7 +24,6 @@ public class DiscussPostDeleteListener implements ApplicationListener<DeleteDisc
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void onApplicationEvent(DeleteDiscussPostEvent event) {
-        log.info("user domain: 监听到删除帖子事件");
         userRepository.deleteUserToPost(event.getUserId(), event.getPostId());
     }
 

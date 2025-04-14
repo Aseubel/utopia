@@ -146,4 +146,11 @@ public interface ICommunityService {
      * @param communityBO
      */
     void deleteNotice(CommunityBO communityBO);
+
+    /**
+     * 审核帖子
+     * @param post 帖子实体
+     * @return 审核结果 true-通过;false-不通过
+     */
+    boolean auditPost(DiscussPostEntity post);
 }

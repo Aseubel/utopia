@@ -4,6 +4,7 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.bazaar.model.bo.BazaarBO;
 import com.aseubel.domain.bazaar.model.entity.TradeImage;
 import com.aseubel.domain.bazaar.model.entity.TradePostEntity;
+import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 
 import java.util.List;
 
@@ -58,4 +59,11 @@ public interface IBazaarService {
      * @param bazaarBO
      */
     void completeTrade(BazaarBO bazaarBO);
+
+    /**
+     * 审核帖子
+     * @param post 帖子实体
+     * @return 审核结果 true-通过;false-不通过
+     */
+    boolean auditPost(TradePostEntity post);
 }
