@@ -111,7 +111,6 @@ public class UserController implements UserInterface {
      */
     @Override
     @GetMapping("/info")
-    @Login
     public Response<QueryUserInfoResponseDTO> queryUserInfo(@Valid QueryUserInfoRequestDTO queryUserInfoRequestDTO) {
         UserEntity user = userService.queryUserInfo(queryUserInfoRequestDTO.getUserId());
 
