@@ -112,7 +112,6 @@ public class CommunityController implements CommunityInterface {
         }
         CommunityBO communityBO = CommunityBO.builder()
                 .userId(requestDTO.getUserId())
-                .postId(requestDTO.getPostId())
                 .limit(requestDTO.getLimit())
                 .schoolCode(requestDTO.getSchoolCode())
                 .tag(requestDTO.getTag())
@@ -122,7 +121,7 @@ public class CommunityController implements CommunityInterface {
 
         List<CommendPostResponse> responseDTOs = new ArrayList<>();
         for (DiscussPostEntity discussPost : discussPosts) {
-            if (!discussPost.getTag().equals(requestDTO.getTag())) {
+            if (!isRequireTagPost(requestDTO.getTag(), discussPost.getTag()) || !isRequireSchoolPost(requestDTO.getSchoolCode(), discussPost.getSchoolCode())) {
                 continue;
             }
             responseDTOs.add(CommendPostResponse.builder()
@@ -147,6 +146,14 @@ public class CommunityController implements CommunityInterface {
                     .build());
         }
         return Response.SYSTEM_SUCCESS(responseDTOs);
+    }
+
+    private boolean isRequireTagPost(String requestTag, String postTag) {
+        return StringUtils.isEmpty(requestTag) || postTag.equals(requestTag);
+    }
+
+    private boolean isRequireSchoolPost(String requestSchoolCode, String postSchoolCode) {
+        return StringUtils.isEmpty(requestSchoolCode) || postSchoolCode.equals(requestSchoolCode);
     }
 
     /**

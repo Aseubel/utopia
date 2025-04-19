@@ -161,7 +161,7 @@ public interface DiscussPostMapper {
     /**
      * 获取用户对帖子的点赞、评论、收藏数
      */
-    List<Score> listUserPostScore(String schoolCode);
+    List<Score> listUserPostScore();
 
     /**
      * 获取用户对帖子的点赞、评论、收藏数

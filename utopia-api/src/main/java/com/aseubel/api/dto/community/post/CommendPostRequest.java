@@ -33,9 +33,6 @@ public class CommendPostRequest implements Serializable {
     @FieldDesc(name = "所属院校代号")
     private String schoolCode;
 
-    @FieldDesc(name = "上一页查询最后一条记录的id")
-    private String postId;
-
     @Max(value = 50, message = "每页记录数不能超过50")
     @Min(value = 1, message = "每页记录数不能小于1")
     @FieldDesc(name = "每页记录数")
