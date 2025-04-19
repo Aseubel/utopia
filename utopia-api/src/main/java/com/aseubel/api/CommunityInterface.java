@@ -22,52 +22,64 @@ public interface CommunityInterface {
 
     /**
      * 查询首页帖子列表
-     * @param queryIndexDiscussPostRequestDTO
-     * @return
+     * @param queryIndexDiscussPostRequestDTO 查询首页帖子请求DTO
+     * @return 首页帖子列表
      */
     Response<List<QueryIndexDiscussPostResponseDTO>> queryIndexDiscussPost(QueryIndexDiscussPostRequestDTO queryIndexDiscussPostRequestDTO);
 
     /**
+     * 查询首页推荐帖子列表
+     * @param requestDTO  查询首页推荐帖子请求DTO
+     * @return 首页推荐帖子列表
+     */
+    Response<List<CommendPostResponse>> queryCommendDiscussPost(CommendPostRequest requestDTO);
+
+    /**
      * 上传帖子图片
-     * @param uploadDiscussPostImageRequest
-     * @return
+     * @param uploadDiscussPostImageRequest 上传帖子图片请求DTO
+     * @return 上传帖子图片响应DTO
      */
     Response<UploadDiscussPostImageResponse> uploadDiscussPostImage(@Valid @ModelAttribute UploadDiscussPostImageRequest uploadDiscussPostImageRequest);
 
     /**
      * 发布帖子
-     * @param publishDiscussPostRequest
-     * @return
+     *
+     * @param publishDiscussPostRequest 发布帖子请求DTO
+     * @return 发布帖子响应DTO
      */
-    Response publishDiscussPost(@Valid @RequestBody PublishDiscussPostRequest publishDiscussPostRequest);
+    Response<?> publishDiscussPost(@Valid @RequestBody PublishDiscussPostRequest publishDiscussPostRequest);
 
     /**
      * 收藏帖子（收藏/取消收藏）
+     *
      * @param favoriteDiscussPostRequest
      * @return
      */
-    Response favoriteDiscussPost(@Valid @RequestBody FavoriteDiscussPostRequest favoriteDiscussPostRequest);
+    Response<?> favoriteDiscussPost(@Valid @RequestBody FavoriteDiscussPostRequest favoriteDiscussPostRequest);
 
     /**
      * 点赞帖子（点赞/取消点赞）
+     *
      * @param likeDiscussPostRequest
      * @return
      */
-    Response likeDiscussPost(@Valid @RequestBody LikeDiscussPostRequest likeDiscussPostRequest);
+    Response<?> likeDiscussPost(@Valid @RequestBody LikeDiscussPostRequest likeDiscussPostRequest);
 
     /**
      * 评论帖子
+     *
      * @param commentPostRequest
      * @return
      */
-    Response commentDiscussPost(@Valid @RequestBody CommentPostRequest commentPostRequest);
+    Response<?> commentDiscussPost(@Valid @RequestBody CommentPostRequest commentPostRequest);
 
     /**
      * 回复评论
+     *
      * @param requestDTO 回复评论请求DTO，不带图片
      * @return
      */
-    Response replyComment(@Valid @RequestBody ReplyCommentRequest requestDTO);
+    Response<?> replyComment(@Valid @RequestBody ReplyCommentRequest requestDTO);
 
     /**
      * 上传评论图片
@@ -124,10 +136,10 @@ public interface CommunityInterface {
     /**
      * 标记通知为已读
      */
-    Response readNotice(@Valid @RequestBody ReadNoticeRequest readNoticeRequest);
+    Response<?> readNotice(@Valid @RequestBody ReadNoticeRequest readNoticeRequest);
 
     /**
      * 删除通知
      */
-    Response deleteNotice(@Valid @RequestBody DeleteNoticeRequest deleteNoticeRequest);
+    Response<?> deleteNotice(@Valid @RequestBody DeleteNoticeRequest deleteNoticeRequest);
 }

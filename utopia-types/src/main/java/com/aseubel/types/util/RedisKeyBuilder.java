@@ -179,7 +179,6 @@ public class RedisKeyBuilder {
     /**
      * 构造评论的redis key
      * utopia:community:comment:{commentId}
-     * @return
      */
     public static String commentKey(String commentId) {
         return PREFIX + SPLIT + DISCUSS_COMMENT + SPLIT + commentId;
@@ -191,5 +190,32 @@ public class RedisKeyBuilder {
 
     public static String fileKey(String fileId) {
         return PREFIX + SPLIT + "file" + SPLIT + fileId;
+    }
+
+    /**
+     * 构造用户对帖子分数的redis key，用于map
+     * utopia:user:post_score:{userId}
+     * @param userId 用户id
+     */
+    public static String userPostScoreKey(String userId) {
+        return PREFIX + SPLIT + USER + SPLIT + "post_score" + SPLIT + userId;
+    }
+
+    /**
+     * 构造用户对帖子分数的redis key，用于map
+     * utopia:user:post_ces_score:{userId}
+     * @param userId 用户id
+     */
+    public static String userPostCesScoreKey(String userId) {
+        return PREFIX + SPLIT + USER + SPLIT + "post_ces_score" + SPLIT + userId;
+    }
+
+    /**
+     * 记录对社区帖子有行为的用户的redis key，用于set
+     * utopia:community:user_has_behavior
+     * @return redis key
+     */
+    public static String userHasBehaviorInCommunityKey() {
+        return PREFIX + SPLIT + COMMUNITY + SPLIT + "user_has_behavior";
     }
 }

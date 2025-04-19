@@ -1,11 +1,13 @@
 package com.aseubel.infrastructure.adapter.repo;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.community.adapter.repo.IDiscussPostRepository;
 import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
+import com.aseubel.domain.community.model.vo.Score;
 import com.aseubel.domain.search.adapter.repo.ISearchDiscussPostRepository;
 import com.aseubel.infrastructure.convertor.CommunityImageConvertor;
 import com.aseubel.infrastructure.convertor.DiscussPostConvertor;
@@ -19,6 +21,7 @@ import com.aseubel.infrastructure.redis.IRedisService;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.AliOSSUtil;
 import com.aseubel.types.util.RedisKeyBuilder;
+import com.aseubel.types.util.UserBasedCollaborativeFiltering;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
@@ -33,7 +36,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.aseubel.types.common.Constant.RECENT_POST_CACHE_EXPIRE_TIME;
+import static com.aseubel.types.common.Constant.*;
 
 /**
  * @author Aseubel
@@ -73,6 +76,9 @@ public class DiscussPostRepository implements IDiscussPostRepository, ISearchDis
 
     @Resource
     private ObjectMapper objectMapper;
+
+    @Resource
+    private UserBasedCollaborativeFiltering commender;
 
     @Override
     public List<DiscussPostEntity> listDiscussPost(CommunityBO communityBO) {
@@ -369,5 +375,70 @@ public class DiscussPostRepository implements IDiscussPostRepository, ISearchDis
         return Map.of();
     }
 
+    /**
+     * 获取用户对帖子的点赞、收藏、评论数
+     */
+    private List<Score> listUserPostScore(CommunityBO communityBO) {
+//        List<Score> scores = StringUtils.isEmpty(userId)
+//                ? discussPostMapper.listUserPostScore()
+//                : discussPostMapper.listUserPostScoreByUserId(userId);
+        return discussPostMapper.listUserPostScore(communityBO.getSchoolCode());
+    }
+
+    @Override
+    public List<String> listCommendPostId(CommunityBO communityBO) {
+        String userId = communityBO.getUserId();
+        Map<String, Map<String, Double>> cesScores = new HashMap<>();
+//        Map<String, Double> userRating = redisService.getMapToJavaMap(RedisKeyBuilder.userPostScoreKey(userId));
+//        if (!ObjectUtil.isEmpty(userRating)) {
+//            Set<String> users = redisService.getSetMembers(RedisKeyBuilder.userHasBehaviorInCommunityKey());
+//            for (String user : users) {
+//                userRating = redisService.getMapToJavaMap(RedisKeyBuilder.userPostScoreKey(user));
+//                if (!ObjectUtil.isEmpty(userRating)) {
+//                    cesScores.put(user, userRating);
+//                }
+//            }
+//            commender.setUserRatings(cesScores);
+//            return commender.generateRecommendations(userId, COMMEND_POST_NEIGHBOR_SIZE, COMMEND_POST_SIZE);
+//        }
+        List<Score> scores = listUserPostScore(communityBO);
+        Map<String, Map<String, int[]>> userBehaviors = scores.stream()
+                .collect(Collectors.groupingBy(
+                        Score::getUserId, // 按 userId 分组
+                        Collectors.toMap(
+                                Score::getPostId, // 内层 Map 的键是 postId
+                                score -> new int[] {
+                                        score.getLikeCount(),
+                                        score.getFavoriteCount(),
+                                        score.getCommentCount()
+                                },
+                                // 处理重复的 postId（默认覆盖旧值）
+                                (existing, replacement) -> replacement
+                        )
+                ));
+        commender.setUserBehaviors(userBehaviors);
+        cesScores = commender.calculateCEScores();
+        commender.setUserRatings(cesScores);
+//        // 缓存 ces 得分
+//        for (Map.Entry<String, Map<String, Double>> entry : cesScores.entrySet()) {
+//            // 记录有行为的用户
+//            redisService.addToSet(RedisKeyBuilder.userHasBehaviorInCommunityKey(), entry.getKey());
+//            for (Map.Entry<String, Double> innerEntry : entry.getValue().entrySet()) {
+//                redisService.addToMap(RedisKeyBuilder.userPostCesScoreKey(entry.getKey()), innerEntry.getKey(), innerEntry.getValue());
+//            }
+//        }
+
+        return commender.generateRecommendations(userId, COMMEND_POST_NEIGHBOR_SIZE, communityBO.getLimit());
+    }
+
+    @Override
+    public List<DiscussPostEntity> listDiscussPost(List<String> postIds) {
+        if (CollectionUtil.isEmpty(postIds)) {
+            return Collections.emptyList();
+        }
+        return discussPostConvertor.convert(
+                discussPostMapper.listDiscussPostByPostIds(postIds),
+                discussPostConvertor::convert);
+    }
 
 }

@@ -246,12 +246,19 @@ public interface IRedisService {
      */
     Long getMapExpired(String key);
 
+//    /**
+//     * 获取Map并转换为Java Map
+//     * @param key 键
+//     * @return 值
+//     */
+//    Map<String,String> getMapToJavaMap(String key);
+
     /**
      * 获取Map并转换为Java Map
      * @param key 键
-     * @return
+     * @return 值
      */
-    Map<String,String> getMapToJavaMap(String key);
+    <T> Map<String,T> getMapToJavaMap(String key);
 
     /**
      * 移除哈希表中指定字段的值

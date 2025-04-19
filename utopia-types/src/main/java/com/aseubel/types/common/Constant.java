@@ -89,4 +89,9 @@ public class Constant {
     public static final String DIFY_WORK_FLOW_RESPONSE_MODE = "streaming";
 
     public static final LocalDateTime START_CREATION_TIME = LocalDateTime.of(2025, 4, 13, 0, 0, 0);
+
+    public static final Integer COMMEND_POST_NEIGHBOR_SIZE = 2;
+
+    public static final Integer COMMEND_POST_SIZE = 3;
+
 }

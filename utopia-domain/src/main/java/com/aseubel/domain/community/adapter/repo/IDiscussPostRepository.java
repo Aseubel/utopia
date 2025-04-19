@@ -4,6 +4,7 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.community.model.bo.CommunityBO;
 import com.aseubel.domain.community.model.entity.CommunityImage;
 import com.aseubel.domain.community.model.entity.DiscussPostEntity;
+import com.aseubel.domain.community.model.vo.Score;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -196,4 +197,16 @@ public interface IDiscussPostRepository {
      * @return
      */
     boolean isPoster(String userId, String postId);
+
+    /**
+     * 通过帖子id列表获取帖子列表
+     * @return List<DiscussPostEntity>
+     */
+    List<DiscussPostEntity> listDiscussPost(List<String> postIds);
+
+    /**
+     * 获取推荐帖子id列表
+     * @return 推荐帖子id列表
+     */
+    List<String> listCommendPostId(CommunityBO communityBO);
 }

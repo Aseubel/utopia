@@ -1,5 +1,6 @@
 package com.aseubel.infrastructure.dao.community;
 
+import com.aseubel.domain.community.model.vo.Score;
 import com.aseubel.infrastructure.dao.po.DiscussPost;
 import com.aseubel.infrastructure.dao.po.Image;
 import org.apache.ibatis.annotations.Mapper;
@@ -156,4 +157,14 @@ public interface DiscussPostMapper {
      * 获取帖子的点赞、评论、收藏数
      */
     List<DiscussPost> listPartialPostBase(Long postId, int pageSize);
+
+    /**
+     * 获取用户对帖子的点赞、评论、收藏数
+     */
+    List<Score> listUserPostScore(String schoolCode);
+
+    /**
+     * 获取用户对帖子的点赞、评论、收藏数
+     */
+    List<Score> listUserPostScoreByUserId(String userId);
 }

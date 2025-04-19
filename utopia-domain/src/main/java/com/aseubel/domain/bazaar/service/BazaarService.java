@@ -8,7 +8,6 @@ import com.aseubel.domain.bazaar.adapter.repo.ITradePostRepository;
 import com.aseubel.domain.bazaar.model.bo.BazaarBO;
 import com.aseubel.domain.bazaar.model.entity.TradeImage;
 import com.aseubel.domain.bazaar.model.entity.TradePostEntity;
-import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.AliOSSUtil;

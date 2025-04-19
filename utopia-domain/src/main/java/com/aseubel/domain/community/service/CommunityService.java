@@ -62,6 +62,29 @@ public class CommunityService implements ICommunityService {
         if (CollectionUtil.isEmpty(discussPostEntities)) {
             return Collections.emptyList();
         }
+        return queryDiscussPostList(discussPostEntities);
+    }
+
+    @Override
+    public List<DiscussPostEntity> commendDiscussPost(CommunityBO communityBO) {
+        String userId = communityBO.getUserId();
+        Integer limit = communityBO.getLimit();
+        String schoolCode = communityBO.getSchoolCode();
+        checkSchoolCodeValid(schoolCode);
+        // 限制每页显示的帖子数量
+        communityBO.setLimit(limit == null ? COMMEND_POST_SIZE : limit);
+        List<String> postIds = discussPostRepository.listCommendPostId(communityBO);
+        // 查询帖子列表
+        List<DiscussPostEntity> discussPostEntities = discussPostRepository.listDiscussPost(postIds);;
+        if (CollectionUtil.isEmpty(discussPostEntities)) {
+            return Collections.emptyList();
+        }
+        return queryDiscussPostList(discussPostEntities);
+    }
+
+
+    private List<DiscussPostEntity> queryDiscussPostList(List<DiscussPostEntity> posts) {
+        List<DiscussPostEntity> discussPostEntities = posts.stream().toList();
         // 提取帖子的用户id
         List<String> userIds = Optional.of(discussPostEntities)
                 .map(d -> d.stream()

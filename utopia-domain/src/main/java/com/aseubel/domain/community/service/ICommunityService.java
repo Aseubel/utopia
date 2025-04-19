@@ -24,6 +24,13 @@ public interface ICommunityService {
     List<DiscussPostEntity> listDiscussPost(CommunityBO communityBO);
 
     /**
+     * 获取推荐帖子列表
+     * @param communityBO 社区数据传输对象
+     * @return 推荐帖子列表
+     */
+    List<DiscussPostEntity> commendDiscussPost(CommunityBO communityBO);
+
+    /**
      * 获取帖子详情
      * @return
      */

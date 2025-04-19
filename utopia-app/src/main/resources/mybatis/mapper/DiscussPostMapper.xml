@@ -161,4 +161,113 @@
         limit #{pageSize}
     </select>
 
+    <select id="listUserPostScoreByUserId" resultType="com.aseubel.domain.community.model.vo.Score">
+        SELECT
+            u.user_id,
+            dp.discuss_post_id AS post_id,
+            COALESCE(l.like_count, 0) AS like_count,
+            COALESCE(f.favorite_count, 0) AS favorite_count,
+            COALESCE(c.comment_count, 0) AS comment_count
+        FROM
+            `user` u
+                JOIN `discuss_post` dp ON dp.is_deleted = 0
+                LEFT JOIN (
+                SELECT
+                    user_id,
+                    to_id AS discuss_post_id,
+                    COUNT(*) AS like_count
+                FROM
+                    `like`
+                WHERE
+                    user_id = #{userId} AND status = 1
+                GROUP BY
+                    user_id,
+                    to_id
+            ) l ON u.user_id = l.user_id AND dp.discuss_post_id = l.discuss_post_id
+                LEFT JOIN (
+                SELECT
+                    user_id,
+                    post_id AS discuss_post_id,
+                    COUNT(*) AS favorite_count
+                FROM
+                    `favorite`
+                WHERE
+                    user_id = #{userId} AND status = 1
+                GROUP BY
+                    user_id,
+                    post_id
+            ) f ON u.user_id = f.user_id AND dp.discuss_post_id = f.discuss_post_id
+                LEFT JOIN (
+                SELECT
+                    user_id,
+                    post_id AS discuss_post_id,
+                    COUNT(*) AS comment_count
+                FROM
+                    `comment`
+                WHERE
+                    user_id = #{userId}
+                GROUP BY
+                    user_id,
+                    post_id
+            ) c ON u.user_id = c.user_id AND dp.discuss_post_id = c.discuss_post_id
+        WHERE
+            COALESCE(l.like_count, 0) > 0
+           OR COALESCE(f.favorite_count, 0) > 0
+           OR COALESCE(c.comment_count, 0) > 0;
+    </select>
+
+    <select id="listUserPostScore" resultType="com.aseubel.domain.community.model.vo.Score">
+        SELECT
+            u.user_id,
+            dp.discuss_post_id AS post_id,
+            COALESCE(l.like_count, 0) AS like_count,
+            COALESCE(f.favorite_count, 0) AS favorite_count,
+            COALESCE(c.comment_count, 0) AS comment_count
+        FROM
+            `user` u
+                JOIN `discuss_post` dp ON dp.is_deleted = 0
+                <if test="schoolCode != null and schoolCode != ''">AND dp.school_code = #{schoolCode}</if>
+                LEFT JOIN (
+                SELECT
+                    user_id,
+                    to_id AS discuss_post_id,
+                    COUNT(*) AS like_count
+                FROM
+                    `like`
+                WHERE
+                    status = 1
+                GROUP BY
+                    user_id,
+                    to_id
+            ) l ON u.user_id = l.user_id AND dp.discuss_post_id = l.discuss_post_id
+                LEFT JOIN (
+                SELECT
+                    user_id,
+                    post_id AS discuss_post_id,
+                    COUNT(*) AS favorite_count
+                FROM
+                    `favorite`
+                WHERE
+                    status = 1
+                GROUP BY
+                    user_id,
+                    post_id
+            ) f ON u.user_id = f.user_id AND dp.discuss_post_id = f.discuss_post_id
+                LEFT JOIN (
+                SELECT
+                    user_id,
+                    post_id AS discuss_post_id,
+                    COUNT(*) AS comment_count
+                FROM
+                    `comment`
+                GROUP BY
+                    user_id,
+                    post_id
+            ) c ON u.user_id = c.user_id AND dp.discuss_post_id = c.discuss_post_id
+        WHERE
+            COALESCE(l.like_count, 0) > 0
+           OR COALESCE(f.favorite_count, 0) > 0
+           OR COALESCE(c.comment_count, 0) > 0;
+    </select>
+
 </mapper>

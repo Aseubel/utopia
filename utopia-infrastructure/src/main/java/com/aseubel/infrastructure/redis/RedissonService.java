@@ -173,8 +173,13 @@ public class RedissonService implements IRedisService {
         return map.remainTimeToLive();
     }
 
-    public Map<String,String> getMapToJavaMap(String key) {
-        RMap<String, String> map = redissonClient.getMap(key);
+//    public Map<String,String> getMapToJavaMap(String key) {
+//        RMap<String, String> map = redissonClient.getMap(key);
+//        return map.readAllMap();
+//    }
+
+    public <T> Map<String,T> getMapToJavaMap(String key) {
+        RMap<String, T> map = redissonClient.getMap(key);
         return map.readAllMap();
     }
 

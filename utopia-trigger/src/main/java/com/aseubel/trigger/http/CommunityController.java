@@ -16,7 +16,6 @@ import com.aseubel.domain.community.model.entity.DiscussPostEntity;
 import com.aseubel.domain.community.model.entity.NoticeEntity;
 import com.aseubel.domain.community.service.ICommunityService;
 import com.aseubel.types.Response;
-import com.aseubel.types.constraint.Auth;
 import com.aseubel.types.constraint.Refresh;
 import com.aseubel.types.event.*;
 import com.aseubel.types.exception.AppException;
@@ -34,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,6 +77,55 @@ public class CommunityController implements CommunityInterface {
         List<QueryIndexDiscussPostResponseDTO> responseDTOs = new ArrayList<>();
         for (DiscussPostEntity discussPost : discussPosts) {
             responseDTOs.add(QueryIndexDiscussPostResponseDTO.builder()
+                    .discussPostId(discussPost.getPostId())
+                    .userId(discussPost.getUserId())
+                    .userName(discussPost.getUserName())
+                    .userAvatar(discussPost.getUserAvatar())
+                    .title(discussPost.getTitle())
+                    .content(discussPost.getContent())
+                    .tag(discussPost.getTag())
+                    .likeCount(discussPost.getLikeCount())
+                    .commentCount(discussPost.getCommentCount())
+                    .favoriteCount(discussPost.getFavoriteCount())
+                    .type(discussPost.getType())
+                    .status(discussPost.getStatus())
+                    .comments(discussPost.getComments())
+                    .createTime(discussPost.getCreateTime())
+                    .updateTime(discussPost.getUpdateTime())
+                    .image(discussPost.getImage())
+                    .isFavorite(discussPost.getIsFavorite())
+                    .isLike(discussPost.getIsLike())
+                    .build());
+        }
+        return Response.SYSTEM_SUCCESS(responseDTOs);
+    }
+
+    /**
+     * 查询推荐帖子列表
+     */
+    @Override
+    @GetMapping("/commend")
+    @Refresh
+    public Response<List<CommendPostResponse>> queryCommendDiscussPost(CommendPostRequest requestDTO) {
+        if (StringUtils.isEmpty(requestDTO.getUserId())) {
+            return Response.SYSTEM_SUCCESS(Collections.emptyList());
+        }
+        CommunityBO communityBO = CommunityBO.builder()
+                .userId(requestDTO.getUserId())
+                .postId(requestDTO.getPostId())
+                .limit(requestDTO.getLimit())
+                .schoolCode(requestDTO.getSchoolCode())
+                .tag(requestDTO.getTag())
+                .build();
+
+        List<DiscussPostEntity> discussPosts = communityService.commendDiscussPost(communityBO);
+
+        List<CommendPostResponse> responseDTOs = new ArrayList<>();
+        for (DiscussPostEntity discussPost : discussPosts) {
+            if (!discussPost.getTag().equals(requestDTO.getTag())) {
+                continue;
+            }
+            responseDTOs.add(CommendPostResponse.builder()
                     .discussPostId(discussPost.getPostId())
                     .userId(discussPost.getUserId())
                     .userName(discussPost.getUserName())
@@ -149,7 +198,7 @@ public class CommunityController implements CommunityInterface {
      */
     @Override
     @PostMapping("/post")
-    public Response<PublishDiscussPostResponse> publishDiscussPost(@Valid @RequestBody PublishDiscussPostRequest requestDTO) {
+    public Response<?> publishDiscussPost(@Valid @RequestBody PublishDiscussPostRequest requestDTO) {
         DiscussPostEntity post = DiscussPostEntity.builder()
                 .userId(requestDTO.getUserId())
                 .schoolCode(requestDTO.getSchoolCode())
@@ -179,7 +228,7 @@ public class CommunityController implements CommunityInterface {
      */
     @Override
     @PutMapping("/post/favorite")
-    public Response favoriteDiscussPost(@Valid @RequestBody FavoriteDiscussPostRequest requestDTO) {
+    public Response<?> favoriteDiscussPost(@Valid @RequestBody FavoriteDiscussPostRequest requestDTO) {
         communityService.favoriteDiscussPost(requestDTO.getUserId(), requestDTO.getPostId());
 //        eventPublisher.publishEvent(new FavoriteEvent(CommunityBO.builder()
 //                .userId(requestDTO.getUserId())
@@ -193,7 +242,7 @@ public class CommunityController implements CommunityInterface {
      */
     @Override
     @PutMapping("/post/like")
-    public Response likeDiscussPost(@Valid @RequestBody LikeDiscussPostRequest requestDTO) {
+    public Response<?> likeDiscussPost(@Valid @RequestBody LikeDiscussPostRequest requestDTO) {
         CommunityBO communityBO = CommunityBO.builder()
                 .userId(requestDTO.getUserId())
                 .postId(requestDTO.getPostId())
@@ -209,7 +258,7 @@ public class CommunityController implements CommunityInterface {
      */
     @Override
     @PostMapping("/comment/post")
-    public Response<CommentPostResponse> commentDiscussPost(@Valid @RequestBody CommentPostRequest requestDTO) {
+    public Response<?> commentDiscussPost(@Valid @RequestBody CommentPostRequest requestDTO) {
         validateContent(requestDTO.getContent());
         CommentEntity commentEntity = CommentEntity.builder()
                 .userId(requestDTO.getUserId())
@@ -236,7 +285,7 @@ public class CommunityController implements CommunityInterface {
      */
     @Override
     @PostMapping("/comment/reply")
-    public Response<ReplyCommentResponse> replyComment(@Valid @RequestBody ReplyCommentRequest requestDTO) {
+    public Response<?> replyComment(@Valid @RequestBody ReplyCommentRequest requestDTO) {
         validateContent(requestDTO.getContent());
         CommentEntity commentEntity = CommentEntity.builder()
                 .userId(requestDTO.getUserId())
@@ -492,7 +541,7 @@ public class CommunityController implements CommunityInterface {
      */
     @Override
     @PutMapping("/notice")
-    public Response readNotice(@Valid @RequestBody ReadNoticeRequest readNoticeRequest) {
+    public Response<?> readNotice(@Valid @RequestBody ReadNoticeRequest readNoticeRequest) {
         CommunityBO communityBO = CommunityBO.builder()
                 .userId(readNoticeRequest.getUserId())
                 .eventTime(readNoticeRequest.getTime())
@@ -506,7 +555,7 @@ public class CommunityController implements CommunityInterface {
      */
     @Override
     @DeleteMapping("/notice")
-    public Response deleteNotice(@Valid @RequestBody DeleteNoticeRequest deleteNoticeRequest) {
+    public Response<?> deleteNotice(@Valid @RequestBody DeleteNoticeRequest deleteNoticeRequest) {
         CommunityBO communityBO = CommunityBO.builder()
                 .userId(deleteNoticeRequest.getUserId())
                 .eventTime(deleteNoticeRequest.getTime())
