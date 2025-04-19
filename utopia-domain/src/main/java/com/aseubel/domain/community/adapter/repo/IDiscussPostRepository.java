@@ -209,4 +209,9 @@ public interface IDiscussPostRepository {
      * @return 推荐帖子id列表
      */
     List<String> listCommendPostId(CommunityBO communityBO);
+
+    /**
+     * 用户行为更改redis
+     */
+    void userBehavior(String userId, String postId, String type);
 }

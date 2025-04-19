@@ -178,14 +178,22 @@ public class RedissonService implements IRedisService {
 //        return map.readAllMap();
 //    }
 
+    @Override
     public <T> Map<String,T> getMapToJavaMap(String key) {
         RMap<String, T> map = redissonClient.getMap(key);
         return map.readAllMap();
     }
 
+    @Override
     public void removeFromMap(String key, String field) {
         RMap<String, String> map = redissonClient.getMap(key);
         map.remove(field);
+    }
+
+    @Override
+    public Integer incrMapValue(String key, String field, Integer delta) {
+        RMap<String, Integer> map = redissonClient.getMap(key);
+        return map.addAndGet(field, delta);
     }
 
     @Override

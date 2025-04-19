@@ -194,15 +194,6 @@ public class RedisKeyBuilder {
 
     /**
      * 构造用户对帖子分数的redis key，用于map
-     * utopia:user:post_score:{userId}
-     * @param userId 用户id
-     */
-    public static String userPostScoreKey(String userId) {
-        return PREFIX + SPLIT + USER + SPLIT + "post_score" + SPLIT + userId;
-    }
-
-    /**
-     * 构造用户对帖子分数的redis key，用于map
      * utopia:user:post_ces_score:{userId}
      * @param userId 用户id
      */

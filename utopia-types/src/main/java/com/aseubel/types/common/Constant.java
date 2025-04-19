@@ -94,4 +94,15 @@ public class Constant {
 
     public static final Integer COMMEND_POST_SIZE = 3;
 
+    public static final Integer COMMENT_CES_SCORE = 2;
+
+    public static final Integer LIKE_CES_SCORE = 2;
+
+    public static final Integer FAVORITE_CES_SCORE = 4;
+
+    public static final String LIKE_POST = "like";
+
+    public static final String FAVORITE_POST = "favorite";
+
+    public static final String COMMENT_POST = "comment";
 }

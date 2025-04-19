@@ -269,6 +269,15 @@ public interface IRedisService {
     void removeFromMap(String key, String field);
 
     /**
+     * 增加哈希表中指定字段的值
+     * @param key   键
+     * @param field 字段
+     * @param delta 增量
+     * @return      增量后的值
+     */
+    Integer incrMapValue(String key, String field, Integer delta);
+
+    /**
      * 获取哈希表中指定字段的值
      *
      * @param key   键

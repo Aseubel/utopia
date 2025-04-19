@@ -3,10 +3,9 @@ package com.aseubel.types.util;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+
+import static com.aseubel.types.common.Constant.*;
 
 /**
  * @author Aseubel
@@ -17,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class UserBasedCollaborativeFiltering {
 
     // 存储用户评分数据的结构：user_id -> (post_id, score)
-    private Map<String, Map<String, Double>> userRatings = new HashMap<>();
+    private Map<String, Map<String, Integer>> userRatings = new HashMap<>();
 
     // 存储用户行为数据的结构：user_id -> (post_id, [likes, saves, comments])
     private Map<String, Map<String, int[]>> userBehaviors = new HashMap<>();
@@ -49,12 +48,12 @@ public class UserBasedCollaborativeFiltering {
      *
      * @return 文章ID及其CES评分的映射
      */
-    public Map<String, Map<String, Double>> calculateCEScores() {
-        Map<String, Map<String, Double>> cesScores = new HashMap<>();
+    public Map<String, Map<String, Integer>> calculateCEScores() {
+        Map<String, Map<String, Integer>> cesScores = new HashMap<>();
 
         for (Map.Entry<String, Map<String, int[]>> entry : userBehaviors.entrySet()) {
             String userId = entry.getKey();
-            Map<String, Double> userCesScores = new HashMap<>();
+            Map<String, Integer> userCesScores = new HashMap<>();
             for (Map.Entry<String, int[]> postEntry : entry.getValue().entrySet()) {
                 String postId = postEntry.getKey();
                 int[] behaviors = postEntry.getValue();
@@ -64,8 +63,8 @@ public class UserBasedCollaborativeFiltering {
                 int comments = behaviors[2];
 
                 // CES评分公式：点赞 2 分 + 收藏 4 分 + 评论 2 分
-                Double cesScore = likes * 2 + saves * 4 + comments * 2 * 1.0;
-                userCesScores.put(postId, userCesScores.getOrDefault(postId, 0.0) + cesScore);
+                Integer cesScore = likes * LIKE_CES_SCORE + saves * FAVORITE_CES_SCORE + comments * COMMENT_CES_SCORE;
+                userCesScores.put(postId, userCesScores.getOrDefault(postId, 0) + cesScore);
             }
             cesScores.put(userId, userCesScores);
         }
@@ -80,7 +79,7 @@ public class UserBasedCollaborativeFiltering {
      * @param postId 文章ID
      * @param score  评分
      */
-    public void addUserRating(String userId, String postId, double score) {
+    public void addUserRating(String userId, String postId, Integer score) {
         userRatings.putIfAbsent(userId, new HashMap<>());
         userRatings.get(userId).put(postId, score);
     }
@@ -93,8 +92,8 @@ public class UserBasedCollaborativeFiltering {
      * @return 相似度分数（0到1之间）
      */
     private double computeSimilarity(String user1, String user2) {
-        Map<String, Double> ratings1 = userRatings.get(user1);
-        Map<String, Double> ratings2 = userRatings.get(user2);
+        Map<String, Integer> ratings1 = userRatings.get(user1);
+        Map<String, Integer> ratings2 = userRatings.get(user2);
 
         if (ratings1 == null || ratings2 == null) {
             return 0.0;
@@ -132,7 +131,7 @@ public class UserBasedCollaborativeFiltering {
     private List<Map.Entry<String, Double>> findNeighbors(String userId, int k) {
         List<Map.Entry<String, Double>> neighbors = new ArrayList<>();
 
-        for (Map.Entry<String, Map<String, Double>> entry : userRatings.entrySet()) {
+        for (Map.Entry<String, Map<String, Integer>> entry : userRatings.entrySet()) {
             String neighborId = entry.getKey();
             if (!neighborId.equals(userId)) {
                 double similarity = computeSimilarity(userId, neighborId);
@@ -170,9 +169,9 @@ public class UserBasedCollaborativeFiltering {
         for (Map.Entry<String, Double> entry : neighbors) {
             String neighborId = entry.getKey();
             double similarity = entry.getValue();
-            Map<String, Double> neighborRatings = userRatings.get(neighborId);
+            Map<String, Integer> neighborRatings = userRatings.get(neighborId);
 
-            for (Map.Entry<String, Double> postEntry : neighborRatings.entrySet()) {
+            for (Map.Entry<String, Integer> postEntry : neighborRatings.entrySet()) {
                 String postId = postEntry.getKey();
                 double score = postEntry.getValue();
 
@@ -199,21 +198,21 @@ public class UserBasedCollaborativeFiltering {
         return result;
     }
 //
-    public static void main(String[] args) {
-        // 示例数据
-        UserBasedCollaborativeFiltering cf = new UserBasedCollaborativeFiltering();
-        cf.addUserRating("1", "101", 5.0);
-        cf.addUserRating("1", "102", 3.0);
-        cf.addUserRating("1", "103", 4.0);
-        cf.addUserRating("2", "101", 4.0);
-        cf.addUserRating("2", "102", 5.0);
-        cf.addUserRating("2", "104", 3.0);
-        cf.addUserRating("3", "103", 5.0);
-        cf.addUserRating("3", "104", 4.0);
-        cf.addUserRating("3", "105", 5.0);
-
-        // 为用户1生成推荐
-        List<String> recommendations = cf.generateRecommendations("1", 2, 3);
-        System.out.println("Recommendations for user 1: " + recommendations);
-    }
+//    public static void main(String[] args) {
+//        // 示例数据
+//        UserBasedCollaborativeFiltering cf = new UserBasedCollaborativeFiltering();
+//        cf.addUserRating("1", "101", 5.0);
+//        cf.addUserRating("1", "102", 3.0);
+//        cf.addUserRating("1", "103", 4.0);
+//        cf.addUserRating("2", "101", 4.0);
+//        cf.addUserRating("2", "102", 5.0);
+//        cf.addUserRating("2", "104", 3.0);
+//        cf.addUserRating("3", "103", 5.0);
+//        cf.addUserRating("3", "104", 4.0);
+//        cf.addUserRating("3", "105", 5.0);
+//
+//        // 为用户1生成推荐
+//        List<String> recommendations = cf.generateRecommendations("1", 2, 3);
+//        System.out.println("Recommendations for user 1: " + recommendations);
+//    }
 }

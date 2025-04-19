@@ -11,7 +11,8 @@ import com.aseubel.domain.community.model.vo.Score;
 import com.aseubel.domain.search.adapter.repo.ISearchDiscussPostRepository;
 import com.aseubel.infrastructure.convertor.CommunityImageConvertor;
 import com.aseubel.infrastructure.convertor.DiscussPostConvertor;
-import com.aseubel.infrastructure.dao.*;
+import com.aseubel.infrastructure.dao.ImageMapper;
+import com.aseubel.infrastructure.dao.SchoolMapper;
 import com.aseubel.infrastructure.dao.community.DiscussPostMapper;
 import com.aseubel.infrastructure.dao.community.FavoriteMapper;
 import com.aseubel.infrastructure.dao.community.LikeMapper;
@@ -388,8 +389,8 @@ public class DiscussPostRepository implements IDiscussPostRepository, ISearchDis
     @Override
     public List<String> listCommendPostId(CommunityBO communityBO) {
         String userId = communityBO.getUserId();
-        Map<String, Map<String, Double>> cesScores = new HashMap<>();
-        Map<String, Double> userRating = redisService.getMapToJavaMap(RedisKeyBuilder.userPostCesScoreKey(userId));
+        Map<String, Map<String, Integer>> cesScores = new HashMap<>();
+        Map<String, Integer> userRating = redisService.getMapToJavaMap(RedisKeyBuilder.userPostCesScoreKey(userId));
         if (!ObjectUtil.isEmpty(userRating)) {
             Set<String> users = redisService.getSetMembers(RedisKeyBuilder.userHasBehaviorInCommunityKey());
             for (String user : users) {
@@ -420,15 +421,27 @@ public class DiscussPostRepository implements IDiscussPostRepository, ISearchDis
         cesScores = commender.calculateCEScores();
         commender.setUserRatings(cesScores);
         // 缓存 ces 得分
-        for (Map.Entry<String, Map<String, Double>> entry : cesScores.entrySet()) {
+        for (Map.Entry<String, Map<String, Integer>> entry : cesScores.entrySet()) {
             // 记录有行为的用户
             redisService.addToSet(RedisKeyBuilder.userHasBehaviorInCommunityKey(), entry.getKey());
-            for (Map.Entry<String, Double> innerEntry : entry.getValue().entrySet()) {
+            for (Map.Entry<String, Integer> innerEntry : entry.getValue().entrySet()) {
                 redisService.addToMap(RedisKeyBuilder.userPostCesScoreKey(entry.getKey()), innerEntry.getKey(), innerEntry.getValue());
             }
         }
 
         return commender.generateRecommendations(userId, COMMEND_POST_NEIGHBOR_SIZE, communityBO.getLimit());
+    }
+
+    @Override
+    public void userBehavior(String userId, String postId, String type) {
+        redisService.addToSet(RedisKeyBuilder.userHasBehaviorInCommunityKey(), userId);
+        Integer delta = switch (type) {
+            case LIKE_POST -> LIKE_CES_SCORE;
+            case FAVORITE_POST -> FAVORITE_CES_SCORE;
+            case COMMENT_POST -> COMMENT_CES_SCORE;
+            default -> 0;
+        };
+        redisService.incrMapValue(RedisKeyBuilder.userPostCesScoreKey(userId), postId, delta);
     }
 
     @Override
