@@ -226,7 +226,6 @@
         FROM
             `user` u
                 JOIN `discuss_post` dp ON dp.is_deleted = 0
-                <if test="schoolCode != null and schoolCode != ''">AND dp.school_code = #{schoolCode}</if>
                 LEFT JOIN (
                 SELECT
                     user_id,

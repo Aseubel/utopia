@@ -378,30 +378,30 @@ public class DiscussPostRepository implements IDiscussPostRepository, ISearchDis
     /**
      * 获取用户对帖子的点赞、收藏、评论数
      */
-    private List<Score> listUserPostScore(CommunityBO communityBO) {
+    private List<Score> listUserPostScore() {
 //        List<Score> scores = StringUtils.isEmpty(userId)
 //                ? discussPostMapper.listUserPostScore()
 //                : discussPostMapper.listUserPostScoreByUserId(userId);
-        return discussPostMapper.listUserPostScore(communityBO.getSchoolCode());
+        return discussPostMapper.listUserPostScore();
     }
 
     @Override
     public List<String> listCommendPostId(CommunityBO communityBO) {
         String userId = communityBO.getUserId();
         Map<String, Map<String, Double>> cesScores = new HashMap<>();
-//        Map<String, Double> userRating = redisService.getMapToJavaMap(RedisKeyBuilder.userPostScoreKey(userId));
-//        if (!ObjectUtil.isEmpty(userRating)) {
-//            Set<String> users = redisService.getSetMembers(RedisKeyBuilder.userHasBehaviorInCommunityKey());
-//            for (String user : users) {
-//                userRating = redisService.getMapToJavaMap(RedisKeyBuilder.userPostScoreKey(user));
-//                if (!ObjectUtil.isEmpty(userRating)) {
-//                    cesScores.put(user, userRating);
-//                }
-//            }
-//            commender.setUserRatings(cesScores);
-//            return commender.generateRecommendations(userId, COMMEND_POST_NEIGHBOR_SIZE, COMMEND_POST_SIZE);
-//        }
-        List<Score> scores = listUserPostScore(communityBO);
+        Map<String, Double> userRating = redisService.getMapToJavaMap(RedisKeyBuilder.userPostCesScoreKey(userId));
+        if (!ObjectUtil.isEmpty(userRating)) {
+            Set<String> users = redisService.getSetMembers(RedisKeyBuilder.userHasBehaviorInCommunityKey());
+            for (String user : users) {
+                userRating = redisService.getMapToJavaMap(RedisKeyBuilder.userPostCesScoreKey(user));
+                if (!ObjectUtil.isEmpty(userRating)) {
+                    cesScores.put(user, userRating);
+                }
+            }
+            commender.setUserRatings(cesScores);
+            return commender.generateRecommendations(userId, COMMEND_POST_NEIGHBOR_SIZE, communityBO.getLimit());
+        }
+        List<Score> scores = listUserPostScore();
         Map<String, Map<String, int[]>> userBehaviors = scores.stream()
                 .collect(Collectors.groupingBy(
                         Score::getUserId, // 按 userId 分组
@@ -419,14 +419,14 @@ public class DiscussPostRepository implements IDiscussPostRepository, ISearchDis
         commender.setUserBehaviors(userBehaviors);
         cesScores = commender.calculateCEScores();
         commender.setUserRatings(cesScores);
-//        // 缓存 ces 得分
-//        for (Map.Entry<String, Map<String, Double>> entry : cesScores.entrySet()) {
-//            // 记录有行为的用户
-//            redisService.addToSet(RedisKeyBuilder.userHasBehaviorInCommunityKey(), entry.getKey());
-//            for (Map.Entry<String, Double> innerEntry : entry.getValue().entrySet()) {
-//                redisService.addToMap(RedisKeyBuilder.userPostCesScoreKey(entry.getKey()), innerEntry.getKey(), innerEntry.getValue());
-//            }
-//        }
+        // 缓存 ces 得分
+        for (Map.Entry<String, Map<String, Double>> entry : cesScores.entrySet()) {
+            // 记录有行为的用户
+            redisService.addToSet(RedisKeyBuilder.userHasBehaviorInCommunityKey(), entry.getKey());
+            for (Map.Entry<String, Double> innerEntry : entry.getValue().entrySet()) {
+                redisService.addToMap(RedisKeyBuilder.userPostCesScoreKey(entry.getKey()), innerEntry.getKey(), innerEntry.getValue());
+            }
+        }
 
         return commender.generateRecommendations(userId, COMMEND_POST_NEIGHBOR_SIZE, communityBO.getLimit());
     }
