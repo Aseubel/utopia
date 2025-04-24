@@ -1,0 +1,87 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam componentStyle rectangle
+skinparam package {
+    ArrowColor #555555
+    BorderColor #555555
+}
+skinparam node {
+    borderColor #555555
+}
+skinparam arrow {
+    Color #555555
+}
+
+title Utopia 项目系统层次结构图
+
+package "外部交互 (External Interaction)" <<Frame>> #FFFFFF {
+  actor "用户/客户端\n(User/Client)" as Client
+  node "外部服务 (External Services)" as ExternalServices {
+    database "数据库\n(MySQL)" as DB
+    database "缓存\n(Redis)" as Cache
+    node "文件存储\n(OSS)" as OSS
+    node "搜索引擎\n(Meilisearch)" as Search
+    node "AI 服务\n(Dify, Baidu)" as AIService
+  }
+}
+
+package "Utopia 系统 (Utopia System)" <<Cloud>> {
+  package "应用启动层 (Application Layer)" as App #LightGreen {
+    component "[utopia-app]" as UtopiaApp
+  }
+
+  package "触发层 (Trigger Layer)" as Trigger #LightSkyBlue {
+    component "[utopia-trigger]" as UtopiaTrigger
+    note right of UtopiaTrigger : 处理 HTTP 请求,\nWebSocket 连接等
+  }
+
+  package "接口定义层 (API Layer)" as Api #LightGoldenRodYellow {
+    component "[utopia-api]" as UtopiaApi
+    note right of UtopiaApi : 定义 DTOs,\n服务接口
+  }
+
+  package "领域层 (Domain Layer)" as Domain #LightSalmon {
+    component "[utopia-domain]" as UtopiaDomain
+    note left of UtopiaDomain : 核心业务逻辑,\n领域模型,\n领域服务
+  }
+
+  package "基础设施层 (Infrastructure Layer)" as Infra #LightGray {
+    component "[utopia-infrastructure]" as UtopiaInfra
+    note left of UtopiaInfra : 数据库访问 (DAO),\n缓存操作,\n外部服务集成,\n消息队列等
+  }
+
+  package "通用类型层 (Types Layer)" as Types #LightPink {
+    component "[utopia-types]" as UtopiaTypes
+    note left of UtopiaTypes : 常量, 枚举,\n工具类, 异常,\n注解等
+  }
+}
+
+' 定义依赖关系 (箭头表示依赖方向: A --> B 表示 A 依赖 B)
+Client --> UtopiaTrigger
+
+UtopiaApp --> UtopiaTrigger
+UtopiaApp --> UtopiaDomain
+UtopiaApp --> UtopiaInfra
+UtopiaApp --> UtopiaApi : App 层可能需要 DTO
+UtopiaApp --> UtopiaTypes
+
+UtopiaTrigger --> UtopiaApi
+UtopiaTrigger --> UtopiaDomain : Trigger 调用 Domain Service
+UtopiaTrigger --> UtopiaTypes
+
+UtopiaInfra --> UtopiaDomain : Infra 实现 Domain Repository/Interface
+UtopiaInfra --> UtopiaTypes
+
+UtopiaDomain --> UtopiaTypes
+
+UtopiaApi --> UtopiaTypes
+
+' 基础设施层与外部服务的交互
+UtopiaInfra --> DB
+UtopiaInfra --> Cache
+UtopiaInfra --> OSS
+UtopiaInfra --> Search
+UtopiaInfra --> AIService
+
+@enduml

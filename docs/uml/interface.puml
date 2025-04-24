@@ -1,0 +1,51 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam componentStyle rectangle
+
+title RESTful API 设计图
+
+package "用户接口" as UserAPI #lightgreen {
+  [+POST /api/user/login] as UserLogin
+  [+POST /api/user/logout] as UserLogout
+  [+GET /api/user/info] as UserInfo
+  [+PUT /api/user/update] as UserUpdate
+  [+POST /api/user/refreshToken] as UserRefreshToken
+  [+POST /api/user/avatar/upload] as UserUploadAvatar
+}
+
+package "集市接口" as BazaarAPI #lightgreen {
+  [+POST /api/bazaar/post/create] as BazaarPostCreate
+  [+GET /api/bazaar/post/list] as BazaarPostList
+  [+GET /api/bazaar/post/detail] as BazaarPostDetail
+  [+POST /api/bazaar/post/image/upload] as BazaarUploadImage
+  [+DELETE /api/bazaar/post/delete] as BazaarPostDelete
+  [+POST /api/bazaar/trade/complete] as BazaarTradeComplete
+}
+
+package "社区接口" as CommunityAPI #lightgreen {
+  [+POST /api/community/post/create] as CommunityPostCreate
+  [+GET /api/community/post/list] as CommunityPostList
+  [+POST /api/community/comment/create] as CommunityCommentCreate
+  [+GET /api/community/comment/list] as CommunityCommentList
+  [+POST /api/community/post/image/upload] as CommunityUploadPostImage
+  [+POST /api/community/comment/image/upload] as CommunityUploadCommentImage
+}
+
+package "消息接口" as MessageAPI #lightgreen {
+  [+GET /api/message/query] as MessageQuery
+  [+POST /api/message/read] as MessageRead
+}
+
+package "搜索接口" as SearchAPI #lightgreen {
+  [+GET /api/search/community] as SearchCommunity
+  [+GET /api/search/bazaar] as SearchBazaar
+  [+GET /api/search/file] as SearchFile
+}
+
+package "工具接口" as UtilAPI #lightgreen {
+  [+POST /api/util/project/analyst] as UtilProjectAnalyst
+  [+GET /api/util/result] as UtilGetResult
+}
+
+@enduml
