@@ -1,0 +1,59 @@
+@startuml Discuss Post Recommendation Sequence
+
+actor User
+participant CommunityController
+participant CommunityService
+participant DiscussPostRepository as Repo
+participant RedisService
+participant DiscussPostMapper as Mapper
+participant UserBasedCollaborativeFiltering as Recommender
+
+User -> CommunityController: 请求推荐帖子 (GET /api/v1/community/post)
+CommunityController -> CommunityService: listCommendPost(communityBO)
+CommunityService -> Repo: listCommendPostId(communityBO)
+
+Repo -> RedisService: getMapToJavaMap(userPostCesScoreKey(userId))
+alt CES 评分缓存存在 (Cache Hit)
+    RedisService --> Repo: 返回用户 CES 评分 (userRating)
+    Repo -> RedisService: getSetMembers(userHasBehaviorInCommunityKey())
+    RedisService --> Repo: 返回活跃用户列表 (users)
+    loop 对每个活跃用户 user
+        Repo -> RedisService: getMapToJavaMap(userPostCesScoreKey(user))
+        RedisService --> Repo: 返回该用户的 CES 评分
+        Repo -> Repo: 收集所有用户的 CES 评分 (cesScores)
+    end
+    Repo -> Recommender: setUserRatings(cesScores)
+    Recommender --> Repo:
+    Repo -> Recommender: generateRecommendations(userId, neighborSize, limit)
+    Recommender -> Recommender: findNeighbors(userId, neighborSize)
+    Recommender -> Recommender: predictScores(...)
+    Recommender --> Repo: 返回推荐帖子 ID 列表 (recommendedPostIds)
+else CES 评分缓存不存在 (Cache Miss)
+    RedisService --> Repo: 返回空 (null or empty map)
+    Repo -> Mapper: listUserPostScore()
+    Mapper --> Repo: 返回原始交互数据 (scores: like, favorite, comment counts)
+    Repo -> Repo: 处理原始数据 (group by user, post) -> userBehaviors
+    Repo -> Recommender: setUserBehaviors(userBehaviors)
+    Recommender --> Repo:
+    Repo -> Recommender: calculateCEScores()
+    Recommender --> Repo: 返回计算后的 CES 评分 (cesScores)
+    Repo -> Recommender: setUserRatings(cesScores)
+    Recommender --> Repo:
+    loop 对每个计算出的 cesScore (用户 -> 帖子 -> 分数)
+        Repo -> RedisService: addToSet(userHasBehaviorInCommunityKey(), userId)
+        RedisService --> Repo:
+        Repo -> RedisService: addToMap(userPostCesScoreKey(userId), postId, score)
+        RedisService --> Repo:
+    end
+    Repo -> Recommender: generateRecommendations(userId, neighborSize, limit)
+    Recommender -> Recommender: findNeighbors(userId, neighborSize)
+    Recommender -> Recommender: predictScores(...)
+    Recommender --> Repo: 返回推荐帖子 ID 列表 (recommendedPostIds)
+end
+
+Repo --> CommunityService: 返回 recommendedPostIds
+CommunityService -> CommunityService: (可选) 根据 ID 查询帖子详情
+CommunityService --> CommunityController: 返回帖子列表或 ID 列表
+CommunityController --> User: 返回推荐结果
+
+@enduml

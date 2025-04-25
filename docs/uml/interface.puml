@@ -32,10 +32,10 @@ package "社区接口" as CommunityAPI #lightgreen {
   [+POST /api/community/comment/image/upload] as CommunityUploadCommentImage
 }
 
-package "消息接口" as MessageAPI #lightgreen {
-  [+GET /api/message/query] as MessageQuery
-  [+POST /api/message/read] as MessageRead
-}
+'package "消息接口" as MessageAPI #lightgreen {
+'  [+GET /api/message/query] as MessageQuery
+'  [+POST /api/message/read] as MessageRead
+'}
 
 package "搜索接口" as SearchAPI #lightgreen {
   [+GET /api/search/community] as SearchCommunity
@@ -43,9 +43,9 @@ package "搜索接口" as SearchAPI #lightgreen {
   [+GET /api/search/file] as SearchFile
 }
 
-package "工具接口" as UtilAPI #lightgreen {
-  [+POST /api/util/project/analyst] as UtilProjectAnalyst
-  [+GET /api/util/result] as UtilGetResult
-}
+'package "工具接口" as UtilAPI #lightgreen {
+'  [+POST /api/util/project/analyst] as UtilProjectAnalyst
+'  [+GET /api/util/result] as UtilGetResult
+'}
 
 @enduml
