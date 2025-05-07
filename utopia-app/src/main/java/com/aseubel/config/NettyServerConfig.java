@@ -26,7 +26,6 @@ import org.springframework.stereotype.Component;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
-import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -38,12 +37,12 @@ import java.util.concurrent.TimeUnit;
 @EnableConfigurationProperties(NettyServerConfigProperties.class)
 public class NettyServerConfig {
 
-    @Value("${server.ssl.key-store-type}")
-    private String sslType;
-    @Value("${server.ssl.key-store}")
-    private String sslPath;
-    @Value("${server.ssl.key-store-password}")
-    private String sslPassword;
+//    @Value("${server.ssl.key-store-type}")
+//    private String sslType;
+//    @Value("${server.ssl.key-store}")
+//    private String sslPath;
+//    @Value("${server.ssl.key-store-password}")
+//    private String sslPassword;
 
     private ChannelFuture serverChannelFuture;
 
@@ -68,9 +67,9 @@ public class NettyServerConfig {
 
     @PostConstruct
     public void startNettyServer() throws IOException {
-        if (sslPath.startsWith("classpath:")) {
-            sslPath = new ClassPathResource(sslPath.substring(10)).getFile().getAbsolutePath();
-        }
+//        if (sslPath.startsWith("classpath:")) {
+//            sslPath = new ClassPathResource(sslPath.substring(10)).getFile().getAbsolutePath();
+//        }
 
         // 使用独立线程启动Netty服务
         new Thread(() -> {
@@ -83,12 +82,12 @@ public class NettyServerConfig {
                             protected void initChannel(Channel ch) throws Exception {
                                 ChannelPipeline pipeline = ch.pipeline();
 
-                                SSLContext sslContext = SslUtil.createSSLContext(sslType, sslPath, sslPassword);
-                                // SSLEngine 此类允许使用ssl安全套接层协议进行安全通信
-                                SSLEngine engine = sslContext.createSSLEngine();
-                                engine.setUseClientMode(false);
-
-                                pipeline.addLast(new SslHandler(engine)); // 设置SSL
+//                                SSLContext sslContext = SslUtil.createSSLContext(sslType, sslPath, sslPassword);
+//                                // SSLEngine 此类允许使用ssl安全套接层协议进行安全通信
+//                                SSLEngine engine = sslContext.createSSLEngine();
+//                                engine.setUseClientMode(false);
+//
+//                                pipeline.addLast(new SslHandler(engine)); // 设置SSL
                                 pipeline.addLast(new HttpServerCodec());
                                 pipeline.addLast(new HttpObjectAggregator(10 * 1024 * 1024));// 最大10MB
                                 pipeline.addLast(new ChunkedWriteHandler());
@@ -129,24 +128,3 @@ public class NettyServerConfig {
     }
 
 }
-
-/**
- * // 建立WebSocket连接
- * const socket = wx.connectSocket({
- * url: 'ws://your-domain.com/ws?token=用户登录凭证'
- * })
- * <p>
- * // 监听消息
- * socket.onMessage(res => {
- * console.log('收到消息:', res.data)
- * })
- * <p>
- * // 发送消息
- * function sendMessage(toUserId, content) {
- * const msg = JSON.stringify({
- * to: toUserId,
- * content: content
- * })
- * socket.send(msg)
- * }
- */

@@ -1,8 +1,10 @@
-package com.aseubel.infrastructure.netty;
+package com.aseubel.infrastructure.netty.proto;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.aseubel.domain.message.adapter.repo.IMessageRepository;
+import com.aseubel.domain.message.adapter.serialize.ProtostuffSerializer;
 import com.aseubel.domain.message.model.MessageEntity;
 import com.aseubel.infrastructure.redis.IRedisService;
 import com.aseubel.types.exception.AppException;
@@ -11,39 +13,40 @@ import com.aseubel.types.util.HttpClientUtil;
 import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.Resource;
-
 import java.time.Duration;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 import static com.aseubel.types.common.Constant.*;
 import static com.aseubel.types.common.RedisKey.REDIS_OFFLINE_KEY;
+import static io.netty.channel.ChannelHandler.Sharable;
 
 /**
  * @author Aseubel
- * @description 处理 WebSocket 消息
- * @date 2025-02-21 15:33
+ * @date 2025/4/28 下午11:14
  */
 @Component
 @Slf4j
 @Sharable
-public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
-
+public class ProtocolMessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
     private static final Map<String, Channel> userChannels = new ConcurrentHashMap<>();
 
     @Autowired
@@ -81,18 +84,18 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
             new Thread(() -> {
                 try {
                     Thread.sleep(50);
-                    List<String> offlineMsgs = redisService.getListValuesAndRemove(REDIS_OFFLINE_KEY + userId);
-                    if (offlineMsgs!= null &&!offlineMsgs.isEmpty()) {
+                    List<byte[]> offlineMsgs = redisService.getListValuesAndRemove(REDIS_OFFLINE_KEY + userId);
+                    if (CollectionUtil.isNotEmpty(offlineMsgs)) {
                         offlineMsgs.forEach(msg -> {
-                            ctx.writeAndFlush(new TextWebSocketFrame(msg));
+                            ctx.writeAndFlush(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(msg)));
                         });
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
             }).start();
-        } else if (req instanceof TextWebSocketFrame ) {
-            this.channelRead0(ctx, (TextWebSocketFrame) req);
+        } else if (req instanceof BinaryWebSocketFrame ) {
+            this.channelRead0(ctx, (BinaryWebSocketFrame) req);
         } else {
             ctx.fireChannelRead(req);
         }
@@ -100,8 +103,13 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
-        if (frame instanceof TextWebSocketFrame) {
-            MessageEntity message = validateMessage(ctx.channel().attr(WS_USER_ID_KEY).get(), (TextWebSocketFrame) frame);
+        if (frame instanceof BinaryWebSocketFrame) {
+            ByteBuf content = ((BinaryWebSocketFrame) frame).content();
+            byte[] bytes = new byte[content.readableBytes()];
+            content.readBytes(bytes);
+
+            MessageEntity message = ProtostuffSerializer.deserialize(bytes, MessageEntity.class);
+            validateMessage(message);
             saveMessage(message);
             sendOrStoreMessage(message.getToUserId(), message);
         } else {
@@ -144,12 +152,19 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
         }
     }
 
+    private void validateMessage(MessageEntity message) {
+        if (!"text".equals(message.getType()) && !"image".equals(message.getType())) {
+            throw new AppException("非法的消息类型！");
+        }
+        message.setContent(SensitiveWordHelper.replace(message.getContent(), '*'));
+    }
+
     private void sendOrStoreMessage(String toUserId, MessageEntity message) {
-        String text = buildMessageJson(message);
+        byte[] messageBytes = ProtostuffSerializer.serialize(message);
         if (isUserOnline(toUserId)) {
-            sendMessage(toUserId, new TextWebSocketFrame(text));
+            sendMessage(toUserId, new BinaryWebSocketFrame(Unpooled.wrappedBuffer(messageBytes)));
         } else {
-            storeOfflineMessage(toUserId, text);
+            storeOfflineMessage(toUserId, messageBytes);
         }
     }
 
@@ -160,7 +175,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
         }
     }
 
-    private void storeOfflineMessage(String userId, String content) {
+    private void storeOfflineMessage(String userId, byte[] content) {
         redisService.addToList(REDIS_OFFLINE_KEY + userId, content);
         redisService.setListExpired(REDIS_OFFLINE_KEY + userId, Duration.ofDays(1));
     }
@@ -223,5 +238,4 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
         }
         ctx.close(); // 建议关闭发生异常的连接
     }
-
 }

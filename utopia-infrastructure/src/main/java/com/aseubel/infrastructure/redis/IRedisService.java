@@ -182,12 +182,12 @@ public interface IRedisService {
      * @param key   键
      * @param value 值
      */
-    void addToList(String key, String value);
+    <T> void addToList(String key, T value);
 
     /**
      * 获取列表中的所有值
      */
-    List<String> getListValuesAndRemove(String key);
+    <T> List<T> getListValuesAndRemove(String key);
 
     /**
      * 设置列表的过期时间

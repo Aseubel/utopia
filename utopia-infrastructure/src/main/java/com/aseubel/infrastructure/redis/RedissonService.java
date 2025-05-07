@@ -125,14 +125,14 @@ public class RedissonService implements IRedisService {
         set.expire(Duration.ofMillis(expired));
     }
 
-    public void addToList(String key, String value) {
-        RList<String> list = redissonClient.getList(key);
+    public <T> void addToList(String key, T value) {
+        RList<T> list = redissonClient.getList(key);
         list.add(value);
     }
 
-    public List<String> getListValuesAndRemove(String key) {
-        RList<String> list = redissonClient.getList(key);
-        List<String> values = list.readAll();
+    public <T> List<T> getListValuesAndRemove(String key) {
+        RList<T> list = redissonClient.getList(key);
+        List<T> values = list.readAll();
         list.clear();
         return values;
     }
