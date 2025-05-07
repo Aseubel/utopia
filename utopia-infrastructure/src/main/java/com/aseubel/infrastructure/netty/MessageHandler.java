@@ -78,19 +78,35 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
             ctx.channel().attr(WS_USER_ID_KEY).set(userId);
 //            System.out.println("客户端连接成功，用户id：" + userId);
             // 由于这里还在处理握手请求也就是建立连接，所以需要延迟发送离线消息
-            new Thread(() -> {
+//            new Thread(() -> {
+//                try {
+//                    Thread.sleep(50);
+//                    List<String> offlineMsgs = redisService.getListValuesAndRemove(REDIS_OFFLINE_KEY + userId);
+//                    if (offlineMsgs!= null &&!offlineMsgs.isEmpty()) {
+//                        offlineMsgs.forEach(msg -> {
+//                            ctx.writeAndFlush(new TextWebSocketFrame(msg));
+//                        });
+//                    }
+//                } catch (InterruptedException e) {
+//                    Thread.currentThread().interrupt();
+//                }
+//            }).start();
+            threadPoolExecutor.execute(() -> {
                 try {
-                    Thread.sleep(50);
+                    TimeUnit.MILLISECONDS.sleep(50);
                     List<String> offlineMsgs = redisService.getListValuesAndRemove(REDIS_OFFLINE_KEY + userId);
-                    if (offlineMsgs!= null &&!offlineMsgs.isEmpty()) {
-                        offlineMsgs.forEach(msg -> {
-                            ctx.writeAndFlush(new TextWebSocketFrame(msg));
-                        });
+                    if (offlineMsgs != null) {
+                        offlineMsgs.forEach(msg ->
+                                ctx.writeAndFlush(new TextWebSocketFrame(msg))
+                        );
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
+                    log.warn("Offline message sending interrupted", e);
+                } catch (Exception e) {
+                    log.error("Failed to send offline messages", e);
                 }
-            }).start();
+            });
         } else if (req instanceof TextWebSocketFrame ) {
             this.channelRead0(ctx, (TextWebSocketFrame) req);
         } else {
@@ -113,13 +129,14 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
 //        System.out.println("客户端断开连接，用户id：" + ctx.channel().attr(WS_USER_ID_KEY).get());
-        Channel channel = ctx.channel();
-        for (Map.Entry<String, Channel> entry : userChannels.entrySet()) {
-            if (entry.getValue() == channel) {
-                userChannels.remove(entry.getKey());
-                break;
+        String userId = ctx.channel().attr(WS_USER_ID_KEY).get();
+        if (userId != null) {
+            Channel removed = userChannels.remove(userId);
+            if (removed != null) {
+                log.debug("Removed channel for user: {}", userId);
             }
         }
+        ctx.close();
     }
 
     private MessageEntity validateMessage(String userId, TextWebSocketFrame textFrame) {
@@ -139,8 +156,6 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
 
         } catch (Exception e) {
             throw new AppException("非法的消息格式！");
-        } finally {
-            textFrame.release();
         }
     }
 
@@ -156,7 +171,11 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     private void sendMessage(String userId, WebSocketFrame message) {
         Channel targetChannel = userChannels.get(userId);
         if (targetChannel != null && targetChannel.isActive()) {
-            targetChannel.writeAndFlush(message.retain());
+            try {
+                targetChannel.writeAndFlush(message.retain());
+            } finally {
+                message.release();
+            }
         }
     }
 
@@ -166,9 +185,9 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     }
 
     private void saveMessage(MessageEntity message) {
-//        threadPoolExecutor.execute(() -> {
-//            messageRepository.saveMessage(message);
-//        });
+        threadPoolExecutor.execute(() -> {
+            messageRepository.saveMessage(message);
+        });
     }
 
     private boolean isUserOnline(String userId) {
