@@ -1,9 +1,9 @@
 package com.aseubel.config;
 
 import com.aseubel.infrastructure.netty.HeartbeatHandler;
-import com.aseubel.infrastructure.netty.HttpHandler;
+import com.aseubel.infrastructure.netty.SessionHandler;
 import com.aseubel.infrastructure.netty.MessageHandler;
-import com.aseubel.types.util.SslUtil;
+import com.aseubel.infrastructure.netty.SimpleHeartbeatHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -11,21 +11,16 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
-import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLEngine;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -91,9 +86,9 @@ public class NettyServerConfig {
                                 pipeline.addLast(new HttpServerCodec());
                                 pipeline.addLast(new HttpObjectAggregator(10 * 1024 * 1024));// 最大10MB
                                 pipeline.addLast(new ChunkedWriteHandler());
-                                pipeline.addLast(new HttpHandler());
+                                pipeline.addLast(new SessionHandler());
                                 pipeline.addLast(new IdleStateHandler(READ_TIMEOUT, 0, 0, TimeUnit.SECONDS));
-                                pipeline.addLast(new HeartbeatHandler());
+                                pipeline.addLast(new SimpleHeartbeatHandler());
                                 pipeline.addLast(new WebSocketServerProtocolHandler("/ws", null, true, 10 * 1024 * 1024));
                                 pipeline.addLast(applicationContext.getBean(MessageHandler.class));
                                 pipeline.addLast(new ChannelInboundHandlerAdapter() {

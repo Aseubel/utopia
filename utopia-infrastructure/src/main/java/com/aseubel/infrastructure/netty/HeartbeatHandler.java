@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Aseubel
+ * @description 可靠性更高，能有效对抗NAT超时
  */
 public class HeartbeatHandler extends ChannelInboundHandlerAdapter {
     private static final int HEARTBEAT_INTERVAL = 15; // 心跳间隔(秒)

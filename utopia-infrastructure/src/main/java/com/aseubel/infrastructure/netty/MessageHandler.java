@@ -14,10 +14,13 @@ import com.google.gson.JsonParser;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +31,9 @@ import jakarta.annotation.Resource;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+import static com.aseubel.infrastructure.netty.SessionHandler.userChannels;
 import static com.aseubel.types.common.Constant.*;
 import static com.aseubel.types.common.RedisKey.REDIS_OFFLINE_KEY;
 
@@ -42,9 +45,7 @@ import static com.aseubel.types.common.RedisKey.REDIS_OFFLINE_KEY;
 @Component
 @Slf4j
 @Sharable
-public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
-
-    private static final Map<String, Channel> userChannels = new ConcurrentHashMap<>();
+public class MessageHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
 
     @Autowired
     private ThreadPoolTaskExecutor threadPoolExecutor;
@@ -68,75 +69,64 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
         super.channelActive(ctx);
     }
 
+    /**
+     * 当 WebSocket 握手成功后，Netty 会触发此事件
+     */
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object req) throws Exception {
-        if (req instanceof FullHttpRequest) {
-            String code = getCodeFromRequest(ctx); // 从请求中提取 code
-            String userId = code;// getOpenid(code);    // 验证 code 获取 openid
-
-            userChannels.put(userId, ctx.channel());
-            ctx.channel().attr(WS_USER_ID_KEY).set(userId);
-//            System.out.println("客户端连接成功，用户id：" + userId);
-            // 由于这里还在处理握手请求也就是建立连接，所以需要延迟发送离线消息
-//            new Thread(() -> {
-//                try {
-//                    Thread.sleep(50);
-//                    List<String> offlineMsgs = redisService.getListValuesAndRemove(REDIS_OFFLINE_KEY + userId);
-//                    if (offlineMsgs!= null &&!offlineMsgs.isEmpty()) {
-//                        offlineMsgs.forEach(msg -> {
-//                            ctx.writeAndFlush(new TextWebSocketFrame(msg));
-//                        });
-//                    }
-//                } catch (InterruptedException e) {
-//                    Thread.currentThread().interrupt();
-//                }
-//            }).start();
-            threadPoolExecutor.execute(() -> {
-                try {
-                    TimeUnit.MILLISECONDS.sleep(50);
-                    List<String> offlineMsgs = redisService.getListValuesAndRemove(REDIS_OFFLINE_KEY + userId);
-                    if (offlineMsgs != null) {
-                        offlineMsgs.forEach(msg ->
-                                ctx.writeAndFlush(new TextWebSocketFrame(msg))
-                        );
-                    }
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    log.warn("Offline message sending interrupted", e);
-                } catch (Exception e) {
-                    log.error("Failed to send offline messages", e);
-                }
-            });
-        } else if (req instanceof TextWebSocketFrame ) {
-            this.channelRead0(ctx, (TextWebSocketFrame) req);
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if (evt instanceof HandshakeComplete) {
+            log.info("WebSocket 握手成功. Channel ID: {}", ctx.channel().id().asLongText());
+            String userId = ctx.channel().attr(WS_USER_ID_KEY).get();
+            if (userId != null) {
+                log.info("客户端连接成功，用户id：{}", userId);
+                // 握手成功后，发送离线消息
+                handleOfflineMessages(ctx, userId);
+            }
         } else {
-            ctx.fireChannelRead(req);
+            super.userEventTriggered(ctx, evt);
         }
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
-        if (frame instanceof TextWebSocketFrame) {
-            MessageEntity message = validateMessage(ctx.channel().attr(WS_USER_ID_KEY).get(), (TextWebSocketFrame) frame);
-            saveMessage(message);
-            sendOrStoreMessage(message.getToUserId(), message);
-        } else {
-            ctx.close();
-        }
+    protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) throws Exception {
+        String userId = getUserIdFromRequest(ctx);
+        MessageEntity message = validateMessage(userId, msg);
+        saveMessage(message);
+        sendOrStoreMessage(message.getToUserId(), message);
     }
 
     // 处理连接断开
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) {
-//        System.out.println("客户端断开连接，用户id：" + ctx.channel().attr(WS_USER_ID_KEY).get());
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         String userId = ctx.channel().attr(WS_USER_ID_KEY).get();
         if (userId != null) {
             Channel removed = userChannels.remove(userId);
             if (removed != null) {
-                log.debug("Removed channel for user: {}", userId);
+                log.info("客户端断开连接，用户id：{}，Channel ID: {}", userId, ctx.channel().id().asLongText());
             }
         }
-        ctx.close();
+        super.channelInactive(ctx);
+    }
+
+    /**
+     * 最佳实践：在握手成功后处理离线消息
+     */
+    private void handleOfflineMessages(ChannelHandlerContext ctx, String userId) {
+        threadPoolExecutor.execute(() -> {
+            try {
+                String redisKey = REDIS_OFFLINE_KEY + userId;
+                List<String> offlineMsgs = redisService.getListValuesAndRemove(redisKey);
+                if (offlineMsgs != null && !offlineMsgs.isEmpty()) {
+                    log.info("正在为用户 {} 发送 {} 条离线消息", userId, offlineMsgs.size());
+                    offlineMsgs.forEach(msg -> {
+                        // 注意：writeAndFlush 会自动处理 ByteBuf 的释放，不需要手动 retain/release
+                        ctx.writeAndFlush(new TextWebSocketFrame(msg));
+                    });
+                }
+            } catch (Exception e) {
+                log.error("为用户 {} 发送离线消息失败", userId, e);
+            }
+        });
     }
 
     private MessageEntity validateMessage(String userId, TextWebSocketFrame textFrame) {
@@ -161,27 +151,20 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
 
     private void sendOrStoreMessage(String toUserId, MessageEntity message) {
         String text = buildMessageJson(message);
-        if (isUserOnline(toUserId)) {
-            sendMessage(toUserId, new TextWebSocketFrame(text));
+        Channel targetChannel = userChannels.get(toUserId);
+        // 判断用户是否在线
+        if (targetChannel != null && targetChannel.isActive()) {
+            // 不需要手动 retain/release
+            targetChannel.writeAndFlush(new TextWebSocketFrame(text));
         } else {
             storeOfflineMessage(toUserId, text);
         }
     }
 
-    private void sendMessage(String userId, WebSocketFrame message) {
-        Channel targetChannel = userChannels.get(userId);
-        if (targetChannel != null && targetChannel.isActive()) {
-            try {
-                targetChannel.writeAndFlush(message.retain());
-            } finally {
-                message.release();
-            }
-        }
-    }
-
     private void storeOfflineMessage(String userId, String content) {
-        redisService.addToList(REDIS_OFFLINE_KEY + userId, content);
-        redisService.setListExpired(REDIS_OFFLINE_KEY + userId, Duration.ofDays(1));
+        String redisKey = REDIS_OFFLINE_KEY + userId;
+        redisService.addToList(redisKey, content);
+        redisService.setListExpired(redisKey, Duration.ofDays(1));
     }
 
     private void saveMessage(MessageEntity message) {
@@ -190,36 +173,13 @@ public class MessageHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
         });
     }
 
-    private boolean isUserOnline(String userId) {
-        return userChannels.containsKey(userId);
-    }
-
-    private String getCodeFromRequest(ChannelHandlerContext ctx) {
-        String code = ctx.channel().attr(WS_TOKEN_KEY).get();
-        // 检查 code 参数是否存在且非空
-        if (code == null || code.isEmpty()) {
+    private String getUserIdFromRequest(ChannelHandlerContext ctx) {
+        String userId = ctx.channel().attr(WS_USER_ID_KEY).get();
+        // 检查 userId 参数是否存在且非空
+        if (userId == null || userId.isEmpty()) {
             throw new IllegalArgumentException("WebSocket token  is missing or empty");
         }
-        return code;
-    }
-
-    private String getOpenid(String appid, String secret, String code) {
-        Map<String, String> paramMap = new HashMap<>();
-        paramMap.put("appid", appid);
-        paramMap.put("secret", secret);
-        paramMap.put("js_code", code);
-        paramMap.put("grant_type", "authorization_code");
-        String result = HttpClientUtil.doGet(WX_LOGIN, paramMap);
-
-        //获取请求结果
-        JSONObject jsonObject = JSON.parseObject(result);
-        String openid = jsonObject.getString("openid");
-        //判断openid是否存在
-        if (StringUtils.isEmpty(openid)) {
-            throw new WxException(jsonObject.getString("errcode"), jsonObject.getString("errmsg"));
-        }
-
-        return openid;
+        return userId;
     }
 
     private String buildMessageJson(MessageEntity message) {
