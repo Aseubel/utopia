@@ -102,14 +102,6 @@ public class LoginVerifyAspect {
                 return Response.CUSTOMIZE_ERROR(GlobalServiceStatusCode.USER_TOKEN_ERROR);
             }
         }
-        String newToken = userRepository.generateUserToken(
-                userId, jwtProperties.getSecretKey(), jwtProperties.getAccess_ttl());
-        // 更新redis中token
-        redisService.setValue(RedisKeyBuilder.userAccessTokenKey(userId), newToken, ACCESS_EXPIRE_TIME);
-        // 设置token到响应头
-        Optional.ofNullable(response)
-                .ifPresent(r -> r.setHeader(jwtProperties.getTokenName(), newToken));
-//        log.info("用户进行登录校验通过，id:{}，token:{}", userId, newToken);
         return point.proceed();
     }
 

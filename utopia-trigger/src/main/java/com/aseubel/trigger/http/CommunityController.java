@@ -104,7 +104,7 @@ public class CommunityController implements CommunityInterface {
      * 查询推荐帖子列表
      */
     @Override
-    @GetMapping("/commend")
+    @GetMapping("/recommend")
     @Refresh
     public Response<List<CommendPostResponse>> queryCommendDiscussPost(CommendPostRequest requestDTO) {
         if (StringUtils.isEmpty(requestDTO.getUserId())) {

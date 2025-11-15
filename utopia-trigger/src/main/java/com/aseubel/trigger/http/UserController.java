@@ -1,5 +1,6 @@
 package com.aseubel.trigger.http;
 
+import cn.hutool.core.util.StrUtil;
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.api.UserInterface;
 import com.aseubel.api.dto.user.*;
@@ -40,7 +41,7 @@ import static com.aseubel.types.enums.GlobalServiceStatusCode.PARAM_NOT_COMPLETE
 @RestController()
 @Validated
 @CrossOrigin("${app.config.cross-origin}")
-@RequestMapping("/api/v1/user/") //${app.config.api-version}
+@RequestMapping("/api/v1/user") //${app.config.api-version}
 @RequiredArgsConstructor
 public class UserController implements UserInterface {
 
@@ -58,7 +59,10 @@ public class UserController implements UserInterface {
     @Override
     @PostMapping("/login")
     public Response<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
-        UserEntity user = userService.login(loginRequestDTO.getCode());
+        String param = StrUtil.isEmpty(loginRequestDTO.getCode())
+                ? loginRequestDTO.getUserId()
+                 : loginRequestDTO.getCode();
+        UserEntity user = userService.login(param);
 
         return Response.SYSTEM_SUCCESS(
                 LoginResponseDTO.builder()

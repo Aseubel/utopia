@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class RateLimitingFilter implements Filter {
 
     private RateLimiter rateLimiter;
-    private final double perClientLimit = 2.0;
+    private final double perClientLimit = 10.0;
 
 //    ConcurrentHashMap<String, RateLimiter> clientLimiters = new ConcurrentHashMap<>();
 
@@ -43,18 +43,19 @@ public class RateLimitingFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String clientIP = request.getRemoteAddr();
-//        RateLimiter clientLimiter = clientLimiters.computeIfAbsent(clientIP,
-//                ip -> RateLimiter.create(perClientLimit));
-
-        // 尝试获取令牌，获取不到则返回 429 Too Many Requests 状态码
-        if (rateLimiter.tryAcquire() && clientLimiters.get(clientIP).tryAcquire()) {
-            chain.doFilter(request, response);
-        } else {
-            HttpServletResponse httpResponse = (HttpServletResponse) response;
-            httpResponse.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
-            httpResponse.getWriter().write("Rate limit exceeded");
-        }
+        chain.doFilter(request, response);
+//        String clientIP = request.getRemoteAddr();
+////        RateLimiter clientLimiter = clientLimiters.computeIfAbsent(clientIP,
+////                ip -> RateLimiter.create(perClientLimit));
+//
+//        // 尝试获取令牌，获取不到则返回 429 Too Many Requests 状态码
+//        if (rateLimiter.tryAcquire() && clientLimiters.get(clientIP).tryAcquire()) {
+//            chain.doFilter(request, response);
+//        } else {
+//            HttpServletResponse httpResponse = (HttpServletResponse) response;
+//            httpResponse.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+//            httpResponse.getWriter().write("Rate limit exceeded");
+//        }
     }
 
     @Override

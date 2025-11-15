@@ -13,8 +13,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class LoginRequestDTO implements Serializable {
 
-    @NotNull(message = "code不能为空")
+//    @NotNull(message = "code不能为空")
     @FieldDesc(name = "微信小程序用户登录凭证")
     private String code;
+
+    @FieldDesc(name = "用户ID")
+    private String userId;
     
 }
