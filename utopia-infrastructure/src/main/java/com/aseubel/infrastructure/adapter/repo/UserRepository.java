@@ -1,5 +1,6 @@
 package com.aseubel.infrastructure.adapter.repo;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.aseubel.domain.bazaar.adapter.repo.IBazaarUserRepository;
 import com.aseubel.domain.community.adapter.repo.ICommunityUserRepository;
 import com.aseubel.domain.user.adapter.repo.IUserRepository;
@@ -86,7 +87,7 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
 
     @Override
     public void addUser(UserEntity userEntity) {
-        userMapper.addUser(userConvertor.convert(userEntity));
+        userMapper.addUserWithInfo(userConvertor.convert(userEntity));
     }
 
     @Override
@@ -218,6 +219,23 @@ public class UserRepository implements IUserRepository, ICommunityUserRepository
         toIds.addAll(commentMapper.listCommentIdsByUserIdAndPostId(userId, postId));
         likeMapper.deleteLikeByToIds(toIds);
         commentMapper.deleteCommentByPostId(postId);
+    }
+
+    @Override
+    public boolean isUsernameOrPhoneExist(String userName, String phone) {
+        if (ObjectUtil.isEmpty(userMapper.getUserByUsernameOrPhone(userName, phone))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public UserEntity queryByUsernameOrPhone(String userName, String phone) {
+        User user = userMapper.getUserByUsernameOrPhone(userName, phone);
+        if (user == null) {
+            throw new AppException("用户名或手机号不存在！");
+        }
+        return userConvertor.convert(user);
     }
 
 }

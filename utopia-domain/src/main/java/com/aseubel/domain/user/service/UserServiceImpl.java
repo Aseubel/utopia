@@ -1,5 +1,7 @@
 package com.aseubel.domain.user.service;
 
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.crypto.digest.BCrypt;
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.user.adapter.repo.IAdminRepository;
 import com.aseubel.domain.user.adapter.repo.IAvatarRepository;
@@ -14,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
@@ -84,6 +87,47 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void logout(String openid) {
         userRepository.cleanUserToken(openid);
+    }
+
+    @Override
+    @Transactional
+    public UserEntity login(String account, String password) {
+        // 查找用户f
+        UserEntity user = userRepository.queryByUsernameOrPhone(account, account);
+
+        // 验证密码
+        if (!BCrypt.checkpw(password, user.getPassword())) {
+            throw new AppException("用户名或密码错误");
+        }
+
+        return user;
+    }
+
+    @Override
+    @Transactional
+    public void register(UserEntity user) {
+        // 验证密码确认
+        if (!user.getPassword().equals(user.getConfirmPassword())) {
+            throw new AppException("两次输入的密码不一致");
+        }
+
+        // 加密密码
+        String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+        user.setPassword(hashedPassword);
+
+        // 检查用户名或手机号是否存在
+        if (userRepository.isUsernameOrPhoneExist(user.getUserName(), user.getPhone())) {
+            throw new AppException("用户名或手机号已存在");
+        }
+
+        user = UserEntity.builder()
+                .openid(IdUtil.fastSimpleUUID())
+                .phone(user.getPhone())
+                .password(hashedPassword)
+                .userName(user.getUserName())
+                .build();
+        userRepository.addUser(user);
+
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.aseubel.api.dto.user.*;
 import com.aseubel.api.dto.user.post.*;
 import com.aseubel.types.Response;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import jakarta.validation.Valid;
@@ -17,6 +18,13 @@ import java.util.List;
  * @date 2025-01-11 21:03
  */
 public interface UserInterface {
+
+    /**
+     * 用户注册
+     * @param registerRequest 注册请求DTO
+     * @return 注册响应DTO
+     */
+    Response register(@Valid @RequestBody RegisterRequest registerRequest);
 
     /**
      * 用户登录

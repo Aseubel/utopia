@@ -16,7 +16,6 @@ import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.domain.user.model.vo.School;
 import com.aseubel.domain.user.service.IUserService;
 import com.aseubel.types.Response;
-import com.aseubel.types.constraint.Login;
 import com.aseubel.types.event.CancelAccountEvent;
 import com.aseubel.types.exception.AppException;
 import jakarta.validation.Valid;
@@ -54,15 +53,38 @@ public class UserController implements UserInterface {
     private final IBazaarService bazaarService;
 
     /**
+     * 注册
+     */
+    @Override
+    @PostMapping("/register")
+    public Response register(@Valid @RequestBody RegisterRequest registerRequest) {
+        UserEntity user = UserEntity.builder()
+                .userName(registerRequest.getName())
+                .password(registerRequest.getPassword())
+                .confirmPassword(registerRequest.getConfirmPassword())
+                .phone(registerRequest.getPhone())
+                .build();
+
+        userService.register(user);
+
+        return Response.SYSTEM_SUCCESS();
+    }
+
+    /**
      * 登录
      */
     @Override
     @PostMapping("/login")
     public Response<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
-        String param = StrUtil.isEmpty(loginRequestDTO.getCode())
-                ? loginRequestDTO.getUserId()
-                 : loginRequestDTO.getCode();
-        UserEntity user = userService.login(param);
+        String code = loginRequestDTO.getCode();
+        UserEntity user = null;
+        if (StringUtils.isNotEmpty(code)) {
+            // 微信登录
+            user = userService.login(code);
+        } else {
+            // 账号密码登录
+            user = userService.login(loginRequestDTO.getAccount(), loginRequestDTO.getPassword());
+        }
 
         return Response.SYSTEM_SUCCESS(
                 LoginResponseDTO.builder()

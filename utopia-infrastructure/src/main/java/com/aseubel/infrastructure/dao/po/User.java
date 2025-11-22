@@ -22,6 +22,9 @@ public class User {
     @FieldDesc(name = "用户id")
     private String userId;
 
+    @FieldDesc(name = "密码")
+    private String password;
+
     @FieldDesc(name = "用户名")
     private String userName;
 

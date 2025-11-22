@@ -3,6 +3,7 @@ package com.aseubel.domain.user.service;
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.domain.user.model.entity.AvatarEntity;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Aseubel
@@ -23,6 +24,20 @@ public interface IUserService {
      * @param openid 用户id
      */
     void logout(String openid);
+
+    /**
+     * 用户登录
+     * @param userId 用户id
+     * @param password 密码
+     * @return 用户实体
+     */
+    UserEntity login(String userId, String password);
+
+    /**
+     * 用户注册
+     * @param user 用户实体
+     */
+    void register(UserEntity user);
 
     /**
      * 查询用户信息

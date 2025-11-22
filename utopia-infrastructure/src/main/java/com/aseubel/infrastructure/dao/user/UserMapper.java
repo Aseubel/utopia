@@ -3,6 +3,7 @@ package com.aseubel.infrastructure.dao.user;
 import com.aseubel.infrastructure.dao.po.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -35,6 +36,12 @@ public interface UserMapper {
      * @param user 用户信息
      */
     void addUser(User user);
+
+    /**
+     * 用户注册时添加用户信息
+     * @param user 用户信息
+     */
+    void addUserWithInfo(User user);
 
     /**
      * 更新用户信息
@@ -75,4 +82,10 @@ public interface UserMapper {
      * @param userId
      */
     void deleteUserByUserId(String userId);
+
+    /**
+     * 根据用户名或手机号获取用户信息
+     */
+    @Select("SELECT * FROM user WHERE (user_name = #{userName} OR phone = #{phone}) AND is_deleted = 0")
+    User getUserByUsernameOrPhone(String userName, String phone);
 }

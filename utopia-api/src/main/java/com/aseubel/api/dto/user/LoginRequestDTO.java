@@ -19,5 +19,11 @@ public class LoginRequestDTO implements Serializable {
 
     @FieldDesc(name = "用户ID")
     private String userId;
+
+    @FieldDesc(name = "登录凭证-用户名或手机号")
+    private String account;
+
+    @FieldDesc(name = "用户密码")
+    private String password;
     
 }

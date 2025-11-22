@@ -18,6 +18,7 @@ public class UserConvertor {
     public User convert(UserEntity userEntity) {
         return User.builder()
                 .userId(userEntity.getOpenid())
+                .password(userEntity.getPassword())
                 .userName(userEntity.getUserName())
                 .phone(userEntity.getPhone())
                 .gender(userEntity.getGender())
@@ -31,6 +32,7 @@ public class UserConvertor {
     public UserEntity convert(User user) {
         return UserEntity.builder()
                 .openid(user.getUserId())
+                .password(user.getPassword())
                 .userName(user.getUserName())
                 .phone(user.getPhone())
                 .gender(user.getGender())

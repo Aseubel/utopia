@@ -94,4 +94,20 @@ public interface IUserRepository {
      * @param postId
      */
     void deleteUserToPost(String userId, String postId);
+
+    /**
+     * 检查用户名或手机号是否存在
+     * @param userName 用户名
+     * @param phone 手机号
+     * @return true-存在，false-不存在
+     */
+    boolean isUsernameOrPhoneExist(String userName, String phone);
+
+    /**
+     * 根据用户名或手机号查询用户信息
+     * @param userName 用户名
+     * @param phone 手机号
+     * @return 用户信息
+     */
+    UserEntity queryByUsernameOrPhone(String userName, String phone);
 }

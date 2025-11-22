@@ -7,6 +7,11 @@
         values (#{userId})
     </insert>
 
+    <insert id="addUserWithInfo">
+        insert into `user` (user_id, user_name, phone)
+        values (#{userId}, #{userName}, #{phone})
+    </insert>
+
     <update id="updateUser">
         update `user`
         <set>
