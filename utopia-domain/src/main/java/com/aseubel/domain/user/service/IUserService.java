@@ -3,7 +3,10 @@ package com.aseubel.domain.user.service;
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.user.model.entity.UserEntity;
 import com.aseubel.domain.user.model.entity.AvatarEntity;
+import com.aseubel.domain.user.model.vo.School;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author Aseubel
@@ -79,5 +82,11 @@ public interface IUserService {
      * @param userId
      */
     void cancelAccount(String userId);
+
+    /**
+     * 查询学校列表
+     * @return 学校列表
+     */
+    List<School> querySchools();
 
 }

@@ -47,6 +47,12 @@ public interface SchoolMapper {
     List<String> listSchoolCode();
 
     /**
+     * 获取所有学校
+     */
+    @Select("SELECT * FROM `school`")
+    List<School> listAllSchool();
+
+    /**
      * 更新学校学生人数
      * @param schoolCode
      * @param studentCount

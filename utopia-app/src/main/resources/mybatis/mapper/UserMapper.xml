@@ -8,8 +8,8 @@
     </insert>
 
     <insert id="addUserWithInfo">
-        insert into `user` (user_id, user_name, phone)
-        values (#{userId}, #{userName}, #{phone})
+        insert into `user` (user_id, user_name, phone, password)
+        values (#{userId}, #{userName}, #{phone}, #{password})
     </insert>
 
     <update id="updateUser">

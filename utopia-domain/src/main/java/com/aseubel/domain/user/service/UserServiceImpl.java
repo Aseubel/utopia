@@ -5,10 +5,12 @@ import cn.hutool.crypto.digest.BCrypt;
 import com.aliyuncs.exceptions.ClientException;
 import com.aseubel.domain.user.adapter.repo.IAdminRepository;
 import com.aseubel.domain.user.adapter.repo.IAvatarRepository;
+import com.aseubel.domain.user.adapter.repo.ISchoolRepository;
 import com.aseubel.domain.user.adapter.repo.IUserRepository;
 import com.aseubel.domain.user.adapter.wx.WxService;
 import com.aseubel.domain.user.model.entity.AvatarEntity;
 import com.aseubel.domain.user.model.entity.UserEntity;
+import com.aseubel.domain.user.model.vo.School;
 import com.aseubel.types.exception.AppException;
 import com.aseubel.types.util.AliOSSUtil;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.aseubel.types.common.Constant.USER_ID_KEY;
@@ -41,6 +44,8 @@ public class UserServiceImpl implements IUserService {
     private final IAvatarRepository avatarRepository;
 
     private final IAdminRepository adminRepository;
+
+    private final ISchoolRepository schoolRepository;
 
     private final WxService wxService;
 
@@ -92,13 +97,21 @@ public class UserServiceImpl implements IUserService {
     @Override
     @Transactional
     public UserEntity login(String account, String password) {
-        // 查找用户f
+        // 查找用户
         UserEntity user = userRepository.queryByUsernameOrPhone(account, account);
 
         // 验证密码
         if (!BCrypt.checkpw(password, user.getPassword())) {
             throw new AppException("用户名或密码错误");
         }
+
+        //生成JWT令牌
+        Map<String, Object> claims=new HashMap<>();
+        claims.put(USER_ID_KEY,user.getOpenid());
+        user.generateToken(secretKey, refreshTtl, accessTtl, claims);
+
+        // 记录token
+        userRepository.saveUserToken(user);
 
         return user;
     }
@@ -184,6 +197,11 @@ public class UserServiceImpl implements IUserService {
         userRepository.deleteUser(openid);
         userRepository.cleanUserToken(openid);
         log.info("注销账户服务结束执行，openid={}", openid);
+    }
+
+    @Override
+    public List<School> querySchools() {
+        return schoolRepository.findAll();
     }
 
     private void checkSchoolCodeValid(String schoolCode) {
